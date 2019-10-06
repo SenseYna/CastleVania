@@ -1,0 +1,6 @@
+﻿  GameObjects.cpp
+c:\users\thien\desktop\castlevania\castlevania\castlevania\gameobjects.cpp(81): warning C4018: '<': signed/unsigned mismatch
+c:\users\thien\desktop\castlevania\castlevania\castlevania\gameobjects.cpp(88): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
+  Generating Code...
+  CastleVania.vcxproj -> C:\Users\thien\Desktop\CastleVania\CastleVania\Debug\CastleVania.exe
