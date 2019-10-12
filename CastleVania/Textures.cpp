@@ -11,6 +11,7 @@ CTextures * CTextures::__instance = NULL;
 
 CTextures::CTextures()
 {
+
 }
 
 CTextures *CTextures::GetInstance()

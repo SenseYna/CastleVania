@@ -1,0 +1,28 @@
+﻿  Game.cpp
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(79): error C2065: 'GWL_HINSTANCE': undeclared identifier
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(86): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [36]' to 'wchar_t *'
+  c:\users\thien\desktop\castlevania\castlevania\game.cpp(86): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(95): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [30]' to 'wchar_t *'
+  c:\users\thien\desktop\castlevania\castlevania\game.cpp(95): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(134): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [34]' to 'wchar_t *'
+  c:\users\thien\desktop\castlevania\castlevania\game.cpp(134): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(140): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [51]' to 'wchar_t *'
+  c:\users\thien\desktop\castlevania\castlevania\game.cpp(140): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(157): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [30]' to 'wchar_t *'
+  c:\users\thien\desktop\castlevania\castlevania\game.cpp(157): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(259): warning C4305: '=': truncation from '__int64' to 'float'
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(260): warning C4305: '=': truncation from '__int64' to 'float'
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(270): warning C4305: '=': truncation from '__int64' to 'float'
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(271): warning C4305: '=': truncation from '__int64' to 'float'
+  main.cpp
+c:\users\thien\desktop\castlevania\castlevania\main.cpp(65): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [20]' to 'wchar_t *'
+  c:\users\thien\desktop\castlevania\castlevania\main.cpp(65): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\thien\desktop\castlevania\castlevania\main.cpp(82): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [18]' to 'wchar_t *'
+  c:\users\thien\desktop\castlevania\castlevania\main.cpp(82): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\thien\desktop\castlevania\castlevania\main.cpp(276): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Textures.cpp
+c:\users\thien\desktop\castlevania\castlevania\textures.cpp(29): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [41]' to 'wchar_t *'
+  c:\users\thien\desktop\castlevania\castlevania\textures.cpp(29): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\thien\desktop\castlevania\castlevania\textures.cpp(60): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [38]' to 'wchar_t *'
+  c:\users\thien\desktop\castlevania\castlevania\textures.cpp(60): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+  Generating Code...

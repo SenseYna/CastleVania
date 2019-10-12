@@ -1,6 +1,18 @@
-﻿  GameObjects.cpp
-c:\users\thien\desktop\castlevania\castlevania\castlevania\gameobjects.cpp(81): warning C4018: '<': signed/unsigned mismatch
-c:\users\thien\desktop\castlevania\castlevania\castlevania\gameobjects.cpp(88): warning C4018: '<': signed/unsigned mismatch
+﻿  Brick.cpp
+  debug.cpp
+  Game.cpp
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(259): warning C4305: '=': truncation from '__int64' to 'float'
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(260): warning C4305: '=': truncation from '__int64' to 'float'
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(270): warning C4305: '=': truncation from '__int64' to 'float'
+c:\users\thien\desktop\castlevania\castlevania\game.cpp(271): warning C4305: '=': truncation from '__int64' to 'float'
+  GameObjects.cpp
+  Goomba.cpp
   main.cpp
+c:\users\thien\desktop\castlevania\castlevania\main.cpp(322): warning C4018: '<': signed/unsigned mismatch
+c:\users\thien\desktop\castlevania\castlevania\main.cpp(327): warning C4018: '<': signed/unsigned mismatch
+c:\users\thien\desktop\castlevania\castlevania\main.cpp(359): warning C4018: '<': signed/unsigned mismatch
+  Mario.cpp
+  Sprites.cpp
+  Textures.cpp
   Generating Code...
-  CastleVania.vcxproj -> C:\Users\thien\Desktop\CastleVania\CastleVania\Debug\CastleVania.exe
+  CastleVania.vcxproj -> C:\Users\thien\Desktop\CastleVania\Debug\CastleVania.exe
