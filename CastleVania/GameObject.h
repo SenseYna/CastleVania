@@ -1,27 +1,38 @@
-#pragma once
+﻿#pragma once
 
 #include <Windows.h>
 #include <d3dx9.h>
 #include <vector>
+#include <algorithm>
 
+#include "Debug.h"
+#include "Define.h"
+#include "Game.h"
+#include "Textures.h"
 #include "Sprites.h"
-
 
 using namespace std;
 
-#define ID_TEX_BBOX -100		// special texture to draw object bounding box
 
-class CGameObject;
-typedef CGameObject * LPGAMEOBJECT;
+class GameObject;
+typedef GameObject * LPGAMEOBJECT;
 
-struct CCollisionEvent;
-typedef CCollisionEvent * LPCOLLISIONEVENT;
+struct CollisionEvent;
+typedef CollisionEvent * LPCOLLISIONEVENT;
 
-struct CCollisionEvent
+
+struct CollisionEvent
 {
 	LPGAMEOBJECT obj;
 	float t, nx, ny;
-	CCollisionEvent(float t, float nx, float ny, LPGAMEOBJECT obj = NULL) { this->t = t; this->nx = nx; this->ny = ny; this->obj = obj; }
+
+	CollisionEvent(float t, float nx, float ny, LPGAMEOBJECT obj = NULL)
+	{
+		this->t = t;
+		this->nx = nx;
+		this->ny = ny;
+		this->obj = obj;
+	}
 
 	static bool compare(const LPCOLLISIONEVENT &a, LPCOLLISIONEVENT &b)
 	{
@@ -29,39 +40,64 @@ struct CCollisionEvent
 	}
 };
 
-
-
-class CGameObject
+class GameObject
 {
 public:
-
-	float x;
+	float x;		// coordinate
 	float y;
 
-	float dx;	// dx = vx*dt
-	float dy;	// dy = vy*dt
+	float dx;		// distance
+	float dy;
 
-	float vx;
+	float vx;		// velocity
 	float vy;
 
-	int nx;	 // left or right
-	int _jump;
+	int nx;			// orientation (left / right)
 
-	int state;
+	int state;		// state of object
 
 	DWORD dt;
 
+	bool isEnable;
+
+	int idItem;		// id của item mà object đó chứa (-1: no item)
+	bool isDroppedItem = false;
+	
 	vector<LPANIMATION> animations;
 
-public:
-	void SetPosition(float x, float y) { this->x = x, this->y = y; }
-	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
+
+	GameObject();
+
+	void SetPosition(float x, float y) { this->x = x; this->y = y; }
+	void SetSpeed(float vx, float vy) { this->vx = vx; this->vy = vy; }
+	void SetState(int state) { this->state = state; }
+	void SetOrientation(int nx) { this->nx = nx; }
+	void SetIDItem(int id) { this->idItem = id; }
+	void SetEnable(bool enable) { this->isEnable = enable; }
+	void SetIsDroppedItem(bool x) { this->isDroppedItem = x; }
+	
+
 	void GetPosition(float &x, float &y) { x = this->x; y = this->y; }
 	void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }
-
 	int GetState() { return this->state; }
+	int GetOrientation() { return this->nx; }
+	bool IsDroppedItem() { return this->isDroppedItem; }
+	bool IsEnable() { return this->isEnable; }
 
 	void RenderBoundingBox();
+
+	// check collision of 2 static object (ex: whip and candle)
+	bool AABB(
+		float left_a, float top_a, float right_a, float bottom_a,
+		float left_b, float top_b, float right_b, float bottom_b
+	);
+
+	void SweptAABB(
+		float ml, float mt, float mr, float mb,
+		float dx, float dy,
+		float sl, float st,
+		float sr, float sb,
+		float & t, float & nx, float & ny);
 
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
@@ -73,16 +109,11 @@ public:
 		float &nx,
 		float &ny);
 
-	void AddAnimation(int aniId);
-
-	CGameObject();
+	void AddAnimation(string aniID);
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
+
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObject = NULL, bool stopMovement = false);
 	virtual void Render() = 0;
-	virtual void SetState(int state) { this->state = state; }
-
-
-	~CGameObject();
 };
 

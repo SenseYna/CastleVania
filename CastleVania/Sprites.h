@@ -1,85 +1,104 @@
-#pragma once
+﻿#pragma once
+
 #include <Windows.h>
 #include <d3dx9.h>
 #include <unordered_map>
 
+#include "Game.h"
+#include "Debug.h"
+
 using namespace std;
 
-class CSprite
+/*
+	A class contains id of a sprite and its position in texture.
+*/
+class Sprite
 {
-	int id;				// Sprite ID in the sprite database
-
-	int left;
-	int top;
-	int right;
-	int bottom;
+	string id;			// Sprite ID 
+	int left, top, right, bottom;
 
 	LPDIRECT3DTEXTURE9 texture;
-public:
-	CSprite(int id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 tex);
 
-	void Draw(float x, float y, int alpha = 255);
+public:
+	Sprite(string id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 tex);
+	void Draw(int accordingCam, int nx, float x, float y, int alpha = 255);
 };
 
-typedef CSprite * LPSPRITE;
+typedef Sprite * LPSPRITE;
 
 /*
-	Manage sprite database
+	Sprite Manager Class
 */
-class CSprites
+class Sprites
 {
-	static CSprites * __instance;
-
-	unordered_map<int, LPSPRITE> sprites;
+	static Sprites * _instance;
+	unordered_map<string, LPSPRITE> sprites;		// list of Sprite Pointer by Id
 
 public:
-	void Add(int id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 tex);
-	LPSPRITE Get(int id);
-	LPSPRITE &operator[](int id) { return sprites[id]; }
+	void Add(string id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 tex);
+	LPSPRITE Get(string id) { return sprites[id]; }
 
-	static CSprites * GetInstance();
+	static Sprites * GetInstance();
 };
 
 /*
-	Sprite animation
+	Sprite Animation Frame
 */
-class CAnimationFrame
+class AnimationFrame
 {
 	LPSPRITE sprite;
-	DWORD time;
+	DWORD time;				// time to render a sprite
 
 public:
-	CAnimationFrame(LPSPRITE sprite, int time) { this->sprite = sprite; this->time = time; }
-	DWORD GetTime() { return time; }
-	LPSPRITE GetSprite() { return sprite; }
+	AnimationFrame(LPSPRITE sprite, int time) { this->sprite = sprite; this->time = time; }
+	
+	LPSPRITE GetSprite() { return this->sprite; }
+	DWORD GetTime() { return this->time; }
 };
 
-typedef CAnimationFrame *LPANIMATION_FRAME;
+typedef AnimationFrame * LPANIMATION_FRAME;
 
-class CAnimation
+/*
+	Manage all frames of an animation
+*/
+class Animation
 {
+	DWORD animStartTime;   // mốc thời gian kể từ lúc bắt đầu render một animation
 	DWORD lastFrameTime;
 	int defaultTime;
 	int currentFrame;
 	vector<LPANIMATION_FRAME> frames;
+
 public:
-	CAnimation(int defaultTime) { this->defaultTime = defaultTime; lastFrameTime = -1; currentFrame = -1; }
-	void Add(int spriteId, DWORD time = 0);
-	void Render(float x, float y, int alpha = 255);
+	
+	Animation(int defaultTime = 100);
+	void SetAniStartTime(DWORD t) { animStartTime = t; }
+	bool IsOver(DWORD dt) { return GetTickCount() - animStartTime >= dt; }
+	bool IsRenderingLastFrame() { return currentFrame == frames.size() - 1; }
+	void Reset() { currentFrame = -1; }
+	void SetFrame(int x) { currentFrame = x; }
+
+	int GetCurrentFrame() { return currentFrame; }
+	int GetFramesSize() { return frames.size(); }
+	
+	void Add(string spriteID, DWORD time = 0);
+	void Render(int accordingCam, int nx, float x, float y, int alpha = 255);
+	void RenderByID(int currentID, int nx, float x, float y, int alpha = 255); // hàm dùng riêng để render whip -> giải quyết bài toán đồng bộ whip cử động tay của simon
 };
 
-typedef CAnimation *LPANIMATION;
+typedef Animation * LPANIMATION;
 
-class CAnimations
+/*
+	Manage all animations
+*/
+class Animations
 {
-	static CAnimations * __instance;
-
-	unordered_map<int, LPANIMATION> animations;
+	static Animations * _instance;
+	unordered_map<string, LPANIMATION> animations;
 
 public:
-	void Add(int id, LPANIMATION ani);
-	LPANIMATION Get(int id);
+	void Add(string id, LPANIMATION ani) { animations[id] = ani; }
+	LPANIMATION Get(string id) { return animations[id]; }
 
-	static CAnimations * GetInstance();
+	static Animations* GetInstance();
 };
-

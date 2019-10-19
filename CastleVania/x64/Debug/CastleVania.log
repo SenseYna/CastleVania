@@ -1,28 +1,72 @@
-﻿  Game.cpp
-c:\users\thien\desktop\castlevania\castlevania\game.cpp(79): error C2065: 'GWL_HINSTANCE': undeclared identifier
-c:\users\thien\desktop\castlevania\castlevania\game.cpp(86): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [36]' to 'wchar_t *'
-  c:\users\thien\desktop\castlevania\castlevania\game.cpp(86): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
-c:\users\thien\desktop\castlevania\castlevania\game.cpp(95): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [30]' to 'wchar_t *'
-  c:\users\thien\desktop\castlevania\castlevania\game.cpp(95): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
-c:\users\thien\desktop\castlevania\castlevania\game.cpp(134): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [34]' to 'wchar_t *'
-  c:\users\thien\desktop\castlevania\castlevania\game.cpp(134): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
-c:\users\thien\desktop\castlevania\castlevania\game.cpp(140): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [51]' to 'wchar_t *'
-  c:\users\thien\desktop\castlevania\castlevania\game.cpp(140): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
-c:\users\thien\desktop\castlevania\castlevania\game.cpp(157): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [30]' to 'wchar_t *'
-  c:\users\thien\desktop\castlevania\castlevania\game.cpp(157): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
-c:\users\thien\desktop\castlevania\castlevania\game.cpp(259): warning C4305: '=': truncation from '__int64' to 'float'
-c:\users\thien\desktop\castlevania\castlevania\game.cpp(260): warning C4305: '=': truncation from '__int64' to 'float'
-c:\users\thien\desktop\castlevania\castlevania\game.cpp(270): warning C4305: '=': truncation from '__int64' to 'float'
-c:\users\thien\desktop\castlevania\castlevania\game.cpp(271): warning C4305: '=': truncation from '__int64' to 'float'
+﻿  Bat.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  BlackLeopard.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Boss.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  BreakWall.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Bubbles.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Candle.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  ChangeSceneObject.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Cloud.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Debug.cpp
+  Door.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Enemy.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  FireBall.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  FishMan.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Game.cpp
+c:\users\thien\desktop\castlevania\castlevania\game.h(5): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  GameObject.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Grid.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Ground.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Input.cpp
+c:\users\thien\desktop\castlevania\castlevania\game.h(5): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  IntroScene.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Items.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Generating Code...
+  Compiling...
   main.cpp
-c:\users\thien\desktop\castlevania\castlevania\main.cpp(65): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [20]' to 'wchar_t *'
-  c:\users\thien\desktop\castlevania\castlevania\main.cpp(65): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
-c:\users\thien\desktop\castlevania\castlevania\main.cpp(82): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [18]' to 'wchar_t *'
-  c:\users\thien\desktop\castlevania\castlevania\main.cpp(82): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
-c:\users\thien\desktop\castlevania\castlevania\main.cpp(276): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\thien\desktop\castlevania\castlevania\main.cpp(3): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Player.cpp
+c:\users\thien\desktop\castlevania\castlevania\game.h(5): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  SceneManager.cpp
+c:\users\thien\desktop\castlevania\castlevania\game.h(5): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Simon.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Sprites.cpp
+c:\users\thien\desktop\castlevania\castlevania\sprites.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Stair.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  SubWeapon.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
   Textures.cpp
-c:\users\thien\desktop\castlevania\castlevania\textures.cpp(29): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [41]' to 'wchar_t *'
-  c:\users\thien\desktop\castlevania\castlevania\textures.cpp(29): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
-c:\users\thien\desktop\castlevania\castlevania\textures.cpp(60): error C2664: 'void DebugOut(wchar_t *,...)': cannot convert argument 1 from 'const wchar_t [38]' to 'wchar_t *'
-  c:\users\thien\desktop\castlevania\castlevania\textures.cpp(60): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\thien\desktop\castlevania\castlevania\textures.h(7): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  TileMap.cpp
+c:\users\thien\desktop\castlevania\castlevania\textures.h(7): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  TitleScreen.cpp
+c:\users\thien\desktop\castlevania\castlevania\textures.h(7): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  VampireBat.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  WallPieces.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Water.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Whip.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Zombie.cpp
+c:\users\thien\desktop\castlevania\castlevania\gameobject.h(4): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
   Generating Code...

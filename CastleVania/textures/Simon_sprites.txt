@@ -1,0 +1,16 @@
+simon_stand	0	0	60	64
+simon_walk_1	0	0	60	64
+simon_walk_2	60	0	120	64
+simon_walk_3	120	0	180	64
+simon_walk_4	180	0	240	64
+simon_sit	300	198	360	262
+simon_jump	240	0	300	64
+
+
+simon_stand_invisible	240	264	300	330
+simon_walk_invisible_1	240	264	300	330
+simon_walk_invisible_2	300	264	360	330
+simon_walk_invisible_3	360	264	420	330
+simon_walk_invisible_4	420	264	480	330
+simon_sit_invisible	180	264	240	330
+simon_jump_invisible	420	330	480	396

@@ -1,22 +1,28 @@
 #pragma once
+
+#include <Windows.h>
 #include <unordered_map>
+
+#include <d3d9.h>
 #include <d3dx9.h>
 
-using namespace std;
+#include "Debug.h"
+#include "Game.h"
 
+using namespace std;
+ 
 /*
 	Manage texture database
 */
-class CTextures
+class Textures
 {
-	static CTextures * __instance;
-
+	static Textures * _instance;
 	unordered_map<int, LPDIRECT3DTEXTURE9> textures;
-
+	
 public:
-	CTextures();
-	void Add(int id, LPCWSTR filePath, D3DCOLOR transparentColor);
-	LPDIRECT3DTEXTURE9 Get(unsigned int i);
+	void Add(int id, LPCWSTR filePath, D3DCOLOR transparentColor = D3DCOLOR_XRGB(255, 0, 255));
+	LPDIRECT3DTEXTURE9 Get(int id) { return textures[id]; }
 
-	static CTextures * GetInstance();
+	static Textures * GetInstance();
 };
+
