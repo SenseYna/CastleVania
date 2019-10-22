@@ -6,15 +6,11 @@
 
 #include "TileMap.h"
 #include "Ground.h"
+#include "Candle.h"
+#include "Whip.h"
 #include "Simon.h"
-
-
-
-#include "Timer.h"
-
-
-
 #include <map>
+
 using namespace std;
 
 class Scenes
@@ -29,9 +25,7 @@ class Scenes
 	vector<Unit*> listUnits;
 
 	Simon * simon;
-
-
-
+	Whip * whip;
 	TileMaps * tilemaps = TileMaps::GetInstance();
 	Textures * textures = Textures::GetInstance();
 	Sprites * sprites = Sprites::GetInstance();
@@ -39,8 +33,6 @@ class Scenes
 	
 
 
-	bool isMovingCamera1 = false;		
-	bool isMovingCamera2 = false;
 	int countDxCamera = 0;
 
 public:
@@ -57,6 +49,9 @@ public:
 	
 	void Update(DWORD dt);						
 				
+	void Whip_Update(DWORD dt);
+
+
 	void GetColliableObjects(LPGAMEOBJECT curObj, vector<LPGAMEOBJECT>&coObjects);
 	void UpdateCameraPosition();				
 	void UpdateGrid();
@@ -64,14 +59,13 @@ public:
 	void Render();
 
 	
-	bool IsInViewport(LPGAMEOBJECT object);
+	//bool IsInViewport(LPGAMEOBJECT object);
 
 	void SetGameState();	// Set vị trí của simon, camera theo id state
 
 	// Get, Set
 	
 	Simon * GetSimon() { return this->simon; }
-	bool IsMovingCamera() { return isMovingCamera1 || isMovingCamera2; }
 
 
 };

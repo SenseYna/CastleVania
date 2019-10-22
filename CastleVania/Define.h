@@ -20,6 +20,9 @@
 #define ID_TEX_BBOX					-1
 #define ID_TEX_SIMON				0
 #define ID_TEX_GROUND				1
+#define ID_TEX_CANDLE				2
+#define ID_TEX_WHIP					3
+#define ID_TEX_SPARK				4
 
 // Font
 #define FILEPATH_FONT					L"Font\\prstart.ttf"
@@ -41,6 +44,9 @@
 #define WALK			1
 #define SIT				2
 #define JUMP			3
+#define HIT_SIT			4
+#define HIT_STAND		5
+
 
 // Simon
 #define SIMON_UNTOUCHABLE_TIME		2000
@@ -56,6 +62,16 @@
 #define SIMON_BBOX_WIDTH			30
 #define SIMON_BBOX_HEIGHT			62
 
+// Whip
+#define NORMAL_WHIP		0
+#define SHORT_CHAIN		1
+#define LONG_CHAIN		2
+
+// Whip BBOX
+#define LONG_CHAIN_BBOX_WIDTH		85
+#define WHIP_BBOX_WIDTH				55
+#define WHIP_BBOX_HEIGHT			15
+
 // Ground
 #define	GROUND				1
 
@@ -64,5 +80,24 @@
 #define GROUND_BBOX_HEIGHT			32
 
 
+
+// Candle
+#define	CANDLE				0
+#define BIG_CANDLE		0
+#define SMALL_CANDLE	1
+#define CANDLE_DESTROYED	2
+
+// Candle BBOX
+#define CANDLE_BBOX_WIDTH			32
+#define CANDLE_BBOX_HEIGHT			64
+
+#define SMALL_CANDLE_BBOX_WIDTH		16
+#define SMALL_CANDLE_BBOX_HEIGHT	32
+
+// Animation Delay
+#define EFFECT_ANI_TIME_DELAY		300
+#define SPARK_ANI_TIME_DELAY		100
+#define HIT_ANI_TIME_DELAY			300
+#define DEFLECT_ANI_TIME_DELAY		600
 
 

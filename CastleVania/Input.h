@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Simon.h"
 #include "Scenes.h"
+#include "Whip.h"
 
 class Input : public KeyEventHandler
 {
@@ -15,9 +16,7 @@ public:
 	Input(Game * game, Scenes * scene);
 	~Input();
 
-	
-	bool CanProcessKeyboard();
-
+	bool AnimationDelay();
 	virtual void KeyState(BYTE *state);
 	virtual void OnKeyDown(int KeyCode);
 	virtual void OnKeyUp(int KeyCode);
@@ -27,6 +26,7 @@ public:
 	void Simon_Walk_Left();
 	void Simon_Walk_Right();
 	void Simon_Jump();
+	void Simon_Whip();
 	
 };
 

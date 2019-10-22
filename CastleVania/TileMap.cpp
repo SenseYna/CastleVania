@@ -47,7 +47,7 @@ void TileMap::LoadResources()
 		for (UINT j = 0; j < nums_colToRead; j++)
 		{
 			string idTile = "map_" + to_string(ID) + "_tile_" + to_string(id_sprite);
-			sprites->Add(idTile, tile_Width * j, tile_Height * i, tile_Width * (j + 1), tile_Height * (i + 1), texTileMap);
+			sprites->Add(idTile, tile_Width * j, tile_Height * i, tile_Width * (j + 1), tile_Height * (i + 1), texTileMap); // ???
 			id_sprite = id_sprite + 1;
 		}
 	}

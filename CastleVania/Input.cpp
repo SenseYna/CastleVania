@@ -12,22 +12,32 @@ Input::~Input()
 {
 }
 
-bool Input::CanProcessKeyboard()
+bool Input::AnimationDelay()
 {
-	if (scene->IsMovingCamera() == true)
-		return false;
+	if (isNeedToWaitingAnimation == true)
+	{
+		if (simon->GetState() == HIT_STAND && simon->animations[HIT_STAND]->IsOver(HIT_ANI_TIME_DELAY) == false)
+			return true;
 
-	
+		if (simon->GetState() == HIT_SIT && simon->animations[HIT_SIT]->IsOver(HIT_ANI_TIME_DELAY) == false)
+			return true;
 
-	return true;
+
+
+	}
+	else
+	{
+		// Đặt lại biến chờ render animation
+		isNeedToWaitingAnimation = true;
+
+	}
+
+	return false;
 }
 
 void Input::KeyState(BYTE *state)
 {
 	simon = scene->GetSimon();
-
-	if (CanProcessKeyboard() == false)
-		return;
 
 	// nếu simon đang nhảy và chưa chạm đất
 	if ((simon->GetState() == JUMP || simon->GetState() == STAND)
@@ -66,6 +76,9 @@ void Input::OnKeyDown(int KeyCode)
 
 	switch (KeyCode)
 	{
+	case DIK_A:
+		Simon_Whip();
+		break;
 	
 	case DIK_SPACE:
 		Simon_Jump();
@@ -99,6 +112,21 @@ void Input::Simon_Jump()
 		return;
 
 	simon->SetState(JUMP);
+}
+
+void Input::Simon_Whip()
+{
+	if (simon->isWhip() == true)
+		return;
+
+	if (simon->GetState() == STAND || simon->GetState() == JUMP)
+	{
+		simon->SetState(HIT_STAND);
+	}
+	else if (simon->GetState() == SIT)
+	{
+		simon->SetState(HIT_SIT);
+	}
 }
 
 

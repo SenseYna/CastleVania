@@ -70,8 +70,6 @@ public:
 
 	void SetCameraPosition(float x, float y);
 	 
-
-
 	~Game();
 };
 

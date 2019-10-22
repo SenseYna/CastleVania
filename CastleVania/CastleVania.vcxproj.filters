@@ -69,6 +69,12 @@
     <ClCompile Include="Scenes.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Candle.cpp">
+      <Filter>Static Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Whip.cpp">
+      <Filter>Simon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -94,9 +100,6 @@
     </ClInclude>
     <ClInclude Include="Grid.h">
       <Filter>Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>Game Framework</Filter>
     </ClInclude>
     <ClInclude Include="Library\Include\audiodefs.h">
       <Filter>Resource\Library\Inc</Filter>
@@ -331,6 +334,12 @@
     </ClInclude>
     <ClInclude Include="Scenes.h">
       <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Candle.h">
+      <Filter>Static Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Whip.h">
+      <Filter>Simon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

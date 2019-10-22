@@ -13,11 +13,8 @@ Simon::Simon() : GameObject()
 	AddAnimation("simon_walk_ani");
 	AddAnimation("simon_sit_ani");
 	AddAnimation("simon_jump_ani");
-
-	AddAnimation("simon_stand_invisible_ani");
-	AddAnimation("simon_walk_invisible_ani");
-	AddAnimation("simon_sit_invisible_ani");
-	AddAnimation("simon_jump_invisible_ani");
+	AddAnimation("simon_hitsit_ani");
+	AddAnimation("simon_hitstand_ani");
 
 
 
@@ -27,19 +24,12 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 {
 	GameObject::Update(dt);
 
-	if (vy > -SIMON_SPEED_Y_LOWER_ZONE && vy < SIMON_SPEED_Y_LOWER_ZONE)
+	if (vy > -SIMON_SPEED_Y_LOWER_ZONE && vy < SIMON_SPEED_Y_LOWER_ZONE) // trọng lực khi nhảy
 		vy += SIMON_GRAVITY_LOWER*dt;
 	else
 		vy += SIMON_GRAVITY*dt;
 
-	// Reset untouchable timer if untouchable time has passed
-	if (untouchableTimer->IsTimeUp() == true)
-		untouchableTimer->Stop();
-
-	// Reset invisibility timer if invisibility time has passed
-	if (invisibilityTimer->IsTimeUp() == true)
-		invisibilityTimer->Stop();
-
+	
 	if (coObjects == NULL)
 	{
 		x += dx;
@@ -47,7 +37,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 		return;
 	}
 
-	// Check collision between Simon and other objects
+
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -105,18 +95,11 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 
 void Simon::Render()
 {
-	//int tempState = state;	// Sử dụng biến tạm để không thay đổi trạng thái gốc của Simon
-	
 	int alpha = 255;
 	float ratio = 0;
-
-	
-		
-	
-	
-
 	animations[state]->Render(1, nx, x, y, alpha);
 	animations[state]->SetFrame(animations[state]->GetCurrentFrame());
+	
 }
 
 void Simon::SetState(int state)
@@ -127,7 +110,6 @@ void Simon::SetState(int state)
 	switch (state)
 	{
 	case STAND:
-		
 		vx = 0;
 		break;
 
@@ -141,11 +123,21 @@ void Simon::SetState(int state)
 		vy = -SIMON_JUMP_SPEED_Y;
 		animations[state]->SetAniStartTime(GetTickCount());
 		break;
+
 	case SIT:
 		vx = 0;
 		vy = 0;
 		break;
 
+	case HIT_SIT:
+		animations[state]->Reset();
+		animations[state]->SetAniStartTime(GetTickCount());
+		break;
+
+	case HIT_STAND:
+		animations[state]->Reset();
+		animations[state]->SetAniStartTime(GetTickCount());
+		break;
 
 	default:
 		break;
@@ -160,6 +152,11 @@ void Simon::GetBoundingBox(float & left, float & top, float & right, float & bot
 	right = left + SIMON_BBOX_WIDTH;
 	bottom = top + SIMON_BBOX_HEIGHT;
 
+}
+
+bool Simon::isWhip()
+{
+	return state == HIT_SIT || state == HIT_STAND;
 }
 
 

@@ -85,10 +85,10 @@ void LoadResources()
 
 	// Game object
 	LoadSprites(ID_TEX_SIMON, L"Textures\\Simon.png", L"Textures\\Simon_sprites.txt", L"Textures\\Simon_animations.txt");
-
 	LoadSprites(ID_TEX_GROUND, L"Textures\\Ground.png", L"Textures\\Ground_sprites.txt", L"Textures\\Ground_animations.txt");
-
-
+	LoadSprites(ID_TEX_CANDLE, L"Textures\\Candle.png", L"Textures\\Candle_sprites.txt", L"Textures\\Candle_animations.txt");
+	LoadSprites(ID_TEX_WHIP, L"Textures\\Whip.png", L"Textures\\Whip_sprites.txt", L"Textures\\Whip_animations.txt");
+	LoadSprites(ID_TEX_SPARK, L"Textures\\Spark.png", L"Textures\\Spark_sprites.txt", L"Textures\\Spark_animations.txt");
 
 	tilemaps->Add(SCENE_1, L"Scenes\\Scene1.png", L"Scenes\\Scene1_map.txt", 1536, 320);
 
