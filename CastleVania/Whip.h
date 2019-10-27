@@ -26,11 +26,9 @@ public:
 
 	void PowerUp();
 
-	
+
 	int GetTargetTypeHit() { return targetTypeHit; }
 
-	
+
 	void SetTargetTypeHit(int x) { targetTypeHit = x; }
 };
-
-

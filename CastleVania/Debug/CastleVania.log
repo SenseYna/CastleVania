@@ -1,2 +1,5 @@
-﻿  Simon.cpp
+﻿  Scenes.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+c:\users\thien\desktop\castlevania\castlevania\define.h(17): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
   Castlevania.vcxproj -> C:\Users\thien\Desktop\CastleVania\Debug\Castlevania.exe

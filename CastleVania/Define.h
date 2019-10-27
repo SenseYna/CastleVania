@@ -12,6 +12,7 @@
 #define DEFAULT_CELL_HEIGHT		240
 #define MAX_FRAME_RATE			150
 
+
 // Input
 #define DIRECTINPUT_VERSION		0x0800
 #define KEYBOARD_BUFFER_SIZE	1024
@@ -23,6 +24,8 @@
 #define ID_TEX_CANDLE				2
 #define ID_TEX_WHIP					3
 #define ID_TEX_SPARK				4
+#define ID_TEX_EFFECT				5
+#define ID_TEX_SUBWEAPONS			3
 
 // Font
 #define FILEPATH_FONT					L"Font\\prstart.ttf"
@@ -44,8 +47,9 @@
 #define WALK			1
 #define SIT				2
 #define JUMP			3
-#define HIT_SIT			4
-#define HIT_STAND		5
+#define HIT_STAND		4
+#define HIT_SIT			5
+
 
 
 // Simon
@@ -72,14 +76,30 @@
 #define WHIP_BBOX_WIDTH				55
 #define WHIP_BBOX_HEIGHT			15
 
+// Weapons
+#define WEAPONS_DAGGER		0
+#define WEAPONS_BOOMERANG	1
+
+
+// Weapons BOXX
+#define WEAPONS_DAGGER_BBOX_WIDTH		34
+#define WEAPONS_DAGGER_BBOX_HEIGHT		18
+
+#define WEAPONS_BOOMERANG_BBOX_WIDTH	28
+#define WEAPONS_BOOMERANG_BBOX_HEIGHT	28
+
+// Weapons Speed
+#define WEAPONS_DAGGER_SPEED		0.3f
+
+#define WEAPONS_BOOMERANG_SPEED		0.5f
+#define WEAPONS_BOOMERANG_TURNBACK_SPEED	0.01f
+
 // Ground
 #define	GROUND				1
 
 // Ground BBOX
 #define GROUND_BBOX_WIDTH			32
 #define GROUND_BBOX_HEIGHT			32
-
-
 
 // Candle
 #define	CANDLE				0

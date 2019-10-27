@@ -14,30 +14,30 @@ Input::~Input()
 
 bool Input::AnimationDelay()
 {
-	if (isNeedToWaitingAnimation == true)
-	{
-		if (simon->GetState() == HIT_STAND && simon->animations[HIT_STAND]->IsOver(HIT_ANI_TIME_DELAY) == false)
-			return true;
+	if (simon->GetState() == HIT_STAND && simon->animations[HIT_STAND]->IsOver(HIT_ANI_TIME_DELAY) == false)
+		return true;
 
-		if (simon->GetState() == HIT_SIT && simon->animations[HIT_SIT]->IsOver(HIT_ANI_TIME_DELAY) == false)
-			return true;
-
-
-
-	}
-	else
-	{
-		// Đặt lại biến chờ render animation
-		isNeedToWaitingAnimation = true;
-
-	}
-
+	if (simon->GetState() == HIT_SIT && simon->animations[HIT_SIT]->IsOver(HIT_ANI_TIME_DELAY) == false)
+		return true;
+	
 	return false;
 }
+
+bool Input::CanProcessKeyboard()
+{
+	if (AnimationDelay() == true)
+		return false;
+
+	return true;
+}
+
 
 void Input::KeyState(BYTE *state)
 {
 	simon = scene->GetSimon();
+
+	if (CanProcessKeyboard() == false)
+		return;
 
 	// nếu simon đang nhảy và chưa chạm đất
 	if ((simon->GetState() == JUMP || simon->GetState() == STAND)
@@ -48,7 +48,6 @@ void Input::KeyState(BYTE *state)
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
 		Simon_Walk_Right();
-		
 	}
 	else if (game->IsKeyDown(DIK_LEFT))
 	{
@@ -68,6 +67,7 @@ void Input::KeyState(BYTE *state)
 	{
 		simon->SetState(STAND);
 	}
+	
 }
 
 void Input::OnKeyDown(int KeyCode)
@@ -78,6 +78,10 @@ void Input::OnKeyDown(int KeyCode)
 	{
 	case DIK_A:
 		Simon_Whip();
+		break;
+
+	case DIK_S:
+		Simon_Whip_Weapons();
 		break;
 	
 	case DIK_SPACE:
@@ -129,6 +133,47 @@ void Input::Simon_Whip()
 	}
 }
 
+void Input::Simon_Whip_Weapons()
+{
+	vector<Weapons*> * weaponlist = scene->GetWeaponList();
+	Weapons * weapon;
+
+	if (simon->GetCurrentWeapons() == -1) // không có vũ khí hoặc enery = 0
+		return;
+	if (weaponlist->at(0)->IsEnable() == false)
+		weapon = weaponlist->at(0);
+	else if (weaponlist->at(1)->IsEnable() == false)// && (scene->doubleShotTimer->IsTimeUp() == false || scene->tripleShotTimer->IsTimeUp() == false))
+		weapon = weaponlist->at(1);
+	else if (weaponlist->at(2)->IsEnable() == false)//  && scene->tripleShotTimer->IsTimeUp() == false)
+		weapon = weaponlist->at(2);
+	else return;
+
+	if (simon->GetState() == STAND || simon->GetState() == JUMP ||
+		simon->GetState() == SIT)
+	{
+		float sx, sy;
+
+		// position
+		simon->GetPosition(sx, sy);
+
+		if (simon->GetState() == SIT) sy += 25.0f; // khớp vị trí tay
+		else sy += 10.0f;
+		if (simon->GetOrientation() < 0) sx += 30.0f;
+
+		weapon->SetPosition(sx, sy);
+
+		// orientation
+		weapon->SetOrientation(simon->GetOrientation());
+	
+		// state enable
+		weapon->SetEnable(true);
+		weapon->SetState(simon->GetCurrentWeapons());
+
+		simon->isHitWeapons = true;
+		Simon_Whip();
+
+	}
+}
 
 
 

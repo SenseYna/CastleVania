@@ -8,13 +8,16 @@
 Simon::Simon() : GameObject()
 {
 	SetState(STAND);
+	currentWeapon = 0;
+	energy = 100;
 
 	AddAnimation("simon_stand_ani");
 	AddAnimation("simon_walk_ani");
 	AddAnimation("simon_sit_ani");
 	AddAnimation("simon_jump_ani");
-	AddAnimation("simon_hitsit_ani");
 	AddAnimation("simon_hitstand_ani");
+	AddAnimation("simon_hitsit_ani");
+	
 
 
 
@@ -95,10 +98,13 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 
 void Simon::Render()
 {
+	int tempState = state;
 	int alpha = 255;
 	float ratio = 0;
-	animations[state]->Render(1, nx, x, y, alpha);
-	animations[state]->SetFrame(animations[state]->GetCurrentFrame());
+	if (state == 4) 
+			alpha = 255;
+	animations[tempState]->Render(1, nx, x, y, alpha);
+	animations[state]->SetFrame(animations[tempState]->GetCurrentFrame());
 	
 }
 
@@ -129,12 +135,12 @@ void Simon::SetState(int state)
 		vy = 0;
 		break;
 
-	case HIT_SIT:
+	case HIT_STAND:
 		animations[state]->Reset();
 		animations[state]->SetAniStartTime(GetTickCount());
 		break;
 
-	case HIT_STAND:
+	case HIT_SIT:
 		animations[state]->Reset();
 		animations[state]->SetAniStartTime(GetTickCount());
 		break;

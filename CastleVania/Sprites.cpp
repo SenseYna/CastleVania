@@ -71,6 +71,11 @@ void Animation::Render(int accordingCam, int nx, float x, float y, int alpha)
 			}
 		}
 	}
+	
+	if (currentFrame == 1)
+		currentFrame = 1;
+	if (currentFrame == 2)
+		currentFrame = 2;
 
 	frames[currentFrame]->GetSprite()->Draw(accordingCam, nx, x, y, alpha);
 }

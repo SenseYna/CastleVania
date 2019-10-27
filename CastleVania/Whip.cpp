@@ -7,7 +7,6 @@ Whip::Whip() : GameObject()
 	AddAnimation("normalwhip_ani");
 	AddAnimation("shortchain_ani");
 	AddAnimation("longchain_ani");
-
 	SetState(LONG_CHAIN);
 }
 
@@ -32,7 +31,6 @@ void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 				sparkCoord.push_back({ left, top });
 			}
 		}
-
 	}
 }
 
@@ -109,5 +107,3 @@ void Whip::PowerUp()
 	if (state == NORMAL_WHIP) SetState(SHORT_CHAIN);
 	else if (state == SHORT_CHAIN) SetState(LONG_CHAIN);
 }
-
-

@@ -9,7 +9,12 @@ Scenes::Scenes(Game * game)
 	simon = new Simon();
 	whip = new Whip();
 
-	
+	for (int i = 1; i <= 3; i++)
+	{
+		weapons = new Weapons();
+		weapons->SetEnable(false);
+		weaponlist.push_back(weapons);
+	}
 }
 
 Scenes::~Scenes()
@@ -47,23 +52,23 @@ void Scenes::LoadObjectsFromFile(LPCWSTR FilePath)
 
 		switch (ID_Obj)
 		{
-			case GROUND:
-			{
-				Ground * ground = new Ground();
-				ground->SetPosition(pos_x, pos_y);
-				ground->SetState(state);
-				ground->SetEnable(true);
-				unit = new Unit(grid, ground, pos_x, pos_y);
-				break;
-			}
-			case CANDLE: 
-			{
-				Candle * candle = new Candle();
-				candle->SetPosition(pos_x, pos_y);
-				candle->SetState(state);
-				candle->SetEnable(true);
-				unit = new Unit(grid, candle, pos_x, pos_y);
-			}
+		case GROUND:
+		{
+			Ground * ground = new Ground();
+			ground->SetPosition(pos_x, pos_y);
+			ground->SetState(state);
+			ground->SetEnable(true);
+			unit = new Unit(grid, ground, pos_x, pos_y);
+			break;
+		}
+		case CANDLE:
+		{
+			Candle * candle = new Candle();
+			candle->SetPosition(pos_x, pos_y);
+			candle->SetState(state);
+			candle->SetEnable(true);
+			unit = new Unit(grid, candle, pos_x, pos_y);
+		}
 		default:
 			break;
 		}
@@ -76,7 +81,7 @@ void Scenes::GetObjectFromGrid()
 {
 	listUnits.clear();
 	listObjects.clear();
-	
+
 	grid->Get(game->GetCameraPositon(), listUnits);
 
 	//DebugOut(L"%d \n", listUnits.size());
@@ -96,9 +101,22 @@ void Scenes::Update(DWORD dt)
 	// Lấy danh sách object từ grid 
 	GetObjectFromGrid();
 
-	
+
 	Simon_Update(dt);
 	Whip_Update(dt);
+
+	for (int i = 0; i < 3; i++)
+		Weapon_Update(dt, i);
+
+
+	for (UINT i = 0; i < listObjects.size(); i++)
+	{
+		LPGAMEOBJECT object = listObjects[i];
+		vector<LPGAMEOBJECT> coObjects;
+
+		GetColliableObjects(object, coObjects);
+		object->Update(dt, &coObjects);
+	}
 
 	// update camera
 	UpdateCameraPosition();
@@ -109,6 +127,9 @@ void Scenes::Update(DWORD dt)
 
 void Scenes::Whip_Update(DWORD dt)
 {
+	if (simon->isHitWeapons) 
+		return;
+
 	// lấy vị trí và phương của simon cho whip
 	float simon_x, simon_y;
 	simon->GetPosition(simon_x, simon_y);
@@ -130,15 +151,27 @@ void Scenes::Whip_Update(DWORD dt)
 
 		whip->Update(dt, &coObjects);
 	}
-	else
-		whip->SetTargetTypeHit(-1);
+
 }
 
+void Scenes::Weapon_Update(DWORD dt, int index)
+{
+	if (weaponlist[index]->IsEnable() == false)
+	{
+		weaponlist[index]->SetTargetTypeHit(-1);
+		return;
+	}
+
+	vector<LPGAMEOBJECT> coObjects;
+	GetColliableObjects(weaponlist[index], coObjects);
+
+	weaponlist[index]->Update(dt, &coObjects);
+}
 
 void Scenes::Render()
 {
 	tilemaps->Get(SCENE_1)->Draw(game->GetCameraPositon());
-		
+
 	for (auto obj : listObjects)
 	{
 		obj->Render();
@@ -146,11 +179,28 @@ void Scenes::Render()
 	}
 
 	simon->Render();
-	//simon->RenderBoundingBox();
-	
+
+	for (int i = 0; i < 3; i++)
+	{
+		weaponlist[i]->Render();
+		//weaponlist[i]->RenderBoundingBox();
+	}
+
+	if (simon->isHitWeapons == false)
+	{
+		if (simon->isWhip() == true)
+			whip->Render(simon->animations[simon->GetState()]->GetCurrentFrame());
+		else
+			whip->Render(-1);
+
+		//whip->RenderBoundingBox();
+	}
+
+	simon->RenderBoundingBox();
+
 	if (simon->isWhip() == true)
 		whip->Render(simon->animations[simon->GetState()]->GetCurrentFrame());
-	
+
 }
 
 void Scenes::UpdateCameraPosition()
@@ -201,36 +251,42 @@ void Scenes::UpdateGrid()
 
 void Scenes::SetGameState()
 {
-		simon->SetState(STAND);
-		simon->SetPosition(0, 302);
-		game->SetCameraPosition(0, 0);
-		tilemaps->Get(SCENE_1)->index = 0;
+	simon->SetState(STAND);
+	simon->SetPosition(0, 302);
+	game->SetCameraPosition(0, 0);
+	tilemaps->Get(SCENE_1)->index = 0;
 }
 
 void Scenes::Simon_Update(DWORD dt)
 {
-	
-
 	vector<LPGAMEOBJECT> coObjects;
 	GetColliableObjects(simon, coObjects);
 
 	simon->Update(dt, &coObjects);
-
-
 }
 
 void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjects)
 {
-	
-		 if (dynamic_cast<Simon*>(Obj))
-		{
-			for (LPGAMEOBJECT obj : listObjects)
-			{
-				if (dynamic_cast<Ground*>(obj))
-					coObjects.push_back(obj);
 
-			}
+	if (dynamic_cast<Simon*>(Obj))
+	{
+		for (LPGAMEOBJECT obj : listObjects)
+		{
+			if (dynamic_cast<Ground*>(obj))
+				coObjects.push_back(obj);
+
 		}
+	}
+	if (dynamic_cast<Whip*>(Obj))
+	{
+		for (LPGAMEOBJECT obj : listObjects)
+		{
+			if (dynamic_cast<Candle*>(obj))
+				coObjects.push_back(obj);
+
+		}
+	}
+
 }
 
 

@@ -161,6 +161,7 @@
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="Weapons.cpp" />
     <ClCompile Include="Whip.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -251,6 +252,7 @@
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="TileMap.h" />
+    <ClInclude Include="Weapons.h" />
     <ClInclude Include="Whip.h" />
   </ItemGroup>
   <ItemGroup>

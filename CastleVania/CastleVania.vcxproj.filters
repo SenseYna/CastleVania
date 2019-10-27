@@ -75,6 +75,9 @@
     <ClCompile Include="Whip.cpp">
       <Filter>Simon</Filter>
     </ClCompile>
+    <ClCompile Include="Weapons.cpp">
+      <Filter>Simon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -339,6 +342,9 @@
       <Filter>Static Objects</Filter>
     </ClInclude>
     <ClInclude Include="Whip.h">
+      <Filter>Simon</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapons.h">
       <Filter>Simon</Filter>
     </ClInclude>
   </ItemGroup>
