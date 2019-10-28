@@ -7,6 +7,7 @@ using namespace std;
 
 class Simon : public GameObject
 {
+	//static Simon * _instance;
 	int currentWeapon; 
 	int energy;
 public:
@@ -22,6 +23,8 @@ public:
 	int GetCurrentWeapons() { return currentWeapon; }
 	void SetCurrentWeapons(int CurrentWeapons) { this->currentWeapon = CurrentWeapons;}
 	int GetEnergy() { return energy; }
+	void LoseEnergy(int x) { energy -= x; }
+	//static Simon* GetInstance();
 	
 };
 

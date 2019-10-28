@@ -78,7 +78,6 @@
 
 // Weapons
 #define WEAPONS_DAGGER		0
-#define WEAPONS_BOOMERANG	1
 
 
 // Weapons BOXX

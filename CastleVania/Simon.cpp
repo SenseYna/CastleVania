@@ -165,6 +165,12 @@ bool Simon::isWhip()
 	return state == HIT_SIT || state == HIT_STAND;
 }
 
+//Simon * Simon::GetInstance()
+//{
+//	if (_instance == NULL) _instance = new Simon();
+//	return _instance;
+//}
+
 
 
 

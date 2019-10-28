@@ -65,6 +65,7 @@ void Input::KeyState(BYTE *state)
 	}
 	else
 	{
+		simon->isHitWeapons = false;
 		simon->SetState(STAND);
 	}
 	
@@ -121,7 +122,7 @@ void Input::Simon_Jump()
 void Input::Simon_Whip()
 {
 	if (simon->isWhip() == true)
-		return;
+		return; 
 
 	if (simon->GetState() == STAND || simon->GetState() == JUMP)
 	{
@@ -138,7 +139,7 @@ void Input::Simon_Whip_Weapons()
 	vector<Weapons*> * weaponlist = scene->GetWeaponList();
 	Weapons * weapon;
 
-	if (simon->GetCurrentWeapons() == -1) // không có vũ khí hoặc enery = 0
+	if (simon->GetCurrentWeapons() == -1 || simon->GetEnergy() == 0) // không có vũ khí hoặc enery = 0
 		return;
 	if (weaponlist->at(0)->IsEnable() == false)
 		weapon = weaponlist->at(0);
@@ -163,12 +164,13 @@ void Input::Simon_Whip_Weapons()
 		weapon->SetPosition(sx, sy);
 
 		// orientation
-		weapon->SetOrientation(simon->GetOrientation());
+		weapon->SetOrientation(simon->GetOrientation()); // HƯỚNG
 	
 		// state enable
 		weapon->SetEnable(true);
 		weapon->SetState(simon->GetCurrentWeapons());
 
+		simon->LoseEnergy(1);
 		simon->isHitWeapons = true;
 		Simon_Whip();
 

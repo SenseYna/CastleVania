@@ -6,14 +6,12 @@
 Weapons::Weapons()
 {
 	AddAnimation("weapon_dagger_ani");
-	AddAnimation("weapon_boomerang_ani");
-
 	state = -1; // no Weapons
 }
 
 void Weapons::UpdateCollisionState()
 {
-	if (state == WEAPONS_DAGGER || state == WEAPONS_BOOMERANG)
+	if (state == WEAPONS_DAGGER)
 		this->isEnable = false;
 	else
 	{
@@ -25,16 +23,6 @@ void Weapons::UpdateCollisionState()
 void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 {
 	GameObject::Update(dt);
-
-	switch (state)
-	{
-	case WEAPONS_BOOMERANG:
-		if (nx > 0) vx -= WEAPONS_BOOMERANG_TURNBACK_SPEED;
-		else vx += WEAPONS_BOOMERANG_TURNBACK_SPEED;
-		break;
-	default:
-		break;
-	}
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -71,11 +59,6 @@ void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 
 				UpdateCollisionState();
 			}
-			else if (dynamic_cast<Simon*>(e->obj))
-			{
-				if (state == WEAPONS_BOOMERANG)
-					this->isEnable = false;
-			}
 		}
 	}
 
@@ -87,8 +70,10 @@ void Weapons::Render()
 {
 	RenderSpark();
 
-	if (this->isEnable == true)
+	if (this->isEnable == true) {
 		animations[state]->Render(1, nx, x, y);
+	//	simon->SetState(STAND);
+	}
 }
 
 void Weapons::RenderSpark()
@@ -121,11 +106,6 @@ void Weapons::SetState(int state)
 		if (nx > 0) vx = WEAPONS_DAGGER_SPEED;
 		else vx = -WEAPONS_DAGGER_SPEED;
 		vy = 0;
-		break;
-	case WEAPONS_BOOMERANG:
-		vx = nx * WEAPONS_BOOMERANG_SPEED;
-		vy = 0;
-		break;
 	default:
 		break;
 	}
@@ -141,10 +121,6 @@ void Weapons::GetBoundingBox(float & left, float & top, float & right, float & b
 	case WEAPONS_DAGGER:
 		right = left + WEAPONS_DAGGER_BBOX_WIDTH;
 		bottom = top + WEAPONS_DAGGER_BBOX_HEIGHT;
-		break;
-	case WEAPONS_BOOMERANG:
-		right = left + WEAPONS_BOOMERANG_BBOX_WIDTH;
-		bottom = top + WEAPONS_BOOMERANG_BBOX_HEIGHT;
 		break;
 	default:
 		right = left;

@@ -33,6 +33,7 @@ class Scenes
 	Textures * textures = Textures::GetInstance();
 	Sprites * sprites = Sprites::GetInstance();
 	Animations * animations = Animations::GetInstance();
+	//Simon * simon = Simon::GetInstance();
 	vector<Weapons*> weaponlist;
 
 
@@ -56,7 +57,10 @@ public:
 	void Weapon_Update(DWORD dt, int index);
 
 	void GetColliableObjects(LPGAMEOBJECT curObj, vector<LPGAMEOBJECT>&coObjects);
-	void UpdateCameraPosition();				
+	void UpdateCameraPosition();		
+
+	bool IsInViewport(LPGAMEOBJECT object);
+	void SetInactivationByPosition();			// Nếu object ra khỏi vùng viewport thì set unable / inactive
 	void UpdateGrid();
 
 	void Render();

@@ -118,6 +118,9 @@ void Scenes::Update(DWORD dt)
 		object->Update(dt, &coObjects);
 	}
 
+	// Xoá các object đi ra khỏi vùng viewport
+	SetInactivationByPosition();
+
 	// update camera
 	UpdateCameraPosition();
 
@@ -143,7 +146,8 @@ void Scenes::Whip_Update(DWORD dt)
 
 	// chỉ xét va chạm khi render tới sprite cuối cùng của simon (vung tay tới)
 	if (simon->isWhip() &&
-		simon->animations[simon->GetState()]->IsRenderingLastFrame() == true)
+		simon->animations[simon->GetState()]->IsRenderingLastFrame() == true &&
+		simon->isHitWeapons == false)
 	{
 		vector<LPGAMEOBJECT> coObjects;
 
@@ -156,11 +160,11 @@ void Scenes::Whip_Update(DWORD dt)
 
 void Scenes::Weapon_Update(DWORD dt, int index)
 {
-	if (weaponlist[index]->IsEnable() == false)
+	/*if (weaponlist[index]->IsEnable() == false)
 	{
 		weaponlist[index]->SetTargetTypeHit(-1);
 		return;
-	}
+	}*/
 
 	vector<LPGAMEOBJECT> coObjects;
 	GetColliableObjects(weaponlist[index], coObjects);
@@ -192,16 +196,34 @@ void Scenes::Render()
 			whip->Render(simon->animations[simon->GetState()]->GetCurrentFrame());
 		else
 			whip->Render(-1);
-
-		//whip->RenderBoundingBox();
 	}
 
-	simon->RenderBoundingBox();
-
-	if (simon->isWhip() == true)
-		whip->Render(simon->animations[simon->GetState()]->GetCurrentFrame());
-
+	//whip->RenderBoundingBox();
 }
+
+bool Scenes::IsInViewport(LPGAMEOBJECT object)
+{
+		D3DXVECTOR2 camPosition = game->GetCameraPositon();
+
+		float obj_x, obj_y;
+		object->GetPosition(obj_x, obj_y);
+
+		return obj_x >= camPosition.x && obj_x < camPosition.x + SCREEN_WIDTH
+			&& obj_y >= camPosition.y && obj_y < camPosition.y + SCREEN_HEIGHT;
+}
+
+void Scenes::SetInactivationByPosition()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if (weaponlist[i]->IsEnable() == true)
+		{
+			if (IsInViewport(weaponlist[i]) == false)
+				weaponlist[i]->SetEnable(false);
+		}
+	}
+}
+
 
 void Scenes::UpdateCameraPosition()
 {
@@ -278,6 +300,15 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 		}
 	}
 	if (dynamic_cast<Whip*>(Obj))
+	{
+		for (LPGAMEOBJECT obj : listObjects)
+		{
+			if (dynamic_cast<Candle*>(obj))
+				coObjects.push_back(obj);
+
+		}
+	}
+	if (dynamic_cast<Weapons*>(Obj))
 	{
 		for (LPGAMEOBJECT obj : listObjects)
 		{

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "GameObject.h"
+#include "Simon.h"
 
 class Weapons : public GameObject
 {
@@ -11,6 +12,7 @@ class Weapons : public GameObject
 	int holyWaterShatteredCounter = 0;
 
 	vector<vector<float>> sparkCoord; // vector lưu toạ độ để render spark khi Weapons trúng mục tiêu
+	//Simon * simon = Simon::GetInstance();
 	Animation * spark = Animations::GetInstance()->Get("spark_ani");
 	int startTimeRenderSpark = 0;
 
