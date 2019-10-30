@@ -11,13 +11,7 @@ Weapons::Weapons()
 
 void Weapons::UpdateCollisionState()
 {
-	if (state == WEAPONS_DAGGER)
-		this->isEnable = false;
-	else
-	{
-		x += dx;
-		y += dy;
-	}
+	this->isEnable = false;
 }
 
 void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
@@ -30,8 +24,6 @@ void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 	coEvents.clear();
 
 	CalcPotentialCollisions(coObject, coEvents);
-
-	static int  c = 0;
 
 	if (coEvents.size() == 0)
 	{
@@ -53,10 +45,7 @@ void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 			{
 				Candle * candle = dynamic_cast<Candle*>(e->obj);
 				candle->SetState(CANDLE_DESTROYED);
-
-				targetTypeHit = CANDLE;
 				GetCoordinateObject(e->obj);
-
 				UpdateCollisionState();
 			}
 		}
@@ -96,10 +85,6 @@ void Weapons::RenderSpark()
 void Weapons::SetState(int state)
 {
 	GameObject::SetState(state);
-
-	scoreReceived = 0;
-	targetTypeHit = -1;
-
 	switch (state)
 	{
 	case WEAPONS_DAGGER:
@@ -133,7 +118,6 @@ void Weapons::GetCoordinateObject(LPGAMEOBJECT obj)
 {
 	float l, t, r, b;
 	obj->GetBoundingBox(l, t, r, b);
-
 	sparkCoord.push_back({ l, t });
 }
 

@@ -25,7 +25,12 @@
 #define ID_TEX_WHIP					3
 #define ID_TEX_SPARK				4
 #define ID_TEX_EFFECT				5
-#define ID_TEX_SUBWEAPONS			3
+#define ID_TEX_SUBWEAPONS			6
+#define ID_TEX_ITEMS				7
+
+// ID Object
+#define	CANDLE				0
+#define	GROUND				1
 
 // Font
 #define FILEPATH_FONT					L"Font\\prstart.ttf"
@@ -49,12 +54,10 @@
 #define JUMP			3
 #define HIT_STAND		4
 #define HIT_SIT			5
-
+#define POWER			6
 
 
 // Simon
-#define SIMON_UNTOUCHABLE_TIME		2000
-#define SIMON_INVISIBILITY_TIME		4000
 #define SIMON_WALKING_SPEED			0.13f
 #define SIMON_WALKING_SPEED_LOWER	0.05f
 #define SIMON_JUMP_SPEED_Y			0.5f
@@ -93,18 +96,14 @@
 #define WEAPONS_BOOMERANG_SPEED		0.5f
 #define WEAPONS_BOOMERANG_TURNBACK_SPEED	0.01f
 
-// Ground
-#define	GROUND				1
 
 // Ground BBOX
 #define GROUND_BBOX_WIDTH			32
 #define GROUND_BBOX_HEIGHT			32
 
 // Candle
-#define	CANDLE				0
 #define BIG_CANDLE		0
-#define SMALL_CANDLE	1
-#define CANDLE_DESTROYED	2
+#define CANDLE_DESTROYED	1
 
 // Candle BBOX
 #define CANDLE_BBOX_WIDTH			32
@@ -118,5 +117,18 @@
 #define SPARK_ANI_TIME_DELAY		100
 #define HIT_ANI_TIME_DELAY			300
 #define DEFLECT_ANI_TIME_DELAY		600
+#define POWER_ANI_TIME_DELAY		450
 
 
+// Item
+#define ITEM_FALLING_SPEED_X			0.15f
+#define ITEM_FALLING_SPEED_X_VARIATION	0.01f
+#define ITEM_FALLING_SPEED_Y			0.15f
+#define ITEM_SMALLHEART_FALLING_SPEED_Y	0.1f
+#define ITEM_TIME_DESTROYED				4000
+
+// Items
+#define DAGGER			0
+#define SMALL_HEART		1
+#define LARGE_HEART		2
+#define CHAIN			3

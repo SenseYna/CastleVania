@@ -11,3 +11,6 @@ simon_hitstand_3	420	0	480	64
 simon_hitsit_1	420	66	480	130
 simon_hitsit_2	0	132	60	196
 simon_hitsit_3	60	132	120	196
+simon_powerup_1	120	198	180	262
+simon_powerup_2	60	198	120	262
+simon_powerup_3	0	198	60	262

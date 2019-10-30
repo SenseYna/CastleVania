@@ -7,10 +7,10 @@ Whip::Whip() : GameObject()
 	AddAnimation("normalwhip_ani");
 	AddAnimation("shortchain_ani");
 	AddAnimation("longchain_ani");
-	SetState(LONG_CHAIN);
+	SetState(NORMAL_WHIP);
 }
 
-void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
+void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
@@ -27,7 +27,6 @@ void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 			if (CheckCollision(left, top, right, bottom) == true) // va chạm giữa roi và nến
 			{
 				e->SetState(CANDLE_DESTROYED);
-				targetTypeHit = CANDLE;
 				sparkCoord.push_back({ left, top });
 			}
 		}

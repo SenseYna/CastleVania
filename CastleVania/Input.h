@@ -1,10 +1,8 @@
 #pragma once
 
 #include "Game.h"
-#include "Simon.h"
 #include "Scenes.h"
-#include "Whip.h"
-#include "Weapons.h"
+
 
 class Input : public KeyEventHandler
 {
@@ -16,15 +14,16 @@ public:
 	Input(Game * game, Scenes * scene);
 	~Input();
 	
+	//function
 	bool AnimationDelay();
 	bool CanProcessKeyboard();
 
+	//Key State
 	virtual void KeyState(BYTE *state);
 	virtual void OnKeyDown(int KeyCode);
 	virtual void OnKeyUp(int KeyCode);
 
-	///////
-
+	// Simon Action 
 	void Simon_Walk_Left();
 	void Simon_Walk_Right();
 	void Simon_Jump();

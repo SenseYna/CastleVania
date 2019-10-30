@@ -3,14 +3,15 @@
 #include "Game.h"
 #include "Grid.h"
 #include "GameObject.h"
-
 #include "TileMap.h"
 #include "Ground.h"
 #include "Candle.h"
 #include "Whip.h"
 #include "Weapons.h"
 #include "Simon.h"
-//#include <map>
+#include "Items.h"
+#include "Timer.h"
+#include <map>
 
 using namespace std;
 
@@ -23,6 +24,7 @@ class Scenes
 	Unit * unit;
 
 	vector<LPGAMEOBJECT> listObjects;
+	vector<LPGAMEOBJECT> listItems;
 	vector<Unit*> listUnits;
 
 	Simon * simon;
@@ -33,47 +35,39 @@ class Scenes
 	Textures * textures = Textures::GetInstance();
 	Sprites * sprites = Sprites::GetInstance();
 	Animations * animations = Animations::GetInstance();
-	//Simon * simon = Simon::GetInstance();
+
 	vector<Weapons*> weaponlist;
 
-
-	int countDxCamera = 0;
-
 public:
-
-
 	Scenes(Game * game);
 	~Scenes();
 	
 	void Init();						// init simon position, camera position, grid..
 	void LoadObjectsFromFile(LPCWSTR FilePath);	// load all objects (position, state, isEnable) from file 
-
-	void GetObjectFromGrid();
-	void Simon_Update(DWORD dt);
 	
-	void Update(DWORD dt);						
-				
+	// Update
+	void Update(DWORD dt);	
+	void Simon_Update(DWORD dt);
 	void Whip_Update(DWORD dt);
 	void Weapon_Update(DWORD dt, int index);
-
-	void GetColliableObjects(LPGAMEOBJECT curObj, vector<LPGAMEOBJECT>&coObjects);
-	void UpdateCameraPosition();		
-
-	bool IsInViewport(LPGAMEOBJECT object);
-	void SetInactivationByPosition();			// Nếu object ra khỏi vùng viewport thì set unable / inactive
+	void UpdateCameraPosition();
 	void UpdateGrid();
 
+	// Render
 	void Render();
+	 
+	// Bool
+	bool IsInViewport(LPGAMEOBJECT object);
 
-	
-	//bool IsInViewport(LPGAMEOBJECT object);
+	// Set
+	void SetInactivationByPosition();			// Nếu object ra khỏi vùng viewport thì set unable / inactive
+	void SetDropItems();	// Xét rơi item cho các object bị huỷ	
+	void SetGameState();	// Set vị trí của simon, camera
 
-	void SetGameState();	// Set vị trí của simon, camera theo id state
-
-	// Get, Set
-	
+	// Get
 	Simon * GetSimon() { return this->simon; }
 	vector<Weapons*> * GetWeaponList() { return &weaponlist; }
-
+	void GetObjectFromGrid();
+	void GetColliableObjects(LPGAMEOBJECT curObj, vector<LPGAMEOBJECT>&coObjects);
 };
 

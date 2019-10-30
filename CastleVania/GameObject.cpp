@@ -224,9 +224,6 @@ void GameObject::AddAnimation(string aniID)
 void GameObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 {
 	this->dt = dt;
-	/*x += vx * dt;
-	y += vy * dt;*/
-
 	dx = vx*dt;
 	dy = vy*dt;
 }

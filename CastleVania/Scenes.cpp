@@ -21,7 +21,6 @@ Scenes::~Scenes()
 {
 }
 
-//480
 void Scenes::Init()
 {
 	grid = new Grid(1536, 480); // 48 15
@@ -52,25 +51,27 @@ void Scenes::LoadObjectsFromFile(LPCWSTR FilePath)
 
 		switch (ID_Obj)
 		{
-		case GROUND:
-		{
-			Ground * ground = new Ground();
-			ground->SetPosition(pos_x, pos_y);
-			ground->SetState(state);
-			ground->SetEnable(true);
-			unit = new Unit(grid, ground, pos_x, pos_y);
-			break;
-		}
-		case CANDLE:
-		{
-			Candle * candle = new Candle();
-			candle->SetPosition(pos_x, pos_y);
-			candle->SetState(state);
-			candle->SetEnable(true);
-			unit = new Unit(grid, candle, pos_x, pos_y);
-		}
-		default:
-			break;
+			case GROUND:
+			{
+				Ground * ground = new Ground();
+				ground->SetPosition(pos_x, pos_y);
+				ground->SetState(state);
+				ground->SetEnable(true);
+				unit = new Unit(grid, ground, pos_x, pos_y);
+				break;
+			}
+			case CANDLE:
+			{
+				Candle * candle = new Candle();
+				candle->SetPosition(pos_x, pos_y);
+				candle->SetState(state);
+				candle->SetEnable(true);
+				candle->SetIDItem(idItem);
+				unit = new Unit(grid, candle, pos_x, pos_y);
+				break;
+			}
+			default:
+				break;
 		}
 	}
 
@@ -94,13 +95,13 @@ void Scenes::GetObjectFromGrid()
 	}
 }
 
-
-
 void Scenes::Update(DWORD dt)
 {
 	// Lấy danh sách object từ grid 
 	GetObjectFromGrid();
 
+	// Drop item
+	SetDropItems();
 
 	Simon_Update(dt);
 	Whip_Update(dt);
@@ -129,9 +130,15 @@ void Scenes::Update(DWORD dt)
 }
 
 void Scenes::Whip_Update(DWORD dt)
-{
+{	
 	if (simon->isHitWeapons) 
 		return;
+
+	if (simon->isGotChainItem == true) // update trạng thái của whip
+	{
+		simon->isGotChainItem = false;
+		whip->PowerUp();
+	}
 
 	// lấy vị trí và phương của simon cho whip
 	float simon_x, simon_y;
@@ -141,13 +148,11 @@ void Scenes::Whip_Update(DWORD dt)
 	if (simon->GetState() == SIT || simon->GetState() == HIT_SIT)
 		isSimonStand = false;
 
-	whip->SetOrientation(simon->GetOrientation());
+	whip->SetOrientation(simon->GetOrientation()); // Lấy hướng
 	whip->SetWhipPosition(D3DXVECTOR3(simon_x, simon_y, 0), isSimonStand);
 
 	// chỉ xét va chạm khi render tới sprite cuối cùng của simon (vung tay tới)
-	if (simon->isWhip() &&
-		simon->animations[simon->GetState()]->IsRenderingLastFrame() == true &&
-		simon->isHitWeapons == false)
+	if (simon->isWhip() && simon->animations[simon->GetState()]->IsRenderingLastFrame() == true)
 	{
 		vector<LPGAMEOBJECT> coObjects;
 
@@ -160,11 +165,10 @@ void Scenes::Whip_Update(DWORD dt)
 
 void Scenes::Weapon_Update(DWORD dt, int index)
 {
-	/*if (weaponlist[index]->IsEnable() == false)
+	if (weaponlist[index]->IsEnable() == false)
 	{
-		weaponlist[index]->SetTargetTypeHit(-1);
 		return;
-	}*/
+	}
 
 	vector<LPGAMEOBJECT> coObjects;
 	GetColliableObjects(weaponlist[index], coObjects);
@@ -201,6 +205,38 @@ void Scenes::Render()
 	//whip->RenderBoundingBox();
 }
 
+void Scenes::SetDropItems()
+{
+	for (UINT i = 0; i < listObjects.size(); i++)
+	{
+		LPGAMEOBJECT object = listObjects[i];
+		int idItem = -1;
+		float x, y;
+
+		if (object->IsDroppedItem() == true)
+			continue;
+
+		if (dynamic_cast<Candle*>(object) && object->GetState() == CANDLE_DESTROYED)
+		{
+			idItem = object->idItem;
+			object->GetPosition(x, y);
+			object->SetIsDroppedItem(true);
+		}
+		
+		if (idItem != -1)
+		{
+			// Tạo một item theo id
+			auto item = new Items();
+			item->SetEnable(true);
+			item->SetPosition(x, y);
+			item->SetState(idItem);
+
+			listItems.push_back(item);
+			unit = new Unit(grid, item, x, y);
+		}
+	}
+}
+
 bool Scenes::IsInViewport(LPGAMEOBJECT object)
 {
 		D3DXVECTOR2 camPosition = game->GetCameraPositon();
@@ -212,7 +248,7 @@ bool Scenes::IsInViewport(LPGAMEOBJECT object)
 			&& obj_y >= camPosition.y && obj_y < camPosition.y + SCREEN_HEIGHT;
 }
 
-void Scenes::SetInactivationByPosition()
+void Scenes::SetInactivationByPosition()   // Xoá các object đi ra khỏi vùng viewport
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -223,7 +259,6 @@ void Scenes::SetInactivationByPosition()
 		}
 	}
 }
-
 
 void Scenes::UpdateCameraPosition()
 {
@@ -259,18 +294,6 @@ void Scenes::UpdateGrid()
 	//}
 }
 
-//bool Scenes::IsInViewport(LPGAMEOBJECT object)
-//{
-//	/*D3DXVECTOR2 camPosition = game->GetCameraPositon();
-//
-//	float obj_x, obj_y;
-//	object->GetPosition(obj_x, obj_y);
-//
-//	return obj_x >= camPosition.x && obj_x < camPosition.x + SCREEN_WIDTH
-//		&& obj_y >= camPosition.y && obj_y < camPosition.y + SCREEN_HEIGHT; */
-//	return 1;
-//}
-
 void Scenes::SetGameState()
 {
 	simon->SetState(STAND);
@@ -285,12 +308,20 @@ void Scenes::Simon_Update(DWORD dt)
 	GetColliableObjects(simon, coObjects);
 
 	simon->Update(dt, &coObjects);
+	simon->CheckCollisionWithItem(&listItems);
 }
 
 void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjects)
 {
-
-	if (dynamic_cast<Simon*>(Obj))
+	if (dynamic_cast<Items*>(Obj))
+	{
+		for (auto obj : listObjects)
+		{
+			if (dynamic_cast<Ground*>(obj))
+				coObjects.push_back(obj);
+		}
+	}
+	else if (dynamic_cast<Simon*>(Obj))
 	{
 		for (LPGAMEOBJECT obj : listObjects)
 		{
@@ -299,7 +330,7 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 
 		}
 	}
-	if (dynamic_cast<Whip*>(Obj))
+	else if (dynamic_cast<Whip*>(Obj))
 	{
 		for (LPGAMEOBJECT obj : listObjects)
 		{
@@ -308,7 +339,7 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 
 		}
 	}
-	if (dynamic_cast<Weapons*>(Obj))
+	else if (dynamic_cast<Weapons*>(Obj))
 	{
 		for (LPGAMEOBJECT obj : listObjects)
 		{

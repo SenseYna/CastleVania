@@ -17,13 +17,14 @@ Simon::Simon() : GameObject()
 	AddAnimation("simon_jump_ani");
 	AddAnimation("simon_hitstand_ani");
 	AddAnimation("simon_hitsit_ani");
+	AddAnimation("simon_powerup_ani");
 	
-
+	
 
 
 }
 
-void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
+void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	GameObject::Update(dt);
 
@@ -101,8 +102,7 @@ void Simon::Render()
 	int tempState = state;
 	int alpha = 255;
 	float ratio = 0;
-	if (state == 4) 
-			alpha = 255;
+
 	animations[tempState]->Render(1, nx, x, y, alpha);
 	animations[state]->SetFrame(animations[tempState]->GetCurrentFrame());
 	
@@ -145,6 +145,10 @@ void Simon::SetState(int state)
 		animations[state]->SetAniStartTime(GetTickCount());
 		break;
 
+	case POWER:
+		animations[state]->Reset();
+		animations[state]->SetAniStartTime(GetTickCount());
+		break;
 	default:
 		break;
 	}
@@ -165,11 +169,51 @@ bool Simon::isWhip()
 	return state == HIT_SIT || state == HIT_STAND;
 }
 
-//Simon * Simon::GetInstance()
-//{
-//	if (_instance == NULL) _instance = new Simon();
-//	return _instance;
-//}
+bool Simon::CheckCollisionWithItem(vector<LPGAMEOBJECT>* listItem)
+{
+	float simon_l, simon_t, simon_r, simon_b;
+	float item_l, item_t, item_r, item_b;
+
+	GetBoundingBox(simon_l, simon_t, simon_r, simon_b);
+
+	for (UINT i = 0; i < listItem->size(); i++)
+	{
+		if (listItem->at(i)->IsEnable() == false)
+			continue;
+
+		listItem->at(i)->GetBoundingBox(item_l, item_t, item_r, item_b);
+
+		if (GameObject::AABB(simon_l, simon_t, simon_r, simon_b, item_l, item_t, item_r, item_b) == true)
+		{
+			listItem->at(i)->isEnable = false;
+
+			int idItem = listItem->at(i)->GetState();
+
+			switch (idItem)
+			{
+			case DAGGER:
+				haveWeapons = true;
+				break;
+			case SMALL_HEART:
+				energy += 1;
+				break;
+			case LARGE_HEART:
+				energy += 5;
+				break;
+			case CHAIN:
+				SetState(POWER); // đổi trạng thái power - biến hình nhấp nháy các kiểu đà điểu
+				vx = 0;
+				isGotChainItem = true;
+				break;
+			default:
+				break;
+			}
+
+			return true;
+		}
+	}
+}
+
 
 
 

@@ -5,7 +5,6 @@
 Candle::Candle() : GameObject()
 {
 	AddAnimation("bigcandle_ani");
-	AddAnimation("smallcandle_ani");
 	AddAnimation("effect1_ani");
 
 	SetState(BIG_CANDLE);
@@ -29,7 +28,6 @@ void Candle::SetState(int state)
 	switch (state)
 	{
 	case BIG_CANDLE:
-	case SMALL_CANDLE:
 		break;
 	case CANDLE_DESTROYED:
 		animations[state]->SetAniStartTime(GetTickCount());
@@ -50,10 +48,7 @@ void Candle::GetBoundingBox(float & left, float & top, float & right, float & bo
 		right = left + CANDLE_BBOX_WIDTH;
 		bottom = top + CANDLE_BBOX_HEIGHT;
 		break;
-	case SMALL_CANDLE:
-		right = left + SMALL_CANDLE_BBOX_WIDTH;
-		bottom = top + SMALL_CANDLE_BBOX_HEIGHT;
-		break;
+	
 	default:
 		right = left;
 		bottom = top;

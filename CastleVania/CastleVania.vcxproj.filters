@@ -31,6 +31,9 @@
     <Filter Include="Simon">
       <UniqueIdentifier>{e35ab636-8023-44fc-81e2-13295484cedb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Moving Objects">
+      <UniqueIdentifier>{a78e94fa-ceb3-44eb-b45d-08287cc03ca9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ground.cpp">
@@ -77,6 +80,9 @@
     </ClCompile>
     <ClCompile Include="Weapons.cpp">
       <Filter>Simon</Filter>
+    </ClCompile>
+    <ClCompile Include="items.cpp">
+      <Filter>Moving Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -346,6 +352,12 @@
     </ClInclude>
     <ClInclude Include="Weapons.h">
       <Filter>Simon</Filter>
+    </ClInclude>
+    <ClInclude Include="items.h">
+      <Filter>Moving Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Game Framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

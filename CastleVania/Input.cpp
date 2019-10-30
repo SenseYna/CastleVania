@@ -6,6 +6,7 @@ Input::Input(Game * game, Scenes * scene)
 {
 	this->game = game;
 	this->scene = scene;
+	//simon = scene->GetSimon();
 }
 
 Input::~Input()
@@ -14,6 +15,9 @@ Input::~Input()
 
 bool Input::AnimationDelay()
 {
+	if (simon->GetState() == POWER && simon->animations[POWER]->IsOver(POWER_ANI_TIME_DELAY) == false)
+		return true;
+
 	if (simon->GetState() == HIT_STAND && simon->animations[HIT_STAND]->IsOver(HIT_ANI_TIME_DELAY) == false)
 		return true;
 
@@ -30,7 +34,6 @@ bool Input::CanProcessKeyboard()
 
 	return true;
 }
-
 
 void Input::KeyState(BYTE *state)
 {
@@ -73,12 +76,13 @@ void Input::KeyState(BYTE *state)
 
 void Input::OnKeyDown(int KeyCode)
 {
-	
-
 	switch (KeyCode)
 	{
 	case DIK_A:
-		Simon_Whip();
+		if (game->IsKeyDown(DIK_UP))
+			Simon_Whip_Weapons();
+		else
+			Simon_Whip();
 		break;
 
 	case DIK_S:
@@ -136,17 +140,16 @@ void Input::Simon_Whip()
 
 void Input::Simon_Whip_Weapons()
 {
+	if (simon->haveWeapons == false) return; //chưa nhặt weapon thì return
+
 	vector<Weapons*> * weaponlist = scene->GetWeaponList();
 	Weapons * weapon;
 
 	if (simon->GetCurrentWeapons() == -1 || simon->GetEnergy() == 0) // không có vũ khí hoặc enery = 0
 		return;
-	if (weaponlist->at(0)->IsEnable() == false)
+
+	if (weaponlist->at(0)->IsEnable() == false) // weapon đã bắn chưa , rồi thì đợi
 		weapon = weaponlist->at(0);
-	else if (weaponlist->at(1)->IsEnable() == false)// && (scene->doubleShotTimer->IsTimeUp() == false || scene->tripleShotTimer->IsTimeUp() == false))
-		weapon = weaponlist->at(1);
-	else if (weaponlist->at(2)->IsEnable() == false)//  && scene->tripleShotTimer->IsTimeUp() == false)
-		weapon = weaponlist->at(2);
 	else return;
 
 	if (simon->GetState() == STAND || simon->GetState() == JUMP ||
