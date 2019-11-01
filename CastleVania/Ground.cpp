@@ -8,7 +8,7 @@ Ground::Ground() : GameObject()
 
 void Ground::Render()
 {
-	animations[state]->Render(1, -1, x, y);
+	animations[state]->Render(-1, x, y);
 }
 
 void Ground::GetBoundingBox(float & l, float & t, float & r, float & b)

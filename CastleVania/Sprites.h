@@ -21,7 +21,7 @@ class Sprite
 
 public:
 	Sprite(string id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 tex);
-	void Draw(int accordingCam, int nx, float x, float y, int alpha = 255);
+	void Draw(int nx, float x, float y, int alpha = 255);
 };
 
 typedef Sprite * LPSPRITE;
@@ -82,7 +82,7 @@ public:
 	int GetFramesSize() { return frames.size(); }
 	
 	void Add(string spriteID, DWORD time = 0);
-	void Render(int accordingCam, int nx, float x, float y, int alpha = 255);
+	void Render(int nx, float x, float y, int alpha = 255);
 	void RenderByID(int currentID, int nx, float x, float y, int alpha = 255); // hàm dùng riêng để render whip -> giải quyết bài toán đồng bộ whip cử động tay của simon
 };
 

@@ -187,6 +187,7 @@ void Scenes::Render()
 	}
 
 	simon->Render();
+	//simon->RenderBoundingBox();
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -196,13 +197,14 @@ void Scenes::Render()
 
 	if (simon->isHitWeapons == false)
 	{
-		if (simon->isWhip() == true)
+		if (simon->isWhip() == true) {
 			whip->Render(simon->animations[simon->GetState()]->GetCurrentFrame());
+			//whip->RenderBoundingBox();
+		}
 		else
 			whip->Render(-1);
+			//whip->RenderBoundingBox();
 	}
-
-	//whip->RenderBoundingBox();
 }
 
 void Scenes::SetDropItems()
@@ -263,18 +265,11 @@ void Scenes::SetInactivationByPosition()   // Xoá các object đi ra khỏi vù
 void Scenes::UpdateCameraPosition()
 {
 
-	if (simon->x > SCREEN_WIDTH / 2 &&
-		simon->x + SCREEN_WIDTH / 2 < tilemaps->Get(SCENE_1)->GetMapWidth())
+	if (simon->x + SIMON_BBOX_WIDTH > SCREEN_WIDTH / 2 &&
+		simon->x + SIMON_BBOX_WIDTH  + SCREEN_WIDTH / 2 < tilemaps->Get(SCENE_1)->GetMapWidth())
 	{
-
-		/*TileMap * map = tilemaps->Get(SCENE_1);
-		int min_col = map->min_max_col_to_draw[map->index][0];
-		int max_col = map->min_max_col_to_draw[map->index][1];*/
-
-		/*if (simon->x >= min_col * 32 + (SCREEN_WIDTH / 2 - 16) &&
-			simon->x <= max_col * 32 - (SCREEN_WIDTH / 2 - 16))*/
 		{
-			game->SetCameraPosition(simon->x - SCREEN_WIDTH / 2, 0);
+			game->SetCameraPosition(simon->x + SIMON_BBOX_WIDTH - SCREEN_WIDTH / 2, 0);
 		}
 	}
 }
@@ -299,7 +294,6 @@ void Scenes::SetGameState()
 	simon->SetState(STAND);
 	simon->SetPosition(0, 302);
 	game->SetCameraPosition(0, 0);
-	tilemaps->Get(SCENE_1)->index = 0;
 }
 
 void Scenes::Simon_Update(DWORD dt)

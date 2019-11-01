@@ -11,10 +11,10 @@ Sprite::Sprite(string id, int left, int top, int right, int bottom, LPDIRECT3DTE
 	this->texture = tex;
 }
 
-void Sprite::Draw(int accordingCam, int nx, float x, float y, int alpha)
+void Sprite::Draw(int nx, float x, float y, int alpha)
 {
 	Game * game = Game::GetInstance();
-	game->Draw(accordingCam, nx, x, y, texture, left, top, right, bottom, alpha);
+	game->Draw(nx, x, y, texture, left, top, right, bottom, alpha);
 }
  
 
@@ -49,7 +49,7 @@ void Animation::Add(string spriteID, DWORD time)
 	frames.push_back(frame);
 }
 
-void Animation::Render(int accordingCam, int nx, float x, float y, int alpha)
+void Animation::Render(int nx, float x, float y, int alpha)
 {
 	DWORD now = GetTickCount();
 
@@ -71,25 +71,20 @@ void Animation::Render(int accordingCam, int nx, float x, float y, int alpha)
 			}
 		}
 	}
-	
-	if (currentFrame == 1)
-		currentFrame = 1;
-	if (currentFrame == 2)
-		currentFrame = 2;
 
-	frames[currentFrame]->GetSprite()->Draw(accordingCam, nx, x, y, alpha);
+	frames[currentFrame]->GetSprite()->Draw(nx, x, y, alpha);
 }
 
 void Animation::RenderByID(int currentID, int nx, float x, float y, int alpha)
 {
 	if (frames.size() <= 5) // normal whip, short chain
 	{
-		frames[currentID]->GetSprite()->Draw(1, nx, x, y, alpha);
+		frames[currentID]->GetSprite()->Draw(nx, x, y, alpha);
 	}
 	else  // == 12, long chain
 	{
 		int rd = rand() % 4;
-		frames[currentID * 4 + rd]->GetSprite()->Draw(1, nx, x, y, alpha);
+		frames[currentID * 4 + rd]->GetSprite()->Draw(nx, x, y, alpha);
 	}
 }
 

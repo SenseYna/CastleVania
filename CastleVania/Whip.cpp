@@ -16,7 +16,7 @@ void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		LPGAMEOBJECT obj = coObjects->at(i);
 
-		if (dynamic_cast<Candle*>(obj))
+		if (dynamic_cast<Candle*>(obj)) // va chạm giữa roi và nến
 		{
 			Candle * e = dynamic_cast<Candle*> (obj);
 
@@ -24,7 +24,7 @@ void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			e->GetBoundingBox(left, top, right, bottom);
 
-			if (CheckCollision(left, top, right, bottom) == true) // va chạm giữa roi và nến
+			if (CheckCollision(left, top, right, bottom)) 
 			{
 				e->SetState(CANDLE_DESTROYED);
 				sparkCoord.push_back({ left, top });
@@ -39,6 +39,7 @@ void Whip::Render(int currentID)
 
 	if (currentID >= 0)
 		animations[state]->RenderByID(currentID, nx, x, y);
+
 }
 
 void Whip::RenderSpark()
@@ -54,7 +55,7 @@ void Whip::RenderSpark()
 		}
 
 		for (auto coord : sparkCoord)
-			spark->Render(1, -1, coord[0], coord[1]);
+			spark->Render(-1, coord[0], coord[1]);
 	}
 }
 

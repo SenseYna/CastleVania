@@ -60,7 +60,7 @@ void Weapons::Render()
 	RenderSpark();
 
 	if (this->isEnable == true) {
-		animations[state]->Render(1, nx, x, y);
+		animations[state]->Render(nx, x, y);
 	//	simon->SetState(STAND);
 	}
 }

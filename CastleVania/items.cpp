@@ -19,12 +19,11 @@ void Items::Render()
 	if (GetTickCount() - timeAppear > ITEM_TIME_DESTROYED / 2)
 		alpha -= 100 * (rand() % 2);
 
-	animations[state]->Render(1, -1, x, y, alpha);
+	animations[state]->Render(-1, x, y, alpha);
 }
 
 void Items::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 {
-	
 	if (timeAppear == -1)
 		timeAppear = GetTickCount();
 	else
@@ -39,13 +38,14 @@ void Items::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 	}
 	
 
-	GameObject::Update(dt);
+	//GameObject::Update(dt);
 	if (state == SMALL_HEART && vy != 0)
 	{
-		vx += velocityVariation_x;
-		if (vx >= ITEM_FALLING_SPEED_X || vx <= -ITEM_FALLING_SPEED_X)
+		vx -= velocityVariation_x;
+		if (vx >= ITEM_SMALLHEART_FALLING_SPEED_X_MAX || vx <= -ITEM_SMALLHEART_FALLING_SPEED_X_MAX)
 			velocityVariation_x *= -1; // đổi chiều
 	}
+	GameObject::Update(dt);
 
 	// Check collision between item and ground (falling on ground)
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -66,12 +66,24 @@ void Items::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
+		x += min_tx * dx + nx * 0.1f;
 		y += min_ty * dy + ny * 0.1f;
-		if (ny != 0)
+
+		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
-			vx = 0;
-			vy = 0;
+			LPCOLLISIONEVENT e = coEventsResult[i];
+
+			if (dynamic_cast<Ground*>(e->obj))
+			{
+				if (e->ny == CDIR_BOTTOM)				// Hướng va chạm là bên dưới
+				{
+					vx = 0;
+					vy = 0;
+		
+				}
+			}
 		}
+		
 	}
 
 	// clean up collision events
@@ -116,11 +128,11 @@ void Items::SetState(int state)
 	{
 	case SMALL_HEART:
 		velocityVariation_x = ITEM_FALLING_SPEED_X_VARIATION;
-		vx = 0;
+		vx = ITEM_FALLING_SPEED_X;
 		vy = ITEM_SMALLHEART_FALLING_SPEED_Y;
 		break;
 	default:
-		vx = 0;
+		vx = ITEM_FALLING_SPEED_X;
 		vy = ITEM_FALLING_SPEED_Y;
 		break;
 	}

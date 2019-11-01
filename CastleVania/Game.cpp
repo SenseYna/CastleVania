@@ -124,10 +124,10 @@ void Game::Init(HWND hWnd)
 	DebugOut(L"[INFO] Init Game done\n");
 }
 
-void Game::Draw(int accordingCam, int nx, float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha)
+void Game::Draw(int nx, float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha)
 {
 	// calculate position of object in real world
-	D3DXVECTOR3 p(x - cameraPosition.x * accordingCam, y - cameraPosition.y * accordingCam, 0);
+	D3DXVECTOR3 p(x - cameraPosition.x, y - cameraPosition.y, 0);
 
 	RECT rect;
 	rect.left = left;
@@ -135,25 +135,17 @@ void Game::Draw(int accordingCam, int nx, float x, float y, LPDIRECT3DTEXTURE9 t
 	rect.right = right;
 	rect.bottom = bottom;
 
-	// flip sprite, using nx parameter
-	D3DXMATRIX oldTransform;
+	// flip sprite
 	D3DXMATRIX newTransform;
 
-	spriteHandler->GetTransform(&oldTransform);
-
-	D3DXVECTOR2 center = D3DXVECTOR2(p.x + (right - left) / 2, p.y + (bottom - top) / 2);
+	D3DXVECTOR2 center = D3DXVECTOR2(p.x + (right - left) / 2, p.y + (bottom - top) / 2); 
 	D3DXVECTOR2 rotate = D3DXVECTOR2(nx > 0 ? -1 : 1, 1);
 
 	// Xây dựng một ma trận 2D lưu thông tin biến đổi (scale, rotate)
 	D3DXMatrixTransformation2D(&newTransform, &center, 0.0f, &rotate, NULL, 0.0f, NULL);
 
-	// Cần nhân với ma trận cũ để tính ma trận biến đổi cuối cùng
-	D3DXMATRIX finalTransform = newTransform * oldTransform;
-	spriteHandler->SetTransform(&finalTransform);
-
+	spriteHandler->SetTransform(&newTransform);
 	spriteHandler->Draw(texture, &rect, NULL, &p, D3DCOLOR_ARGB(alpha, 255, 255, 255));
-
-	spriteHandler->SetTransform(&oldTransform);
 }
 
 int Game::IsKeyDown(int KeyCode)
@@ -164,11 +156,6 @@ int Game::IsKeyDown(int KeyCode)
 int Game::IsKeyPress(int KeyCode)
 {
 	return IsKeyDown(KeyCode) && !(keyEvents[KeyCode].dwData);
-}
-
-int Game::IsKeyRelease(int KeyCode)
-{
-	return !IsKeyDown(KeyCode) && (keyEvents[KeyCode].dwData);
 }
 
 void Game::ProcessKeyboard()

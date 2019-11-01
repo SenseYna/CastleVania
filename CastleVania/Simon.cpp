@@ -18,10 +18,6 @@ Simon::Simon() : GameObject()
 	AddAnimation("simon_hitstand_ani");
 	AddAnimation("simon_hitsit_ani");
 	AddAnimation("simon_powerup_ani");
-	
-	
-
-
 }
 
 void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -33,14 +29,12 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else
 		vy += SIMON_GRAVITY*dt;
 
-	
 	if (coObjects == NULL)
 	{
 		x += dx;
 		y += dy;
 		return;
 	}
-
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -63,12 +57,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-	/*	if (isAutoWalk == false)
-		{*/
-			x += min_tx*dx + nx*0.1f;
-			y += min_ty*dy + ny*0.1f;
-		//}
-
+		x += min_tx*dx + nx*0.1f;
+		y += min_ty*dy + ny*0.1f;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -76,10 +66,9 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			if (dynamic_cast<Ground*>(e->obj))
 			{
-				if (e->ny != 0)
+				if (e->ny != 0)				// Trên dưới đụng, nx là trái phải
 				{
-
-					if (e->ny == CDIR_BOTTOM)
+					if (e->ny == CDIR_BOTTOM) // -1 là đụng dưới
 					{
 						vy = 0;
 						isTouchGround = true;
@@ -103,7 +92,7 @@ void Simon::Render()
 	int alpha = 255;
 	float ratio = 0;
 
-	animations[tempState]->Render(1, nx, x, y, alpha);
+	animations[tempState]->Render(nx, x, y, alpha);
 	animations[state]->SetFrame(animations[tempState]->GetCurrentFrame());
 	
 }
@@ -183,7 +172,7 @@ bool Simon::CheckCollisionWithItem(vector<LPGAMEOBJECT>* listItem)
 
 		listItem->at(i)->GetBoundingBox(item_l, item_t, item_r, item_b);
 
-		if (GameObject::AABB(simon_l, simon_t, simon_r, simon_b, item_l, item_t, item_r, item_b) == true)
+		if (GameObject::AABB(simon_l, simon_t, simon_r, simon_b, item_l, item_t, item_r, item_b))
 		{
 			listItem->at(i)->isEnable = false;
 

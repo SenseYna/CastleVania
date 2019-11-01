@@ -79,9 +79,8 @@ void LoadSprites(int id, LPCWSTR tex, LPCWSTR sprite_data, LPCWSTR animation_dat
 // Load all sprite, animations, texture, tilemap data from file
 void LoadResources()
 {
-
-
-
+	// for render bounding box
+	textures->Add(ID_TEX_BBOX, L"Textures\\BBox.png");
 
 	// Game object
 	LoadSprites(ID_TEX_SIMON, L"Textures\\Simon.png", L"Textures\\Simon_sprites.txt", L"Textures\\Simon_animations.txt");
@@ -92,7 +91,6 @@ void LoadResources()
 	LoadSprites(ID_TEX_EFFECT, L"Textures\\Effect.png", L"Textures\\Effect_sprites.txt", L"Textures\\Effect_animations.txt");
 	LoadSprites(ID_TEX_SUBWEAPONS, L"Textures\\Weapons.png", L"Textures\\Weapons_sprites.txt", L"Textures\\Weapons_animations.txt");
 	LoadSprites(ID_TEX_ITEMS, L"Textures\\Items.png", L"Textures\\Items_sprites.txt", L"Textures\\Items_animations.txt");
-
 
 	tilemaps->Add(SCENE_1, L"Scenes\\Scene1.png", L"Scenes\\Scene1_map.txt", 1536, 320);
 

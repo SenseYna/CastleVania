@@ -19,20 +19,22 @@ TileMap::TileMap(int ID, LPCWSTR filePath_tex, LPCWSTR filePath_data, int map_wi
 
 	LoadResources();
 	LoadMap();
-	CreateZoneToDraw();
 }
 
 void TileMap::LoadResources()
 {
-	Textures * texture = Textures::GetInstance();
+	Textures * textures = Textures::GetInstance();
 
-	texture->Add(ID, filePath_tex, TILEMAP_TRANSPARENT_COLOR);
+	textures->Add(ID, filePath_tex, TILEMAP_TRANSPARENT_COLOR);
 	
-	LPDIRECT3DTEXTURE9 texTileMap = texture->Get(ID);
+	//IDirect3DTexture9: Sử dụng thuộc tính của .. để thao tác với Texture: surfaceDesc => bên dưới
+	LPDIRECT3DTEXTURE9 texTileMap = textures->Get(ID);  
 
-	// lấy thông tin về kích thước của texture lưu các block tiles (filePath_tex)
+	// 1 cái struct chứa thông tin về kích thước: width, height, ... ; của texture (filePath_tex) **Describes Surface: Mô tả bề mặt
 	D3DSURFACE_DESC surfaceDesc;
 	int level = 0; 
+
+	// Sử dụng thuộc tính của IDirect3DTexture9 để lấy thông tin width, height của texture bất kì và lưu vào &surfaceDesc
 	texTileMap->GetLevelDesc(level, &surfaceDesc);
 	
 	// tính toán số hàng, số cột cần thiết để đọc các ô tile từ file
@@ -47,8 +49,8 @@ void TileMap::LoadResources()
 		for (UINT j = 0; j < nums_colToRead; j++)
 		{
 			string idTile = "map_" + to_string(ID) + "_tile_" + to_string(id_sprite);
-			sprites->Add(idTile, tile_Width * j, tile_Height * i, tile_Width * (j + 1), tile_Height * (i + 1), texTileMap); // ???
-			id_sprite = id_sprite + 1;
+			sprites->Add(idTile, tile_Width * j, tile_Height * i, tile_Width * (j + 1), tile_Height * (i + 1), texTileMap);
+			id_sprite++;
 		}
 	}
 }
@@ -70,10 +72,9 @@ void TileMap::LoadMap()
 	while (!fs.eof())
 	{
 		getline(fs, line);
-
-		// Lưu sprite tile vào vector tilemap
 		vector<LPSPRITE> spriteline; 
-		stringstream ss(line);
+		// tách xâu
+		stringstream ss(line); 
 		int n;
 
 		while (ss >> n)
@@ -81,24 +82,10 @@ void TileMap::LoadMap()
 			string idTile = "map_" + to_string(ID) + "_tile_" + to_string(n);
 			spriteline.push_back(sprites->Get(idTile));
 		}
-
 		tilemap.push_back(spriteline);
 	}
 
 	fs.close();
-}
-
-void TileMap::CreateZoneToDraw()
-{
-	switch (ID)
-	{
-	case SCENE_1:
-		min_max_col_to_draw.push_back({ 0, 48 });
-		break;
-	
-	default:
-		break;
-	}
 }
 
 void TileMap::Draw(D3DXVECTOR3 camPosition)
@@ -112,10 +99,10 @@ void TileMap::Draw(D3DXVECTOR3 camPosition)
 		{
 			// +camPosition.x để luôn giữ camera ở chính giữa, vì trong hàm Game::Draw() có trừ cho camPosition.x làm các object đều di chuyển theo
 			// +(int)camPosition.x % 32 để giữ cho camera chuyển động mượt
-			float x = tile_Width * (j - start_col_to_draw) + camPosition.x - (int)camPosition.x % 32; 
-			float y = tile_Height * i + 80;
+			float x = tile_Width * (j - start_col_to_draw) + camPosition.x -(int)camPosition.x % 32;
+			float y = tile_Height * i + 48;
 
-			tilemap[i][j]->Draw(1, -1, x, y);
+			tilemap[i][j]->Draw(-1, x, y);
 		}
 	}
 }
