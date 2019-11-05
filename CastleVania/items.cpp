@@ -4,10 +4,11 @@
 Items::Items() : GameObject()
 {
 	AddAnimation("item_dagger_ani");
+	AddAnimation("item_holywater_ani");
 	AddAnimation("item_smallheart_ani");
 	AddAnimation("item_largeheart_ani");
 	AddAnimation("item_chain_ani");
-
+	
 
 	timeAppear = -1;
 }
@@ -36,9 +37,7 @@ void Items::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 			return;
 		}
 	}
-	
 
-	//GameObject::Update(dt);
 	if (state == SMALL_HEART && vy != 0)
 	{
 		vx -= velocityVariation_x;
@@ -112,6 +111,10 @@ void Items::GetBoundingBox(float & left, float & top, float & right, float & bot
 	case CHAIN:
 		right = left + 32;
 		bottom = top + 32;
+		break;
+	case HOLY_WATER:
+		right = left + 32;
+		bottom = top + 28;
 		break;
 	default:
 		right = left;

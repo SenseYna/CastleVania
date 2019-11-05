@@ -2,3 +2,4 @@ item_smallheart_ani	item_smallheart	100
 item_largeheart_ani	item_largeheart	100
 item_chain_ani	item_chain	100
 item_dagger_ani	item_dagger	100
+item_holywater_ani	item_holywater	100

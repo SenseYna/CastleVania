@@ -21,11 +21,26 @@ Scenes::~Scenes()
 {
 }
 
-void Scenes::Init()
+void Scenes::Init(int idScene)
 {
-	grid = new Grid(1536, 480); // 48 15
-	LoadObjectsFromFile(FILEPATH_OBJECTS_SCENE_1);
-	SetGameState();
+	
+	IDScene = idScene;
+
+	switch (idScene)
+	{
+	case SCENE_1:
+		grid = new Grid(1536, 480); // 48 15
+		LoadObjectsFromFile(FILEPATH_OBJECTS_SCENE_1);
+		SetGameState(GAMESTATE_1);
+		break;
+	case SCENE_2:
+		grid = new Grid(5632, 480); //5632
+		LoadObjectsFromFile(FILEPATH_OBJECTS_SCENE_2);
+		SetGameState(GAMESTATE_2);
+		break;
+	default:
+		break;
+	}
 }
 
 void Scenes::LoadObjectsFromFile(LPCWSTR FilePath)
@@ -65,9 +80,27 @@ void Scenes::LoadObjectsFromFile(LPCWSTR FilePath)
 				Candle * candle = new Candle();
 				candle->SetPosition(pos_x, pos_y);
 				candle->SetState(state);
-				candle->SetEnable(true);
+				candle->SetEnable(isEnable);
 				candle->SetIDItem(idItem);
 				unit = new Unit(grid, candle, pos_x, pos_y);
+				break;
+			}
+			case NEXT_SCENE_OBJECT:
+			{
+				NextSceneObject * nextScene = new NextSceneObject();
+				nextScene->SetPosition(pos_x, pos_y);
+				nextScene->SetIDNextScene(state);
+				nextScene->SetEnable(true);
+				unit = new Unit(grid, nextScene, pos_x, pos_y);
+				break;
+			}
+			case DOOR:
+			{
+				Door * door = new Door();
+				door->SetPosition(pos_x, pos_y);
+				door->SetState(state);
+				door->SetEnable(true);
+				unit = new Unit(grid, door, pos_x, pos_y);
 				break;
 			}
 			default:
@@ -82,21 +115,37 @@ void Scenes::GetObjectFromGrid()
 {
 	listUnits.clear();
 	listObjects.clear();
+	listDoors.clear();
 
 	grid->Get(game->GetCameraPositon(), listUnits);
 
-	//DebugOut(L"%d \n", listUnits.size());
-
 	for (UINT i = 0; i < listUnits.size(); i++)
 	{
+
 		LPGAMEOBJECT obj = listUnits[i]->GetObj();
 		listObjects.push_back(obj);
 
+		if (dynamic_cast<Door*>(obj))
+			listDoors.push_back(obj);
 	}
+}
+
+void Scenes::ChangeScene()
+{
+
+	if (IDScene == SCENE_1 && simon->isNextScene == SCENE_2)
+		Init(SCENE_2);
 }
 
 void Scenes::Update(DWORD dt)
 {
+	// Khi Simon va chạm với ChangScene objects, tiến hành thay đổi, cập nhật trạng thái
+	if (simon->isNextScene)
+	{
+		ChangeScene();
+		simon->isNextScene = false;
+	}
+
 	// Lấy danh sách object từ grid 
 	GetObjectFromGrid();
 
@@ -106,9 +155,7 @@ void Scenes::Update(DWORD dt)
 	Simon_Update(dt);
 	Whip_Update(dt);
 
-	for (int i = 0; i < 3; i++)
-		Weapon_Update(dt, i);
-
+	Weapon_Update(dt, 0);
 
 	for (UINT i = 0; i < listObjects.size(); i++)
 	{
@@ -124,9 +171,6 @@ void Scenes::Update(DWORD dt)
 
 	// update camera
 	UpdateCameraPosition();
-
-	// update grid
-	UpdateGrid();
 }
 
 void Scenes::Whip_Update(DWORD dt)
@@ -178,7 +222,7 @@ void Scenes::Weapon_Update(DWORD dt, int index)
 
 void Scenes::Render()
 {
-	tilemaps->Get(SCENE_1)->Draw(game->GetCameraPositon());
+	tilemaps->Get(IDScene)->Draw(game->GetCameraPositon());
 
 	for (auto obj : listObjects)
 	{
@@ -189,11 +233,7 @@ void Scenes::Render()
 	simon->Render();
 	//simon->RenderBoundingBox();
 
-	for (int i = 0; i < 3; i++)
-	{
-		weaponlist[i]->Render();
-		//weaponlist[i]->RenderBoundingBox();
-	}
+	weaponlist[0]->Render();
 
 	if (simon->isHitWeapons == false)
 	{
@@ -204,6 +244,12 @@ void Scenes::Render()
 		else
 			whip->Render(-1);
 			//whip->RenderBoundingBox();
+	}
+
+	for (auto obj : listDoors)
+	{
+		obj->Render();
+		//obj->RenderBoundingBox();
 	}
 }
 
@@ -252,21 +298,21 @@ bool Scenes::IsInViewport(LPGAMEOBJECT object)
 
 void Scenes::SetInactivationByPosition()   // Xoá các object đi ra khỏi vùng viewport
 {
-	for (int i = 0; i < 3; i++)
-	{
-		if (weaponlist[i]->IsEnable() == true)
+	/*for (int i = 0; i < 3; i++)
+	{*/
+		if (weaponlist[0]->IsEnable() == true)
 		{
-			if (IsInViewport(weaponlist[i]) == false)
-				weaponlist[i]->SetEnable(false);
+			if (IsInViewport(weaponlist[0]) == false)
+				weaponlist[0]->SetEnable(false);
 		}
-	}
+	/*}*/
 }
 
 void Scenes::UpdateCameraPosition()
 {
 
 	if (simon->x + SIMON_BBOX_WIDTH > SCREEN_WIDTH / 2 &&
-		simon->x + SIMON_BBOX_WIDTH  + SCREEN_WIDTH / 2 < tilemaps->Get(SCENE_1)->GetMapWidth())
+		simon->x + SIMON_BBOX_WIDTH  + SCREEN_WIDTH / 2 < tilemaps->Get(IDScene)->GetMapWidth())
 	{
 		{
 			game->SetCameraPosition(simon->x + SIMON_BBOX_WIDTH - SCREEN_WIDTH / 2, 0);
@@ -274,26 +320,23 @@ void Scenes::UpdateCameraPosition()
 	}
 }
 
-void Scenes::UpdateGrid()
+void Scenes::SetGameState(int state)
 {
-	//for (int i = 0; i < listUnits.size(); i++)
-	//{
-	//	LPGAMEOBJECT obj = listUnits[i]->GetObj();
-
-	//	/*if (obj->IsEnable() == false)
-	//		continue;
-
-	//	float newPos_x, newPos_y;
-	//	obj->GetPosition(newPos_x, newPos_y);
-	//	listUnits[i]->Move(newPos_x, newPos_y);*/
-	//}
-}
-
-void Scenes::SetGameState()
-{
-	simon->SetState(STAND);
-	simon->SetPosition(0, 302);
-	game->SetCameraPosition(0, 0);
+	switch (state)
+	{
+	case GAMESTATE_1:
+		simon->SetState(STAND);
+		simon->SetPosition(0, 302);
+		game->SetCameraPosition(0, 0);
+		break;
+	case GAMESTATE_2:
+		simon->SetState(STAND);
+		simon->SetPosition(0, 200); 
+		game->SetCameraPosition(0, 0);
+		break;
+	default:
+		break;
+	}
 }
 
 void Scenes::Simon_Update(DWORD dt)
@@ -319,9 +362,8 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 	{
 		for (LPGAMEOBJECT obj : listObjects)
 		{
-			if (dynamic_cast<Ground*>(obj))
+			if (dynamic_cast<NextSceneObject*>(obj) || dynamic_cast<Ground*>(obj) || dynamic_cast<Door*>(obj))
 				coObjects.push_back(obj);
-
 		}
 	}
 	else if (dynamic_cast<Whip*>(Obj))
@@ -337,9 +379,8 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 	{
 		for (LPGAMEOBJECT obj : listObjects)
 		{
-			if (dynamic_cast<Candle*>(obj))
+			if (dynamic_cast<Candle*>(obj) || dynamic_cast<Ground*>(obj))
 				coObjects.push_back(obj);
-
 		}
 	}
 

@@ -13,6 +13,9 @@ class Simon : public GameObject
 	int item;
 	
 
+	// auto-walk
+	float autoWalkDistance = 0;		// Khoảng cách 
+
 public:
 	Simon();
 
@@ -20,8 +23,11 @@ public:
 	bool isWhip();
 	bool isTouchGround = false;	
 	bool isHitWeapons = false;
-	bool haveWeapons = false;
+	int IDWeapon = 1;
 	bool isGotChainItem = false;	// xác định xem có nhặt được Chain item hay không, dùng để update whip
+	int isNextScene = -1;
+	bool isAutoWalk = false;
+	bool isCollisionHead = false;
 
 	//Update
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
@@ -38,6 +44,10 @@ public:
 	
 	// Kiểm tra va chạm với danh sách item
 	bool CheckCollisionWithItem(vector<LPGAMEOBJECT> * listItem);
+
+	//Auto Walk
+	void AutoWalk(float distance);
+	void DoAutoWalk();
 
 	//Render
 	void Render();

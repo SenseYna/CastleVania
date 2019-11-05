@@ -1,14 +1,16 @@
-﻿#include "Simon.h"
+﻿
+#include "Simon.h"
 
 #include "Ground.h"
-
+#include "NextSceneObject.h"
+#include "Door.h"
 #include <fstream>
 #include <string>
 
 Simon::Simon() : GameObject()
 {
 	SetState(STAND);
-	currentWeapon = 0;
+	currentWeapon = -1;
 	energy = 100;
 
 	AddAnimation("simon_stand_ani");
@@ -23,16 +25,23 @@ Simon::Simon() : GameObject()
 void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	GameObject::Update(dt);
-
-	if (vy > -SIMON_SPEED_Y_LOWER_ZONE && vy < SIMON_SPEED_Y_LOWER_ZONE) // trọng lực khi nhảy
-		vy += SIMON_GRAVITY_LOWER*dt;
-	else
-		vy += SIMON_GRAVITY*dt;
+	if (!isAutoWalk) {
+		if (vy > -SIMON_SPEED_Y_LOWER_ZONE && vy < SIMON_SPEED_Y_LOWER_ZONE && !isCollisionHead) // trọng lực khi nhảy
+			vy += SIMON_GRAVITY_LOWER * dt;
+		else
+			vy += SIMON_GRAVITY * dt;
+	}
+	// Auto - walk
+	if (isAutoWalk)
+		DoAutoWalk();
 
 	if (coObjects == NULL)
 	{
-		x += dx;
-		y += dy;
+		if (!isAutoWalk) 
+		{
+			x += dx;
+			y += dy;
+		}
 		return;
 	}
 
@@ -42,14 +51,12 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	coEvents.clear();
 
 	CalcPotentialCollisions(coObjects, coEvents);
-
-	if (coEvents.size() == 0)
+	
+	if (coEvents.size() == 0 && isAutoWalk == false)
 	{
 		x += dx;
 		y += dy;
 
-		/*if (vy > SIMON_SPEED_Y_LOWER_ZONE)
-			isFalling = true;*/
 	}
 	else
 	{
@@ -57,8 +64,11 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-		x += min_tx*dx + nx*0.1f;
-		y += min_ty*dy + ny*0.1f;
+		if (isAutoWalk == false)
+		{
+			x += min_tx * dx + nx * 0.1f;
+			y += min_ty * dy + ny * 0.1f;
+		}
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -72,11 +82,39 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					{
 						vy = 0;
 						isTouchGround = true;
-					
+						isCollisionHead = false;
 					}
 					else
-						y += dy;
-				}			
+					{
+						if (vy <= 0) vy = SIMON_GRAVITY;
+						isCollisionHead = true;
+					}
+				}	
+			}
+			else if (dynamic_cast<Door*>(e->obj))
+			{
+				auto door = dynamic_cast<Door*>(e->obj);
+
+				if (e->obj->GetState() == DOOR_1)	// đi qua cửa của scene 1
+				{
+					SetState(WALK);
+					vx = SIMON_WALKING_SPEED_LOWER;
+					vy = 0;
+					AutoWalk(80);
+				}
+			}
+			else if (dynamic_cast<NextSceneObject*>(e->obj))
+			{
+				x += dx;
+				y += dy;
+
+				NextSceneObject * obj = dynamic_cast<NextSceneObject*>(e->obj);
+
+				if (obj->GetIDNextScene() == SCENE_2)
+				{
+					isAutoWalk = false;
+					this->isNextScene = obj->GetIDNextScene();
+				}
 			}
 		}
 	}
@@ -101,45 +139,44 @@ void Simon::SetState(int state)
 {
 	GameObject::SetState(state);
 
-
 	switch (state)
 	{
-	case STAND:
-		vx = 0;
-		break;
+		case STAND:
+			vx = 0;
+			break;
 
-	case WALK:
-		if (nx > 0) vx = SIMON_WALKING_SPEED;
-		else vx = -SIMON_WALKING_SPEED;
-		break;
+		case WALK:
+			if (nx > 0) vx = SIMON_WALKING_SPEED;
+			else vx = -SIMON_WALKING_SPEED;
+			break;
 	
-	case JUMP:
-		isTouchGround = false;
-		vy = -SIMON_JUMP_SPEED_Y;
-		animations[state]->SetAniStartTime(GetTickCount());
-		break;
+		case JUMP:
+			isTouchGround = false;
+			vy = -SIMON_JUMP_SPEED_Y;
+			animations[state]->SetAniStartTime(GetTickCount());
+			break;
 
-	case SIT:
-		vx = 0;
-		vy = 0;
-		break;
+		case SIT:
+			vx = 0;
+			vy = 0;
+			break;
 
-	case HIT_STAND:
-		animations[state]->Reset();
-		animations[state]->SetAniStartTime(GetTickCount());
-		break;
+		case HIT_STAND:
+			animations[state]->Reset();
+			animations[state]->SetAniStartTime(GetTickCount());
+			break;
 
-	case HIT_SIT:
-		animations[state]->Reset();
-		animations[state]->SetAniStartTime(GetTickCount());
-		break;
+		case HIT_SIT:
+			animations[state]->Reset();
+			animations[state]->SetAniStartTime(GetTickCount());
+			break;
 
-	case POWER:
-		animations[state]->Reset();
-		animations[state]->SetAniStartTime(GetTickCount());
-		break;
-	default:
-		break;
+		case POWER:
+			animations[state]->Reset();
+			animations[state]->SetAniStartTime(GetTickCount());
+			break;
+		default:
+			break;
 	}
 }
 
@@ -181,7 +218,8 @@ bool Simon::CheckCollisionWithItem(vector<LPGAMEOBJECT>* listItem)
 			switch (idItem)
 			{
 			case DAGGER:
-				haveWeapons = true;
+			case HOLY_WATER: 
+				SetCurrentWeapons(idItem);
 				break;
 			case SMALL_HEART:
 				energy += 1;
@@ -200,6 +238,23 @@ bool Simon::CheckCollisionWithItem(vector<LPGAMEOBJECT>* listItem)
 
 			return true;
 		}
+	}
+}
+
+void Simon::AutoWalk(float distance)
+{
+	isAutoWalk = true;
+	autoWalkDistance = distance;
+
+}
+
+void Simon::DoAutoWalk()
+{
+	if (abs(dx) <= abs(autoWalkDistance))
+	{
+		x += dx;
+		y += dy;
+		autoWalkDistance -= dx;
 	}
 }
 

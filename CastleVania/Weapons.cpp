@@ -6,6 +6,9 @@
 Weapons::Weapons()
 {
 	AddAnimation("weapon_dagger_ani");
+	AddAnimation("weapon_holywater_ani");
+	AddAnimation("weapon_holywatershattered_ani");
+
 	state = -1; // no Weapons
 }
 
@@ -16,7 +19,25 @@ void Weapons::UpdateCollisionState()
 
 void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 {
+	if (isHolyWaterShattered == true &&
+		GetTickCount() - holyWaterShatteredCounter > WEAPONS_HOLY_WATER_TIME_EFFECT)
+	{
+		isHolyWaterShattered = false;
+		holyWaterShatteredCounter = 0;
+		this->isEnable = false;
+		return;
+	}
+
 	GameObject::Update(dt);
+
+	switch (state)
+	{
+	case WEAPONS_HOLY_WATER:
+		vy += WEAPONS_HOLY_WATER_GRAVITY * dt;
+		break;
+	default:
+		break;
+	}
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -45,8 +66,15 @@ void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 			{
 				Candle * candle = dynamic_cast<Candle*>(e->obj);
 				candle->SetState(CANDLE_DESTROYED);
-				GetCoordinateObject(e->obj);
+				SetCoordinateObject(e->obj);
 				UpdateCollisionState();
+			}
+			else if (dynamic_cast<Ground*>(e->obj))
+			{
+				if (state == WEAPONS_HOLY_WATER && e->ny == -1)
+					SetState(WEAPONS_HOLY_WATER_SHATTERED);
+				x += dx;
+				y += dy;
 			}
 		}
 	}
@@ -67,18 +95,18 @@ void Weapons::Render()
 
 void Weapons::RenderSpark()
 {
-	if (sparkCoord.size() > 0)
+	if (sparkEffectPosition.size() > 0)
 	{
 		if (startTimeRenderSpark == 0)
 			startTimeRenderSpark = GetTickCount();
 		else if (GetTickCount() - startTimeRenderSpark > SPARK_ANI_TIME_DELAY)
 		{
 			startTimeRenderSpark = 0;
-			sparkCoord.clear();
+			sparkEffectPosition.clear();
 		}
 
-		for (auto coord : sparkCoord)
-			spark->Render(1, -1, coord[0], coord[1]);
+		for (auto coord : sparkEffectPosition)
+			spark->Render(-1, coord[0], coord[1]);
 	}
 }
 
@@ -91,6 +119,16 @@ void Weapons::SetState(int state)
 		if (nx > 0) vx = WEAPONS_DAGGER_SPEED;
 		else vx = -WEAPONS_DAGGER_SPEED;
 		vy = 0;
+		break;
+	case WEAPONS_HOLY_WATER:
+		vx = nx * WEAPONS_HOLY_WATER_SPEED_X;
+		vy = -WEAPONS_HOLY_WATER_SPEED_Y;
+		break;
+	case WEAPONS_HOLY_WATER_SHATTERED:
+		vx = 0;
+		vy = 0;
+		RenderHolyWaterEffect();
+		break;
 	default:
 		break;
 	}
@@ -107,6 +145,10 @@ void Weapons::GetBoundingBox(float & left, float & top, float & right, float & b
 		right = left + WEAPONS_DAGGER_BBOX_WIDTH;
 		bottom = top + WEAPONS_DAGGER_BBOX_HEIGHT;
 		break;
+	case WEAPONS_HOLY_WATER:
+		right = left + WEAPONS_HOLY_WATER_BBOX_WIDTH;
+		bottom = top + WEAPONS_HOLY_WATER_BBOX_HEIGHT;
+		break;
 	default:
 		right = left;
 		bottom = top;
@@ -114,11 +156,11 @@ void Weapons::GetBoundingBox(float & left, float & top, float & right, float & b
 	}
 }
 
-void Weapons::GetCoordinateObject(LPGAMEOBJECT obj)
+void Weapons::SetCoordinateObject(LPGAMEOBJECT obj)
 {
 	float l, t, r, b;
 	obj->GetBoundingBox(l, t, r, b);
-	sparkCoord.push_back({ l, t });
+	sparkEffectPosition.push_back({ l, t });
 }
 
 

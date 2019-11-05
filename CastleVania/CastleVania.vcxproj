@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="Candle.cpp" />
     <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="Door.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Grid.cpp" />
@@ -157,6 +158,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="items.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NextSceneObject.cpp" />
     <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="Simon.cpp" />
     <ClCompile Include="Sprites.cpp" />
@@ -169,12 +171,14 @@
     <ClInclude Include="Candle.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Define.h" />
+    <ClInclude Include="Door.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="items.h" />
+    <ClInclude Include="NextSceneObject.h" />
     <ClInclude Include="Scenes.h" />
     <ClInclude Include="Simon.h" />
     <ClInclude Include="Sprites.h" />

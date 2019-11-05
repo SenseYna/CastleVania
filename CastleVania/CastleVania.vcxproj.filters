@@ -71,6 +71,12 @@
     <ClCompile Include="items.cpp">
       <Filter>Moving Objects</Filter>
     </ClCompile>
+    <ClCompile Include="NextSceneObject.cpp">
+      <Filter>Static Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Door.cpp">
+      <Filter>Static Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -123,6 +129,12 @@
     </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Game Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="NextSceneObject.h">
+      <Filter>Static Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Door.h">
+      <Filter>Static Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

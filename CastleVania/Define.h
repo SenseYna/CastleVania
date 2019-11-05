@@ -27,25 +27,46 @@
 #define ID_TEX_EFFECT				5
 #define ID_TEX_SUBWEAPONS			6
 #define ID_TEX_ITEMS				7
+#define ID_TEX_DOOR					8
 
 // ID Object
 #define	CANDLE				0
 #define	GROUND				1
+#define	DOOR				2
+#define NEXT_SCENE_OBJECT 3
 
 // Font
 #define FILEPATH_FONT					L"Font\\prstart.ttf"
 
 // Scenes
 #define FILEPATH_OBJECTS_SCENE_1		L"Scenes\\Scene1_objects.txt"
+#define FILEPATH_OBJECTS_SCENE_2		L"Scenes\\Scene2_objects.txt"
+
+// Texture Resource
+#define FILEPATH_TEXTURE_RESOURCE L"Textures\\Textures_Resource.txt"
+
+// TileMap Resource
+#define FILEPATH_TILE_MAP_RESOURCE L"Textures\\TileMap_Resource.txt"
+
+// BBox Filepath
+#define FILEPATH_BBOX_RESOURCE L"Textures\\BBox.png"
 
 // Game
 #define GAMESTATE_1		0   // SCENE_1
+#define GAMESTATE_2		1	// SCENE_2
+
+// Orientation
+#define DIR_LEFT		-1
+#define DIR_RIGHT		1
 
 // Collision direction
 #define	CDIR_BOTTOM		-1.0f
+#define	CDIR_TOP		1.0f
 
 // Scene
 #define SCENE_1			0
+#define SCENE_2 		1
+
 
 // Simon
 #define STAND			0
@@ -59,6 +80,7 @@
 
 // Simon
 #define SIMON_WALKING_SPEED			0.13f
+#define SIMON_WALKING_SPEED_LOWER	0.05f
 #define SIMON_JUMP_SPEED_Y			0.5f
 #define SIMON_SPEED_Y_LOWER_ZONE    0.2f
 #define SIMON_GRAVITY				0.002f
@@ -80,13 +102,22 @@
 
 // Weapons
 #define WEAPONS_DAGGER		0
+#define WEAPONS_HOLY_WATER  1
+#define WEAPONS_HOLY_WATER_SHATTERED 2
 
 // Weapons BOXX
 #define WEAPONS_DAGGER_BBOX_WIDTH		34
 #define WEAPONS_DAGGER_BBOX_HEIGHT		18
+#define WEAPONS_HOLY_WATER_BBOX_WIDTH	32
+#define WEAPONS_HOLY_WATER_BBOX_HEIGHT	26
 
 // Weapons Speed
 #define WEAPONS_DAGGER_SPEED		0.4f
+
+#define WEAPONS_HOLY_WATER_SPEED_X	0.5f
+#define WEAPONS_HOLY_WATER_SPEED_Y	0.05f
+#define WEAPONS_HOLY_WATER_GRAVITY	0.001f
+#define WEAPONS_HOLY_WATER_TIME_EFFECT	500
 
 // Ground BBOX
 #define GROUND_BBOX_WIDTH			32
@@ -94,7 +125,8 @@
 
 // Candle
 #define BIG_CANDLE		0
-#define CANDLE_DESTROYED	1
+#define SMALL_CANDLE	1
+#define CANDLE_DESTROYED	2
 
 // Candle BBOX
 #define CANDLE_BBOX_WIDTH			32
@@ -111,7 +143,7 @@
 #define POWER_ANI_TIME_DELAY		450
 
 
-// Item
+// Item 
 #define ITEM_FALLING_SPEED_X			0.0f
 #define ITEM_FALLING_SPEED_Y			0.15f
 
@@ -123,6 +155,19 @@
 
 // Items
 #define DAGGER			0
-#define SMALL_HEART		1
-#define LARGE_HEART		2
-#define CHAIN			3
+#define HOLY_WATER		1
+#define SMALL_HEART		2
+#define LARGE_HEART		3
+#define CHAIN			4
+
+
+// Door
+#define DOOR_1			0
+
+// Door BBOX
+#define DOOR_BBOX_WIDTH				32
+#define DOOR_BBOX_HEIGHT			96
+
+// Next Scene Object
+#define NEXTSCENEOBJECT_BBOX_WIDTH				44
+#define NEXTSCENEOBJECT_BBOX_HEIGHT			126

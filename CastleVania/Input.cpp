@@ -31,7 +31,8 @@ bool Input::CanProcessKeyboard()
 {
 	if (AnimationDelay() == true)
 		return false;
-
+	if (simon->isAutoWalk == true)
+		return false;
 	return true;
 }
 
@@ -88,7 +89,9 @@ void Input::OnKeyDown(int KeyCode)
 	case DIK_S:
 		Simon_Whip_Weapons();
 		break;
-	
+	case DIK_Q:
+		scene->Init(SCENE_2);
+		break;
 	case DIK_SPACE:
 		Simon_Jump();
 		break;
@@ -140,7 +143,7 @@ void Input::Simon_Whip()
 
 void Input::Simon_Whip_Weapons()
 {
-	if (simon->haveWeapons == false) return; //chưa nhặt weapon thì return
+	if (simon->GetCurrentWeapons() == -1) return; //chưa nhặt weapon thì return
 
 	vector<Weapons*> * weaponlist = scene->GetWeaponList();
 	Weapons * weapon;

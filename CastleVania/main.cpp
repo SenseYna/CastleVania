@@ -9,6 +9,7 @@
 #include "Scenes.h"
 #include "Player.h"
 
+using namespace std;
 Game * game;
 Input * input;
 Scenes * scene;
@@ -76,25 +77,82 @@ void LoadSprites(int id, LPCWSTR tex, LPCWSTR sprite_data, LPCWSTR animation_dat
 	animationReader.close();
 }
 
+wchar_t* ConvertToWideChar(char* p) // Covert string sang wchar_t*
+{
+	wchar_t *r;
+	r = new wchar_t[strlen(p) + 1];
+
+	char *tempsour = p;
+	wchar_t *tempdest = r;
+	while (*tempdest++ = *tempsour++);
+
+	return r;
+}
+
+void LoadSpritesFromFile(LPCWSTR FilePath)
+{
+	fstream fss;
+	fss.open(FilePath, ios::in);
+	if (fss.fail())
+	{
+		DebugOut(L"[ERROR] Scene %d load resource failed: file path = %s\n", FilePath);
+		fss.close();
+		return;
+	}
+
+	int ID_Tex;
+	string path_texture;
+	string path_sprites;
+	string path_animations;
+
+	while (!fss.eof())
+	{
+		fss >> ID_Tex >> path_texture >> path_sprites >> path_animations;
+		LoadSprites(ID_Tex, ConvertToWideChar((char*)path_texture.c_str()), ConvertToWideChar((char*)path_sprites.c_str()), ConvertToWideChar((char*)path_animations.c_str()));
+	}
+
+	fss.close();
+}
+
+void LoadTileMapFromFile(LPCWSTR FilePath)
+{
+	fstream fss;
+	fss.open(FilePath, ios::in);
+	if (fss.fail())
+	{
+		DebugOut(L"[ERROR] Scene %d load resource failed: file path = %s\n", FilePath);
+		fss.close();
+		return;
+	}
+
+	int ID_Tex;
+	string path_texture;
+	string path_map;
+	int map_width;
+	int map_height;
+
+	while (!fss.eof())
+	{
+		fss >> ID_Tex >> path_texture >> path_map >> map_width >> map_height;
+		tilemaps->Add(ID_Tex, ConvertToWideChar((char*)path_texture.c_str()), ConvertToWideChar((char*)path_map.c_str()), map_width, map_height);
+	}
+
+	fss.close();
+}
+
 // Load all sprite, animations, texture, tilemap data from file
 void LoadResources()
 {
 	// for render bounding box
-	textures->Add(ID_TEX_BBOX, L"Textures\\BBox.png");
+	textures->Add(ID_TEX_BBOX, FILEPATH_BBOX_RESOURCE);
 
-	// Game object
-	LoadSprites(ID_TEX_SIMON, L"Textures\\Simon.png", L"Textures\\Simon_sprites.txt", L"Textures\\Simon_animations.txt");
-	LoadSprites(ID_TEX_GROUND, L"Textures\\Ground.png", L"Textures\\Ground_sprites.txt", L"Textures\\Ground_animations.txt");
-	LoadSprites(ID_TEX_CANDLE, L"Textures\\Candle.png", L"Textures\\Candle_sprites.txt", L"Textures\\Candle_animations.txt");
-	LoadSprites(ID_TEX_WHIP, L"Textures\\Whip.png", L"Textures\\Whip_sprites.txt", L"Textures\\Whip_animations.txt");
-	LoadSprites(ID_TEX_SPARK, L"Textures\\Spark.png", L"Textures\\Spark_sprites.txt", L"Textures\\Spark_animations.txt");
-	LoadSprites(ID_TEX_EFFECT, L"Textures\\Effect.png", L"Textures\\Effect_sprites.txt", L"Textures\\Effect_animations.txt");
-	LoadSprites(ID_TEX_SUBWEAPONS, L"Textures\\Weapons.png", L"Textures\\Weapons_sprites.txt", L"Textures\\Weapons_animations.txt");
-	LoadSprites(ID_TEX_ITEMS, L"Textures\\Items.png", L"Textures\\Items_sprites.txt", L"Textures\\Items_animations.txt");
+	//id tex, texture, sprite, animation
+	LoadSpritesFromFile(FILEPATH_TEXTURE_RESOURCE);
 
-	tilemaps->Add(SCENE_1, L"Scenes\\Scene1.png", L"Scenes\\Scene1_map.txt", 1536, 320);
+	//tile map
+	LoadTileMapFromFile(FILEPATH_TILE_MAP_RESOURCE);
+}	
 
-}
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -238,7 +296,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	LoadResources();
 
 	scene = new Scenes(game);
-	scene->Init();
+	scene->Init(0);
 
 	input = new Input(game, scene);
 	game->InitKeyboard(input);

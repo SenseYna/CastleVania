@@ -13,11 +13,6 @@ Unit::Unit(Grid * grid, LPGAMEOBJECT obj, float x, float y)
 	grid->Add(this);
 }
 
-void Unit::Move(float x, float y)
-{
-	grid->Move(this, x, y);
-}
-
 Grid::Grid(int map_width, int map_height, int cell_width, int cell_height)
 {
 	this->map_width = map_width;
@@ -57,48 +52,6 @@ void Grid::Add(Unit * unit)
 		unit->next->prev = unit;
 }
 
-void Grid::Move(Unit * unit, float x, float y)
-{
-	// lấy chỉ số cell cũ
-	int old_row = (int)(unit->y / cell_height);
-	int old_col = (int)(unit->x / cell_width);
-
-	// lấy chỉ số cell mới
-	int new_row = (int)(y / cell_height);
-	int new_col = (int)(x / cell_width);
-
-	// nếu object ra khỏi vùng viewport -> không cần cập nhật
-	if (new_row < 0 || new_row >= nums_row || new_col < 0 || new_col >= nums_col)
-		return;
-
-	// cập nhật toạ độ mới
-	unit->x = x;
-	unit->y = y;
-
-	// cell không thay đổi
-	if (old_row == new_row && old_col == new_col)
-		return;
-
-	// huỷ liên kết với cell cũ
-	if (unit->prev != NULL)
-	{
-		unit->prev->next = unit->next;
-	}
-
-	if (unit->next != NULL)
-	{
-		unit->next->prev = unit->prev;
-	}
-
-	if (cells[old_row][old_col] == unit)
-	{
-		cells[old_row][old_col] = unit->next;
-	}
-
-	// thêm vào cell mới
-	Add(unit);
-}
-
 void Grid::Get(D3DXVECTOR3 camPosition, vector<Unit*>& listUnits)
 {
 	
@@ -121,27 +74,3 @@ void Grid::Get(D3DXVECTOR3 camPosition, vector<Unit*>& listUnits)
 		}
 	}
 }
-
-//void Grid::Out()
-//{
-//	for (int i = 0; i < nums_row; i++)
-//	{
-//		for (int j = 0; j < nums_col; j++)
-//		{
-//			int c = 0;
-//			Unit * unit = cells[i][j];
-//
-//			while (unit)
-//			{
-//				c++;
-//				unit = unit->next;
-//			}
-//
-//			DebugOut(L"%d\t", c);
-//		}
-//
-//		DebugOut(L"\n");
-//	}
-//}
-
-
