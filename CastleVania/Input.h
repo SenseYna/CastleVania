@@ -29,6 +29,9 @@ public:
 	void Simon_Jump();
 	void Simon_Whip();
 	void Simon_Whip_Weapons();
-	
+	bool Check_Simon_Collection_Stair();
+	void Simon_Stair_Up();
+	void Simon_Stair_Down();
+	bool Simon_Stair_Stand();
 };
 

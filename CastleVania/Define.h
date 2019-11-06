@@ -28,12 +28,14 @@
 #define ID_TEX_SUBWEAPONS			6
 #define ID_TEX_ITEMS				7
 #define ID_TEX_DOOR					8
+#define ID_TEX_STAIR				9
 
 // ID Object
 #define	CANDLE				0
 #define	GROUND				1
 #define	DOOR				2
-#define NEXT_SCENE_OBJECT 3
+#define NEXT_SCENE_OBJECT	3
+#define STAIR	4
 
 // Font
 #define FILEPATH_FONT					L"Font\\prstart.ttf"
@@ -76,7 +78,8 @@
 #define HIT_STAND		4
 #define HIT_SIT			5
 #define POWER			6
-
+#define STAIR_UP		7
+#define STAIR_DOWN		8
 
 // Simon
 #define SIMON_WALKING_SPEED			0.13f
@@ -85,6 +88,8 @@
 #define SIMON_SPEED_Y_LOWER_ZONE    0.2f
 #define SIMON_GRAVITY				0.002f
 #define SIMON_GRAVITY_LOWER			0.001f
+#define SIMON_STAIR_SPEED_X			0.079f
+#define SIMON_STAIR_SPEED_Y			0.079f
 
 // Simon BBOX
 #define SIMON_BBOX_WIDTH			30
@@ -141,6 +146,7 @@
 #define HIT_ANI_TIME_DELAY			300
 #define DEFLECT_ANI_TIME_DELAY		600
 #define POWER_ANI_TIME_DELAY		450
+#define STAIR_WALK_ANI_TIME_DELAY	200
 
 
 // Item 
@@ -171,3 +177,8 @@
 // Next Scene Object
 #define NEXTSCENEOBJECT_BBOX_WIDTH				44
 #define NEXTSCENEOBJECT_BBOX_HEIGHT			126
+
+// Stair BBOX
+#define STAIR_BBOX_WIDTH			32
+#define STAIR_BBOX_HEIGHT			32
+#define STAIR_BBOX_WIDTH_BONUS			24

@@ -97,7 +97,6 @@ void TileMap::Draw(D3DXVECTOR3 camPosition)
 	{
 		for (UINT j = start_col_to_draw; j <= end_col_to_draw; j++)
 		{
-			// +camPosition.x để luôn giữ camera ở chính giữa, vì trong hàm Game::Draw() có trừ cho camPosition.x làm các object đều di chuyển theo
 			// +(int)camPosition.x % 32 để giữ cho camera chuyển động mượt
 			float x = tile_Width * (j - start_col_to_draw) + camPosition.x -(int)camPosition.x % 32;
 			float y = tile_Height * i + 48;

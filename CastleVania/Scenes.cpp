@@ -103,6 +103,15 @@ void Scenes::LoadObjectsFromFile(LPCWSTR FilePath)
 				unit = new Unit(grid, door, pos_x, pos_y);
 				break;
 			}
+			case STAIR: 
+			{
+				Stair * stair = new Stair();
+				stair->SetPosition(pos_x, pos_y);
+				stair->SetState(state);  // -1: stair left bottom , -2: stair left top, 1: stair right bottom, 2 stair right top
+				stair->SetEnable(true);
+				unit = new Unit(grid, stair, pos_x, pos_y);
+				break;
+			}
 			default:
 				break;
 		}
@@ -116,6 +125,7 @@ void Scenes::GetObjectFromGrid()
 	listUnits.clear();
 	listObjects.clear();
 	listDoors.clear();
+	listStairs.clear();
 
 	grid->Get(game->GetCameraPositon(), listUnits);
 
@@ -127,6 +137,8 @@ void Scenes::GetObjectFromGrid()
 
 		if (dynamic_cast<Door*>(obj))
 			listDoors.push_back(obj);
+		if (dynamic_cast<Stair*>(obj))
+			listStairs.push_back(obj);
 	}
 }
 
@@ -231,7 +243,7 @@ void Scenes::Render()
 	}
 
 	simon->Render();
-	//simon->RenderBoundingBox();
+	simon->RenderBoundingBox();
 
 	weaponlist[0]->Render();
 
@@ -250,6 +262,11 @@ void Scenes::Render()
 	{
 		obj->Render();
 		//obj->RenderBoundingBox();
+	}
+	for (auto obj : listStairs)
+	{
+		//obj->Render();
+		obj->RenderBoundingBox();
 	}
 }
 
@@ -331,7 +348,7 @@ void Scenes::SetGameState(int state)
 		break;
 	case GAMESTATE_2:
 		simon->SetState(STAND);
-		simon->SetPosition(0, 200); 
+		simon->SetPosition(1150, 200); 
 		game->SetCameraPosition(0, 0);
 		break;
 	default:

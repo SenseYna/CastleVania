@@ -153,7 +153,6 @@ void LoadResources()
 	LoadTileMapFromFile(FILEPATH_TILE_MAP_RESOURCE);
 }	
 
-
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
@@ -284,7 +283,6 @@ int Run()
 
 	return 1;
 }
-
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {

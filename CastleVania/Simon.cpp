@@ -20,17 +20,22 @@ Simon::Simon() : GameObject()
 	AddAnimation("simon_hitstand_ani");
 	AddAnimation("simon_hitsit_ani");
 	AddAnimation("simon_powerup_ani");
+	AddAnimation("simon_stairup_ani");
+	AddAnimation("simon_stairdown_ani");
+	AddAnimation("simon_hitstairup_ani");
+	AddAnimation("simon_hitstairdown_ani");
 }
 
 void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	GameObject::Update(dt);
-	if (!isAutoWalk) {
+	if (!isAutoWalk && !isStandOnStair) {
 		if (vy > -SIMON_SPEED_Y_LOWER_ZONE && vy < SIMON_SPEED_Y_LOWER_ZONE && !isCollisionHead) // trọng lực khi nhảy
 			vy += SIMON_GRAVITY_LOWER * dt;
 		else
 			vy += SIMON_GRAVITY * dt;
 	}
+
 	// Auto - walk
 	if (isAutoWalk)
 		DoAutoWalk();
@@ -100,7 +105,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					SetState(WALK);
 					vx = SIMON_WALKING_SPEED_LOWER;
 					vy = 0;
-					AutoWalk(80);
+					AutoWalk(80, STAND, DIR_RIGHT);
 				}
 			}
 			else if (dynamic_cast<NextSceneObject*>(e->obj))
@@ -175,6 +180,21 @@ void Simon::SetState(int state)
 			animations[state]->Reset();
 			animations[state]->SetAniStartTime(GetTickCount());
 			break;
+
+		case STAIR_UP:
+			if (nx > 0) vx = SIMON_STAIR_SPEED_X;
+			else vx = -SIMON_STAIR_SPEED_X;
+			vy = -SIMON_STAIR_SPEED_Y;
+			animations[state]->Reset();
+			animations[state]->SetAniStartTime(GetTickCount());
+			break;
+		case STAIR_DOWN:
+			if (nx > 0) vx = SIMON_STAIR_SPEED_X;
+			else vx = -SIMON_STAIR_SPEED_X;
+			vy = SIMON_STAIR_SPEED_Y;
+			animations[state]->Reset();
+			animations[state]->SetAniStartTime(GetTickCount());
+			break;
 		default:
 			break;
 	}
@@ -182,7 +202,7 @@ void Simon::SetState(int state)
 
 void Simon::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-	// sprite có kích thước là 60x66, bbox là 40x62
+	// sprite có kích thước là 60x66, bbox là 30x62
 	left = x + 15; //30,60
 	top = y + 2;  //62,66
 	right = left + SIMON_BBOX_WIDTH;
@@ -241,11 +261,50 @@ bool Simon::CheckCollisionWithItem(vector<LPGAMEOBJECT>* listItem)
 	}
 }
 
-void Simon::AutoWalk(float distance)
+bool Simon::CheckCollisionWithStair(vector<LPGAMEOBJECT>* listStair)
+{
+	float simon_l, simon_t, simon_r, simon_b;
+	GetBoundingBox(simon_l, simon_t, simon_r, simon_b);
+
+	if (isStandOnStair) {
+		needStateMoveUpStair = true;
+		needStateMoveDownStair = true;
+	}
+
+	for (UINT i = 0; i < listStair->size(); i++)
+	{
+		float stair_l, stair_t, stair_r, stair_b;
+		listStair->at(i)->GetBoundingBox(stair_l, stair_t, stair_r, stair_b);
+
+		if (GameObject::AABB(simon_l, simon_t, simon_r, simon_b+3, stair_l, stair_t, stair_r, stair_b) == true)
+		{
+			if (abs(listStair->at(i)->GetState()) == 1) stairDirection = 1;  // Direction stair left
+			else stairDirection = -1;
+			
+			stairCollided = listStair->at(i);
+
+			// bậc thang ở dưới so với chân Simon->có thể di chuyển xuống.
+			if (simon_b > stair_t) needStateMoveUpStair = true;
+			else if (simon_b < stair_b) needStateMoveDownStair = true;
+			
+			if (needStateMoveUpStair && simon_b <= stair_t + STAIR_BBOX_HEIGHT/2+3 && stairCollided->GetState() > 0) // xét đi lên hết cầu thang: đang lên và cao hơn object stair trên
+				needStateMoveUpStair = false;
+			if (needStateMoveDownStair && simon_b >= stair_b - STAIR_BBOX_HEIGHT / 2 +1 && stairCollided->GetState() < 0) // xét đi lên hết cầu thang: đang lên và cao hơn object stair trên
+				needStateMoveDownStair = false;
+			return true; // collision between Simon and stairs
+		}
+
+	}
+
+	return false;
+}
+
+void Simon::AutoWalk(float distance, int new_state, int new_nx)
 {
 	isAutoWalk = true;
 	autoWalkDistance = distance;
-
+	stateAfterAutoWalk = new_state;
+	nxAfterAutoWalk = new_nx;
 }
 
 void Simon::DoAutoWalk()
@@ -254,8 +313,22 @@ void Simon::DoAutoWalk()
 	{
 		x += dx;
 		y += dy;
-		autoWalkDistance -= dx;
+		autoWalkDistance -= abs(dx);
 	}
+	else 
+	{ 
+		x += autoWalkDistance;
+		state = stateAfterAutoWalk;
+		nx = nxAfterAutoWalk;
+
+		SetState(state);
+
+		isAutoWalk = false;
+		autoWalkDistance = 0;
+		stateAfterAutoWalk = -1;
+		nxAfterAutoWalk = 0;
+	}
+
 }
 
 

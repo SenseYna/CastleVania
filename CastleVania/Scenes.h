@@ -13,6 +13,7 @@
 #include "Items.h"
 #include "Timer.h"
 #include "Door.h"
+#include "Stair.h"
 
 #include <map>
 
@@ -30,6 +31,7 @@ class Scenes
 	vector<LPGAMEOBJECT> listItems;
 	vector<LPGAMEOBJECT> listDoors;
 	vector<Unit*> listUnits;
+	vector<LPGAMEOBJECT> listStairs;
 
 
 	Simon * simon;
@@ -74,5 +76,6 @@ public:
 	vector<Weapons*> * GetWeaponList() { return &weaponlist; }
 	void GetObjectFromGrid();
 	void GetColliableObjects(LPGAMEOBJECT curObj, vector<LPGAMEOBJECT>&coObjects);
+	vector<LPGAMEOBJECT> * GetListStairs() { return &(listStairs); }
 };
 

@@ -77,6 +77,9 @@
     <ClCompile Include="Door.cpp">
       <Filter>Static Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Stair.cpp">
+      <Filter>Static Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -134,6 +137,9 @@
       <Filter>Static Objects</Filter>
     </ClInclude>
     <ClInclude Include="Door.h">
+      <Filter>Static Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Stair.h">
       <Filter>Static Objects</Filter>
     </ClInclude>
   </ItemGroup>

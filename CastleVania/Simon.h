@@ -11,10 +11,11 @@ class Simon : public GameObject
 	int currentWeapon; 
 	int energy;
 	int item;
-	
 
-	// auto-walk
+	//auto-walk
 	float autoWalkDistance = 0;		// Khoảng cách 
+	int stateAfterAutoWalk = -1;	// Trạng thái sau khi auto-walk
+	int nxAfterAutoWalk = 0;		// Hướng Simon sau khi auto-walk
 
 public:
 	Simon();
@@ -28,6 +29,13 @@ public:
 	int isNextScene = -1;
 	bool isAutoWalk = false;
 	bool isCollisionHead = false;
+
+	//Stair
+	bool isStandOnStair = false;	// trạng thái đang đứng trên cầu thang 
+	bool needStateMoveUpStair = false;	// có thể di chuyển lên cầu thang
+	bool needStateMoveDownStair = false;	// có thể di chuyển xuống cầu thang
+	int stairDirection; 
+	LPGAMEOBJECT stairCollided = nullptr; // lưu bậc thang va chạm với simon -> để xét vị trí đi tới cầu thang để lên - xuống
 
 	//Update
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
@@ -45,8 +53,14 @@ public:
 	// Kiểm tra va chạm với danh sách item
 	bool CheckCollisionWithItem(vector<LPGAMEOBJECT> * listItem);
 
+	// Kiểm tra va chạm với danh sách stair
+	bool CheckCollisionWithStair(vector<LPGAMEOBJECT> * listStair);
+
+	// Giữ cho Simon đứng yên trên bậc thang
+	void StandOnStair() { vx = vy = 0; }
+
 	//Auto Walk
-	void AutoWalk(float distance);
+	void AutoWalk(float distance, int new_state, int new_nx);
 	void DoAutoWalk();
 
 	//Render

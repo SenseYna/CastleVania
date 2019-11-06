@@ -7,3 +7,4 @@
 6 Textures\\Weapons.png Textures\\Weapons_sprites.txt Textures\\Weapons_animations.txt
 7 Textures\\Items.png Textures\\Items_sprites.txt Textures\\Items_animations.txt
 8 Textures\\Door.png Textures\\Door_sprites.txt Textures\\Door_animations.txt
+9 Textures\\Stair.png Textures\\Stair_sprites.txt Textures\\Stair_animations.txt
