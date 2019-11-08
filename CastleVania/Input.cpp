@@ -56,20 +56,24 @@ void Input::KeyState(BYTE *state)
 	// Xét trạng thái phím
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
-		if (simon->isStandOnStair)
+		if (simon->isStandOnStair && Check_Simon_Collection_Stair() == true)
 		{
 			if (simon->stairDirection) // cầu thang trái dưới - phải trên
 				Simon_Stair_Up();
+			else // cầu thang trái dưới - phải trên
+				Simon_Stair_Down();
 			return;
 		}
 		Simon_Walk_Right();
 	}
 	else if (game->IsKeyDown(DIK_LEFT))
 	{
-		if (simon->isStandOnStair)
+		if (simon->isStandOnStair && Check_Simon_Collection_Stair() == true)
 		{
 			if (simon->stairDirection) // cầu thang trái dưới - phải trên
 				Simon_Stair_Down();
+			else Simon_Stair_Up(); // cầu thang trái dưới - phải trên
+				
 			return;
 		}
 		Simon_Walk_Left();
@@ -111,7 +115,6 @@ void Input::KeyState(BYTE *state)
 		}
 		simon->SetState(STAND);
 	}
-	
 }
 
 void Input::OnKeyDown(int KeyCode)
@@ -224,7 +227,7 @@ void Input::Simon_Whip_Weapons()
 
 bool Input::Check_Simon_Collection_Stair()
 {
-	return simon->CheckCollisionWithStair(scene->GetListStairs());
+	return simon->CheckRightnessCollisionWithStair(scene->GetListStairs());
 }
 
 void Input::Simon_Stair_Up()
@@ -237,8 +240,9 @@ void Input::Simon_Stair_Up()
 			simon->SetOrientation(nx);
 			simon->SetState(STAIR_UP);
 			simon->isStandOnStair = false;
+			simon->col_stair_bot = false;
 			simon->needStateMoveDownStair = false;
-			simon->AutoWalk(14 * nx, STAND, nx);
+			simon->AutoWalk(abs(14 *nx), STAND, stairDirection);
 			return;
 	}
 
@@ -252,8 +256,7 @@ void Input::Simon_Stair_Up()
 			simon->GetPosition(simon_x, temp_y);
 
 			if (stairDirection == 1) stair_x -= 33.0f; // trừ hao để x của simon + width simon là vừa đứng trước cầu thang (xem **)
-			else stair_x += 5.0f;
-
+			//else (stairDirection == -1) stair_x -= 
 			if (stair_x < simon_x) simon->SetOrientation(-1);
 			else if (stair_x > simon_x)  simon->SetOrientation(1);
 			else return;
@@ -286,6 +289,7 @@ void Input::Simon_Stair_Down()
 		simon->SetState(STAIR_DOWN);
 		simon->isStandOnStair = false;
 		simon->needStateMoveUpStair = false;
+		simon->col_stair_bot = false;
 		simon->AutoWalk(abs(30 * nx), STAND, nx);
 		return;
 	}
@@ -299,7 +303,8 @@ void Input::Simon_Stair_Down()
 			simon->stairCollided->GetPosition(stair_x, temp_y);
 			simon->GetPosition(simon_x, temp_y);
 
-			if (stairDirection == -1) stair_x -= 28.0f;
+			if (stairDirection == -1) stair_x -= 15.0f;
+			else if (stairDirection == 1) stair_x -= 25.0f;
 
 			if (stair_x < simon_x) simon->SetOrientation(-1);
 			else if (stair_x > simon_x)  simon->SetOrientation(1);
@@ -313,6 +318,14 @@ void Input::Simon_Stair_Down()
 		}
 		else
 		{
+			if (simon->col_stair_bot && stairDirection == -1) {
+				simon->x += 8.0f;
+				simon->col_stair_bot = false;
+			}
+			/*else if (simon->col_stair_bot && stairDirection == -1) {
+				simon->x += 6.0f;
+				simon->col_stair_bot = false;
+			}*/
 			simon->SetOrientation(stairDirection);
 			simon->SetState(STAIR_DOWN);
 		}

@@ -29,6 +29,8 @@ public:
 	int isNextScene = -1;
 	bool isAutoWalk = false;
 	bool isCollisionHead = false;
+	bool col_stair_top = false; // va chạm bbox stair trên
+	bool col_stair_bot = false; // va chạm bbox stair dưới
 
 	//Stair
 	bool isStandOnStair = false;	// trạng thái đang đứng trên cầu thang 
@@ -53,8 +55,8 @@ public:
 	// Kiểm tra va chạm với danh sách item
 	bool CheckCollisionWithItem(vector<LPGAMEOBJECT> * listItem);
 
-	// Kiểm tra va chạm với danh sách stair
-	bool CheckCollisionWithStair(vector<LPGAMEOBJECT> * listStair);
+	// Kiểm tra tính đúng đắn va chạm với danh sách stair
+	bool CheckRightnessCollisionWithStair(vector<LPGAMEOBJECT> * listStair);
 
 	// Giữ cho Simon đứng yên trên bậc thang
 	void StandOnStair() { vx = vy = 0; }

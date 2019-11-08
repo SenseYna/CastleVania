@@ -243,7 +243,7 @@ void Scenes::Render()
 	}
 
 	simon->Render();
-	simon->RenderBoundingBox();
+	//simon->RenderBoundingBox();
 
 	weaponlist[0]->Render();
 
@@ -348,7 +348,7 @@ void Scenes::SetGameState(int state)
 		break;
 	case GAMESTATE_2:
 		simon->SetState(STAND);
-		simon->SetPosition(1150, 200); 
+		simon->SetPosition(0, 200); 
 		game->SetCameraPosition(0, 0);
 		break;
 	default:
@@ -373,7 +373,7 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 		{
 			if (dynamic_cast<Ground*>(obj))
 				coObjects.push_back(obj);
-		}
+		}	
 	}
 	else if (dynamic_cast<Simon*>(Obj))
 	{

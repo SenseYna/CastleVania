@@ -261,35 +261,46 @@ bool Simon::CheckCollisionWithItem(vector<LPGAMEOBJECT>* listItem)
 	}
 }
 
-bool Simon::CheckCollisionWithStair(vector<LPGAMEOBJECT>* listStair)
+bool Simon::CheckRightnessCollisionWithStair(vector<LPGAMEOBJECT>* listStair)
 {
 	float simon_l, simon_t, simon_r, simon_b;
 	GetBoundingBox(simon_l, simon_t, simon_r, simon_b);
 
-	if (isStandOnStair) {
+	if (isStandOnStair) 
+	{
 		needStateMoveUpStair = true;
 		needStateMoveDownStair = true;
 	}
 
 	for (UINT i = 0; i < listStair->size(); i++)
 	{
-		float stair_l, stair_t, stair_r, stair_b;
+		float stair_l, stair_t, stair_r, stair_b;	
+
 		listStair->at(i)->GetBoundingBox(stair_l, stair_t, stair_r, stair_b);
 
-		if (GameObject::AABB(simon_l, simon_t, simon_r, simon_b+3, stair_l, stair_t, stair_r, stair_b) == true)
+		if (simon_b > stair_b && listStair->at(i)->GetState() == 1) continue; // tương tự dưới
+		 // đi xuống thì k xét va chạm stair top - lỗi vì xét va chạm out stair ở cạnh - return
+		else if (GameObject::AABB(simon_l, simon_t, simon_r, simon_b+3, stair_l, stair_t, stair_r, stair_b) == true)
 		{
+			//if (simon_b > stair_b && listStair->at(i)->GetState() == -2) continue;
+
 			if (abs(listStair->at(i)->GetState()) == 1) stairDirection = 1;  // Direction stair left
 			else stairDirection = -1;
-			
+			if (listStair->at(i)->GetState() < 0 && stairDirection == -1) col_stair_bot = true; // sửa vị trí x cho khớp cầu thang khi đi xuống
+			//else col_stair_top = true;
+
 			stairCollided = listStair->at(i);
 
 			// bậc thang ở dưới so với chân Simon->có thể di chuyển xuống.
-			if (simon_b > stair_t) needStateMoveUpStair = true;
-			else if (simon_b < stair_b) needStateMoveDownStair = true;
+			if (simon_b + 10 > stair_t) { needStateMoveUpStair = true; needStateMoveDownStair = true; }
 			
-			if (needStateMoveUpStair && simon_b <= stair_t + STAIR_BBOX_HEIGHT/2+3 && stairCollided->GetState() > 0) // xét đi lên hết cầu thang: đang lên và cao hơn object stair trên
+			if (needStateMoveUpStair && simon_b <= stair_t + STAIR_BBOX_HEIGHT/ 2 + 3 && stairCollided->GetState() == 1) // xét đi lên hết cầu thang: đang lên và cao hơn object stair trên
 				needStateMoveUpStair = false;
-			if (needStateMoveDownStair && simon_b >= stair_b - STAIR_BBOX_HEIGHT / 2 +1 && stairCollided->GetState() < 0) // xét đi lên hết cầu thang: đang lên và cao hơn object stair trên
+			if (needStateMoveUpStair && simon_b <= stair_t + STAIR_BBOX_HEIGHT / 2 + 10&&stairCollided->GetState() == 2) // xét đi lên hết cầu thang: đang lên và cao hơn object stair trên
+				needStateMoveUpStair = false;
+			if (needStateMoveDownStair && simon_b >= stair_b - STAIR_BBOX_HEIGHT / 2 -10 && stairCollided->GetState() == -1) // xét đi xuống hết cầu thang: đang xuống và thấp hơn object stair dưới
+				needStateMoveDownStair = false;
+			else if (needStateMoveDownStair && simon_b >= stair_b && stairCollided->GetState() == 2) // xét đi xuống hết cầu thang: đang xuống và thấp hơn object stair dưới
 				needStateMoveDownStair = false;
 			return true; // collision between Simon and stairs
 		}
@@ -322,6 +333,12 @@ void Simon::DoAutoWalk()
 		nx = nxAfterAutoWalk;
 
 		SetState(state);
+		if (state == STAIR_DOWN && stairDirection == 1) {
+			x += 20.0f; y += 1.0f;
+		}
+		else if (state == STAIR_DOWN && stairDirection == -1) {
+			x -= 8.0f; y += 0.5f;
+		}
 
 		isAutoWalk = false;
 		autoWalkDistance = 0;

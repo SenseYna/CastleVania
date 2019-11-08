@@ -68,7 +68,6 @@ void Grid::Get(D3DXVECTOR3 camPosition, vector<Unit*>& listUnits)
 			{
 				if (unit->GetObj()->IsEnable() == true)
 					listUnits.push_back(unit);
-				
 				unit = unit->next;
 			}
 		}
