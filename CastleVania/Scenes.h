@@ -50,7 +50,7 @@ public:
 	~Scenes();
 	
 	void Init(int idScene);						// init simon position, camera position, grid..
-	void LoadObjectsFromFile(LPCWSTR FilePath);	// load all objects (position, state, isEnable) from file 
+	void LoadObjectsFromFileToGrid(LPCWSTR FilePath);	// load all objects (position, state, isEnable) from file 
 	
 	// Update
 	void ChangeScene();							// Chuyển đổi scene khi Simon va chạm với ChangeSceneObject

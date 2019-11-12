@@ -28,6 +28,10 @@ bool Input::AnimationDelay()
 
 	if (simon->GetState() == STAIR_DOWN && simon->animations[STAIR_DOWN]->IsOver(STAIR_WALK_ANI_TIME_DELAY) == false)
 		return true;
+	if (simon->GetState() == HIT_STAIR_UP && simon->animations[HIT_STAIR_UP]->IsOver(HIT_ANI_TIME_DELAY) == false)
+		return true;
+	if (simon->GetState() == HIT_STAIR_DOWN && simon->animations[HIT_STAIR_DOWN]->IsOver(HIT_ANI_TIME_DELAY) == false)
+		return true;
 
 	return false;
 }
@@ -56,8 +60,9 @@ void Input::KeyState(BYTE *state)
 	// Xét trạng thái phím
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
-		if (simon->isStandOnStair && Check_Simon_Collection_Stair() == true)
+		if (simon->isStandOnStair)// && Check_Simon_Collection_Stair() == true)
 		{
+			Check_Simon_Collection_Stair();
 			if (simon->stairDirection) // cầu thang trái dưới - phải trên
 				Simon_Stair_Up();
 			else // cầu thang trái dưới - phải trên
@@ -68,8 +73,9 @@ void Input::KeyState(BYTE *state)
 	}
 	else if (game->IsKeyDown(DIK_LEFT))
 	{
-		if (simon->isStandOnStair && Check_Simon_Collection_Stair() == true)
+		if (simon->isStandOnStair)// && Check_Simon_Collection_Stair() == true)
 		{
+			Check_Simon_Collection_Stair();
 			if (simon->stairDirection) // cầu thang trái dưới - phải trên
 				Simon_Stair_Down();
 			else Simon_Stair_Up(); // cầu thang trái dưới - phải trên
@@ -180,6 +186,14 @@ void Input::Simon_Whip()
 	else if (simon->GetState() == SIT)
 	{
 		simon->SetState(HIT_SIT);
+	}
+	else if (simon->GetState() == STAIR_UP)
+	{
+		simon->SetState(HIT_STAIR_UP);
+	}
+	else if (simon->GetState() == STAIR_DOWN)
+	{
+		simon->SetState(HIT_STAIR_DOWN);
 	}
 }
 
@@ -337,11 +351,27 @@ void Input::Simon_Stair_Down()
 
 bool Input::Simon_Stair_Stand()
 {
-	if (simon->GetState() == STAIR_UP || simon->GetState() == STAIR_DOWN)
+	if (simon->GetState() == STAIR_UP || simon->GetState() == STAIR_DOWN ||
+		simon->GetState() == HIT_STAIR_UP || simon->GetState() == HIT_STAIR_DOWN)
 	{
-		simon->StandOnStair();
+		
 		simon->animations[STAIR_UP]->Reset();
 		simon->animations[STAIR_DOWN]->Reset();
+
+		if (simon->GetState() == HIT_STAIR_UP)
+		{
+			simon->SetState(STAIR_UP);
+			simon->animations[STAIR_UP]->SetAniStartTime(0);
+			//isNeedToWaitingAnimation = false;
+		}
+		else if (simon->GetState() == HIT_STAIR_DOWN)
+		{
+			simon->SetState(STAIR_DOWN);
+			simon->animations[STAIR_DOWN]->SetAniStartTime(0);
+			//isNeedToWaitingAnimation = false;
+		}
+
+		simon->StandOnStair();
 		return true;
 	}
 

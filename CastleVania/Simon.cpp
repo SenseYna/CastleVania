@@ -30,6 +30,12 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	GameObject::Update(dt);
 	if (!isAutoWalk && !isStandOnStair) {
+
+		//int temp_x = x;
+		/*if (GetState() == JUMP && vy > 0.2 && vy< 0.3 && isTouchGround == false)
+			SetState(STAND);*/
+		//x = temp_x;
+
 		if (vy > -SIMON_SPEED_Y_LOWER_ZONE && vy < SIMON_SPEED_Y_LOWER_ZONE && !isCollisionHead) // trọng lực khi nhảy
 			vy += SIMON_GRAVITY_LOWER * dt;
 		else
@@ -188,10 +194,19 @@ void Simon::SetState(int state)
 			animations[state]->Reset();
 			animations[state]->SetAniStartTime(GetTickCount());
 			break;
+
 		case STAIR_DOWN:
 			if (nx > 0) vx = SIMON_STAIR_SPEED_X;
 			else vx = -SIMON_STAIR_SPEED_X;
 			vy = SIMON_STAIR_SPEED_Y;
+			animations[state]->Reset();
+			animations[state]->SetAniStartTime(GetTickCount());
+			break;
+
+		case HIT_STAIR_UP:
+		case HIT_STAIR_DOWN:
+			vx = 0;
+			vy = 0;
 			animations[state]->Reset();
 			animations[state]->SetAniStartTime(GetTickCount());
 			break;
@@ -212,7 +227,7 @@ void Simon::GetBoundingBox(float & left, float & top, float & right, float & bot
 
 bool Simon::isWhip()
 {
-	return state == HIT_SIT || state == HIT_STAND;
+	return state == HIT_SIT || state == HIT_STAND || state == HIT_STAIR_DOWN || state == HIT_STAIR_UP;
 }
 
 bool Simon::CheckCollisionWithItem(vector<LPGAMEOBJECT>* listItem)

@@ -8,8 +8,6 @@
 #define TILEMAP_TRANSPARENT_COLOR		D3DCOLOR_XRGB(5,5,5)
 #define SCREEN_WIDTH			512
 #define SCREEN_HEIGHT			480
-#define DEFAULT_CELL_WIDTH		256
-#define DEFAULT_CELL_HEIGHT		240
 #define MAX_FRAME_RATE			150
 
 
@@ -19,6 +17,7 @@
 
 // ID TEX
 #define ID_TEX_BBOX					-1
+#define ID_TEX_BBOX_2				-2
 #define ID_TEX_SIMON				0
 #define ID_TEX_GROUND				1
 #define ID_TEX_CANDLE				2
@@ -80,6 +79,8 @@
 #define POWER			6
 #define STAIR_UP		7
 #define STAIR_DOWN		8
+#define HIT_STAIR_UP	9
+#define HIT_STAIR_DOWN	10
 
 // Simon
 #define SIMON_WALKING_SPEED			0.13f
@@ -143,7 +144,7 @@
 // Animation Delay
 #define EFFECT_ANI_TIME_DELAY		300
 #define SPARK_ANI_TIME_DELAY		100
-#define HIT_ANI_TIME_DELAY			300
+#define HIT_ANI_TIME_DELAY			400
 #define DEFLECT_ANI_TIME_DELAY		600
 #define POWER_ANI_TIME_DELAY		450
 #define STAIR_WALK_ANI_TIME_DELAY	200
@@ -175,10 +176,11 @@
 #define DOOR_BBOX_HEIGHT			96
 
 // Next Scene Object
-#define NEXTSCENEOBJECT_BBOX_WIDTH				44
+#define NEXTSCENEOBJECT_BBOX_WIDTH			44
 #define NEXTSCENEOBJECT_BBOX_HEIGHT			126
 
 // Stair BBOX
 #define STAIR_BBOX_WIDTH			32
 #define STAIR_BBOX_HEIGHT			32
-#define STAIR_BBOX_WIDTH_BONUS			24
+#define STAIR_BBOX_WIDTH_BONUS		24
+

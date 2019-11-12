@@ -29,13 +29,11 @@ void Scenes::Init(int idScene)
 	switch (idScene)
 	{
 	case SCENE_1:
-		grid = new Grid(1536, 480); // 48 15
-		LoadObjectsFromFile(FILEPATH_OBJECTS_SCENE_1);
+		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_1);
 		SetGameState(GAMESTATE_1);
 		break;
 	case SCENE_2:
-		grid = new Grid(5632, 480); //5632
-		LoadObjectsFromFile(FILEPATH_OBJECTS_SCENE_2);
+		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_2);
 		SetGameState(GAMESTATE_2);
 		break;
 	default:
@@ -43,7 +41,7 @@ void Scenes::Init(int idScene)
 	}
 }
 
-void Scenes::LoadObjectsFromFile(LPCWSTR FilePath)
+void Scenes::LoadObjectsFromFileToGrid(LPCWSTR FilePath)
 {
 	fstream fs;
 	fs.open(FilePath, ios::in);
@@ -59,10 +57,28 @@ void Scenes::LoadObjectsFromFile(LPCWSTR FilePath)
 	int state;
 	bool isEnable;
 	int idItem;
+	int grid_width;
+	int grid_height;
+	int numberOfColumns;
+	int numberOfRows;
+	int cell_x;
+	int cell_y;
+
+	//256 // 240
+	//grid = new Grid(grid_width, grid_height, numberOfRows, numberOfColumns);
+
+	if (!fs.eof()) fs >> grid_width >> grid_height >> numberOfRows >> numberOfColumns;
+	else {
+		DebugOut(L"[ERROR] File is empty: file path = %s\n", FilePath);
+		fs.close();
+		return;
+	}
+
+	grid = new Grid(grid_width, grid_height, numberOfRows, numberOfColumns);
 
 	while (!fs.eof())
 	{
-		fs >> ID_Obj >> pos_x >> pos_y >> state >> isEnable >> idItem;
+		fs >> ID_Obj >> pos_x >> pos_y >> state >> isEnable >> idItem >> cell_x >> cell_y;
 
 		switch (ID_Obj)
 		{
@@ -72,7 +88,7 @@ void Scenes::LoadObjectsFromFile(LPCWSTR FilePath)
 				ground->SetPosition(pos_x, pos_y);
 				ground->SetState(state);
 				ground->SetEnable(true);
-				unit = new Unit(grid, ground, pos_x, pos_y);
+				unit = new Unit(grid, ground, pos_x, pos_y, cell_x, cell_y);
 				break;
 			}
 			case CANDLE:
@@ -82,7 +98,7 @@ void Scenes::LoadObjectsFromFile(LPCWSTR FilePath)
 				candle->SetState(state);
 				candle->SetEnable(isEnable);
 				candle->SetIDItem(idItem);
-				unit = new Unit(grid, candle, pos_x, pos_y);
+				unit = new Unit(grid, candle, pos_x, pos_y, cell_x, cell_y);
 				break;
 			}
 			case NEXT_SCENE_OBJECT:
@@ -91,7 +107,7 @@ void Scenes::LoadObjectsFromFile(LPCWSTR FilePath)
 				nextScene->SetPosition(pos_x, pos_y);
 				nextScene->SetIDNextScene(state);
 				nextScene->SetEnable(true);
-				unit = new Unit(grid, nextScene, pos_x, pos_y);
+				unit = new Unit(grid, nextScene, pos_x, pos_y, cell_x, cell_y);
 				break;
 			}
 			case DOOR:
@@ -100,7 +116,7 @@ void Scenes::LoadObjectsFromFile(LPCWSTR FilePath)
 				door->SetPosition(pos_x, pos_y);
 				door->SetState(state);
 				door->SetEnable(true);
-				unit = new Unit(grid, door, pos_x, pos_y);
+				unit = new Unit(grid, door, pos_x, pos_y, cell_x, cell_y);
 				break;
 			}
 			case STAIR: 
@@ -109,7 +125,7 @@ void Scenes::LoadObjectsFromFile(LPCWSTR FilePath)
 				stair->SetPosition(pos_x, pos_y);
 				stair->SetState(state);  // -1: stair left bottom , -2: stair left top, 1: stair right bottom, 2 stair right top
 				stair->SetEnable(true);
-				unit = new Unit(grid, stair, pos_x, pos_y);
+				unit = new Unit(grid, stair, pos_x, pos_y, cell_x, cell_y);
 				break;
 			}
 			default:
@@ -348,7 +364,7 @@ void Scenes::SetGameState(int state)
 		break;
 	case GAMESTATE_2:
 		simon->SetState(STAND);
-		simon->SetPosition(0, 200); 
+		simon->SetPosition(1050, 200); 
 		game->SetCameraPosition(0, 0);
 		break;
 	default:

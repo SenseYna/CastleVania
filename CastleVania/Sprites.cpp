@@ -47,6 +47,8 @@ void Animation::Add(string spriteID, DWORD time)
 	LPSPRITE sprite = Sprites::GetInstance()->Get(spriteID);
 	LPANIMATION_FRAME frame = new AnimationFrame(sprite, time);
 	frames.push_back(frame);
+	if (frames.size() == 4)
+		int a;
 }
 
 void Animation::Render(int nx, float x, float y, int alpha)
@@ -62,7 +64,9 @@ void Animation::Render(int nx, float x, float y, int alpha)
 	{
 		DWORD t = frames[currentFrame]->GetTime();
 		if (now - lastFrameTime >= t) {
-			currentFrame++;
+			currentFrame++; 
+			if (currentFrame > 4)
+				currentFrame = 9;
 			lastFrameTime = now;
 
 			if (currentFrame >= frames.size())
