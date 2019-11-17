@@ -24,3 +24,4 @@ simon_hitstairup_3	420	132	480	196
 simon_hitstairdown_1	120	132	180	196
 simon_hitstairdown_2	180	132	240	196
 simon_hitstairdown_3	240	132	300	196
+simon_deflect	0	66	60	130

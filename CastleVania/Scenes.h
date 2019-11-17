@@ -14,6 +14,8 @@
 #include "Timer.h"
 #include "Door.h"
 #include "Stair.h"
+#include "Zombie.h"
+#include "BlackLeopard.h"
 
 #include <map>
 
@@ -30,9 +32,9 @@ class Scenes
 	vector<LPGAMEOBJECT> listObjects;
 	vector<LPGAMEOBJECT> listItems;
 	vector<LPGAMEOBJECT> listDoors;
-	vector<Unit*> listUnits;
+	vector<LPUNIT> listUnits;
 	vector<LPGAMEOBJECT> listStairs;
-
+	//vector<LPUNIT> listEnemys;
 
 	Simon * simon;
 	Whip * whip;
@@ -59,6 +61,7 @@ public:
 	void Whip_Update(DWORD dt);
 	void Weapon_Update(DWORD dt, int index);
 	void UpdateCameraPosition();
+	void UpdateGrid();
 
 	// Render
 	void Render();
@@ -70,6 +73,7 @@ public:
 	void SetInactivationByPosition();			// Nếu object ra khỏi vùng viewport thì set unable / inactive
 	void SetDropItems();	// Xét rơi item cho các object bị huỷ	
 	void SetGameState(int state);	// Set vị trí của simon, camera
+	void SetEnemiesSpawnPositon();	// Set position cho khởi tạo enemies
 
 	// Get
 	Simon * GetSimon() { return this->simon; }
@@ -77,5 +81,6 @@ public:
 	void GetObjectFromGrid();
 	void GetColliableObjects(LPGAMEOBJECT curObj, vector<LPGAMEOBJECT>&coObjects);
 	vector<LPGAMEOBJECT> * GetListStairs() { return &(listStairs); }
+	int GetRandomItem();
 };
 

@@ -128,6 +128,26 @@ void Scenes::LoadObjectsFromFileToGrid(LPCWSTR FilePath)
 				unit = new Unit(grid, stair, pos_x, pos_y, cell_x, cell_y);
 				break;
 			}
+			case ZOMBIE:
+			{
+				Zombie * zombie = new Zombie();
+				zombie->SetEntryPosition(pos_x, pos_y);
+				zombie->SetState(INACTIVE);
+				zombie->SetEnable(true);
+				zombie->SetIDItem(idItem);
+				unit = new Unit(grid, zombie, pos_x, pos_y, cell_x, cell_y);
+				break;
+			}
+			case BLACK_LEOPARD:
+			{
+				BlackLeopard * leopard = new BlackLeopard();
+				leopard->SetEntryPosition(pos_x, pos_y);
+				leopard->SetState(INACTIVE);
+				leopard->SetEnable(true);
+				leopard->SetIDItem(idItem);
+				unit = new Unit(grid, leopard, pos_x, pos_y, cell_x, cell_y);
+				break;
+			}
 			default:
 				break;
 		}
@@ -142,6 +162,7 @@ void Scenes::GetObjectFromGrid()
 	listObjects.clear();
 	listDoors.clear();
 	listStairs.clear();
+	//listEnemys.clear();
 
 	grid->Get(game->GetCameraPositon(), listUnits);
 
@@ -155,6 +176,8 @@ void Scenes::GetObjectFromGrid()
 			listDoors.push_back(obj);
 		if (dynamic_cast<Stair*>(obj))
 			listStairs.push_back(obj);
+		/*if (dynamic_cast<Zombie*>(obj))
+			listEnemys.push_back(listUnits[i]);*/
 	}
 }
 
@@ -180,6 +203,9 @@ void Scenes::Update(DWORD dt)
 	// Drop item
 	SetDropItems();
 
+	// Set position for enemies's spawning
+	SetEnemiesSpawnPositon();
+
 	Simon_Update(dt);
 	Whip_Update(dt);
 
@@ -199,6 +225,9 @@ void Scenes::Update(DWORD dt)
 
 	// update camera
 	UpdateCameraPosition();
+
+	// update grid
+	UpdateGrid();
 }
 
 void Scenes::Whip_Update(DWORD dt)
@@ -255,7 +284,7 @@ void Scenes::Render()
 	for (auto obj : listObjects)
 	{
 		obj->Render();
-		//obj->RenderBoundingBox();
+		obj->RenderBoundingBox();
 	}
 
 	simon->Render();
@@ -297,19 +326,22 @@ void Scenes::SetDropItems()
 		if (object->IsDroppedItem() == true)
 			continue;
 
-		if (dynamic_cast<Candle*>(object) && object->GetState() == CANDLE_DESTROYED)
+		if ((dynamic_cast<Candle*>(object) && object->GetState() == CANDLE_DESTROYED) || (dynamic_cast<Zombie*>(object) && object->GetState() == ZOMBIE_DESTROYED))
 		{
-			idItem = object->idItem;
+			idItem = GetRandomItem(); //object->idItem;
 			object->GetPosition(x, y);
 			object->SetIsDroppedItem(true);
 		}
-		
+		if (idItem > 10)
+			continue;
+
 		if (idItem != -1)
 		{
 			// Tạo một item theo id
 			auto item = new Items();
 			item->SetEnable(true);
 			item->SetPosition(x, y);
+			
 			item->SetState(idItem);
 
 			listItems.push_back(item);
@@ -325,7 +357,7 @@ bool Scenes::IsInViewport(LPGAMEOBJECT object)
 		float obj_x, obj_y;
 		object->GetPosition(obj_x, obj_y);
 
-		return obj_x >= camPosition.x && obj_x < camPosition.x + SCREEN_WIDTH
+		return obj_x >= camPosition.x - CELL_WIDTH_DEFAULT && obj_x < camPosition.x + SCREEN_WIDTH + CELL_WIDTH_DEFAULT
 			&& obj_y >= camPosition.y && obj_y < camPosition.y + SCREEN_HEIGHT;
 }
 
@@ -339,6 +371,23 @@ void Scenes::SetInactivationByPosition()   // Xoá các object đi ra khỏi vù
 				weaponlist[0]->SetEnable(false);
 		}
 	/*}*/
+
+		for (auto object : listObjects)
+		{
+			if (IsInViewport(object) == false)
+			{
+				if (dynamic_cast<Zombie*>(object) && object->GetState() == ZOMBIE_ACTIVE)
+				{
+					auto zombie = dynamic_cast<Zombie*>(object);
+					zombie->SetState(ZOMBIE_INACTIVE);
+				}
+				else if (dynamic_cast<BlackLeopard*>(object) && object->GetState() == BLACK_LEOPARD_ACTIVE)
+				{
+					auto leopard = dynamic_cast<BlackLeopard*>(object);
+					leopard->SetState(BLACK_LEOPARD_INACTIVE);
+				}
+			}
+		}
 }
 
 void Scenes::UpdateCameraPosition()
@@ -364,11 +413,65 @@ void Scenes::SetGameState(int state)
 		break;
 	case GAMESTATE_2:
 		simon->SetState(STAND);
-		simon->SetPosition(1050, 200); 
+		simon->SetPosition(2300, 200);
 		game->SetCameraPosition(0, 0);
 		break;
 	default:
 		break;
+	}
+}
+
+void Scenes::SetEnemiesSpawnPositon()
+{
+	float distanceZombie = 0.0f;
+	for (auto obj : listObjects)
+	{
+		if (dynamic_cast<Zombie*>(obj))
+		{
+			Zombie * zombie = dynamic_cast<Zombie*>(obj);
+
+			if (zombie->GetState() != ZOMBIE_INACTIVE && zombie->isSettedPosition == false)
+			{
+				zombie->isSettedPosition = true;
+
+				float simon_x, simon_y;
+				simon->GetPosition(simon_x, simon_y);
+
+				int nx = zombie->GetEntryPosition().x < simon_x ? 1 : -1;
+				zombie->SetOrientation(nx);
+
+				// Cần một khoảng nhỏ để tránh việc các zombie spawn cùng lúc, tại cùng một vị trí
+				//int randomDistance = rand() % 20;
+
+				float x, y;
+				y = zombie->GetEntryPosition().y;
+				if (nx == -1)
+					x = game->GetCameraPositon().x + SCREEN_WIDTH + distanceZombie;
+				else
+					x = game->GetCameraPositon().x - distanceZombie;
+
+				distanceZombie += 50.0f;
+				zombie->SetPosition(x, y);
+				zombie->SetState(ZOMBIE_ACTIVE);
+			}
+	
+		}
+		else if (dynamic_cast<BlackLeopard*>(obj))
+		{
+			BlackLeopard * leopard = dynamic_cast<BlackLeopard*>(obj);
+
+			if (leopard->GetState() == BLACK_LEOPARD_INACTIVE)
+			{
+				if (leopard->IsAbleToActivate() == true && IsInViewport(leopard) == true
+					&& abs(simon->x - leopard->GetEntryPosition().x) > 200)
+				{
+					int nx = leopard->GetEntryPosition().x < simon->x ? 1 : -1;
+					leopard->SetOrientation(nx);
+
+					leopard->SetState(BLACK_LEOPARD_IDLE);
+				}
+			}
+		}
 	}
 }
 
@@ -379,6 +482,7 @@ void Scenes::Simon_Update(DWORD dt)
 
 	simon->Update(dt, &coObjects);
 	simon->CheckCollisionWithItem(&listItems);
+	simon->CheckCollisionWithEnemyActiveArea(&listObjects);
 }
 
 void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjects)
@@ -397,6 +501,9 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 		{
 			if (dynamic_cast<NextSceneObject*>(obj) || dynamic_cast<Ground*>(obj) || dynamic_cast<Door*>(obj))
 				coObjects.push_back(obj);
+			else if (dynamic_cast<Zombie*>(obj) || dynamic_cast<BlackLeopard*>(obj) && obj->GetState() == ACTIVE)
+				coObjects.push_back(obj);
+			
 		}
 	}
 	else if (dynamic_cast<Whip*>(Obj))
@@ -405,7 +512,9 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 		{
 			if (dynamic_cast<Candle*>(obj))
 				coObjects.push_back(obj);
-
+			else if ((dynamic_cast<Zombie*>(obj) || dynamic_cast<BlackLeopard*>(obj))
+				&& obj->GetState() == ACTIVE)
+				coObjects.push_back(obj);
 		}
 	}
 	else if (dynamic_cast<Weapons*>(Obj))
@@ -414,9 +523,72 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 		{
 			if (dynamic_cast<Candle*>(obj) || dynamic_cast<Ground*>(obj))
 				coObjects.push_back(obj);
+			else if ((dynamic_cast<Zombie*>(obj) || dynamic_cast<BlackLeopard*>(obj))
+				&& obj->GetState() == ACTIVE)
+				coObjects.push_back(obj);
+		}
+	}
+	else if (dynamic_cast<Zombie*>(Obj))
+	{
+		for (auto obj : listObjects)
+		{
+			if (dynamic_cast<Ground*>(obj))
+				coObjects.push_back(obj);
+		}
+	}
+	else if (dynamic_cast<BlackLeopard*>(Obj))
+	{
+		for (auto obj : listObjects)
+		{
+			if (dynamic_cast<Ground*>(obj))
+				coObjects.push_back(obj);
 		}
 	}
 
 }
 
+void Scenes::UpdateGrid()
+{
+	for (int i = 0; i < listUnits.size(); i++)
+	{
+		LPGAMEOBJECT obj = listUnits[i]->GetObj();
 
+		if (obj->IsEnable() == false)
+			continue;
+
+		float newPos_x, newPos_y;
+		obj->GetPosition(newPos_x, newPos_y);
+		if (dynamic_cast<Zombie*>(obj))
+			listUnits[i]->Move(newPos_x, newPos_y);
+	}
+}
+
+int Scenes::GetRandomItem()
+{
+	std::map<int, int> randomRange = {
+		{DAGGER,		4},
+		{HOLY_WATER,	8},
+		{SMALL_HEART,	10},
+		{LARGE_HEART,	15},
+		{SMALL_HEART,	60},
+		{LARGE_HEART,	70},
+		{CHAIN,			80},
+		{SMALL_HEART,	80},
+	};
+
+	bool canDropItem = (rand() % 100) <= 80 ? true : false; // tỉ lệ rớt item là 80/100
+
+	if (canDropItem == false)
+		return -1;
+
+	int randomValue = rand() % 100;
+
+	for (auto i = randomRange.begin(); i != randomRange.end(); i++)
+	{
+		if (((*i).first == CHAIN && whip->GetState() == LONG_CHAIN) || (*i).first == weapons->GetState()) continue; // tránh Powerup LONGCHAIN và trùng weapon
+
+		if (randomValue < (*i).second)
+			return (*i).first;
+	}
+	return -1;
+}

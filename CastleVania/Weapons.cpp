@@ -2,6 +2,9 @@
 #include "Candle.h"
 #include "Simon.h"
 #include "Ground.h"
+#include "Zombie.h"
+#include "BlackLeopard.h"
+
 
 Weapons::Weapons()
 {
@@ -76,6 +79,23 @@ void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 				x += dx;
 				y += dy;
 			}
+			else if (dynamic_cast<Zombie*>(e->obj))
+			{
+				Zombie * zombie = dynamic_cast<Zombie*>(e->obj);
+				zombie->SetState(ZOMBIE_DESTROYED);
+				SetCoordinateObject(e->obj);
+
+				UpdateCollisionState();
+			}
+			else if (dynamic_cast<BlackLeopard*>(e->obj))
+			{
+				BlackLeopard * zombie = dynamic_cast<BlackLeopard*>(e->obj);
+				zombie->SetState(BLACK_LEOPARD_DESTROYED);
+				SetCoordinateObject(e->obj);
+
+				UpdateCollisionState();
+			}
+
 		}
 	}
 

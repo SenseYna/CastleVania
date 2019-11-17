@@ -4,8 +4,10 @@
 #include "Ground.h"
 #include "NextSceneObject.h"
 #include "Door.h"
+#include "Zombie.h"
 #include <fstream>
 #include <string>
+#include "BlackLeopard.h"
 
 Simon::Simon() : GameObject()
 {
@@ -24,6 +26,7 @@ Simon::Simon() : GameObject()
 	AddAnimation("simon_stairdown_ani");
 	AddAnimation("simon_hitstairup_ani");
 	AddAnimation("simon_hitstairdown_ani");
+	AddAnimation("simon_deflect_ani");
 }
 
 void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -127,6 +130,37 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					this->isNextScene = obj->GetIDNextScene();
 				}
 			}
+			else if (dynamic_cast<Zombie*>(e->obj) || dynamic_cast<BlackLeopard*>(e->obj))
+			{
+				if (state != POWER)// && untouchableTimer->IsTimeUp() == true && invisibilityTimer->IsTimeUp() == true)
+				{
+					//untouchableTimer->Start();
+
+					//if (dynamic_cast<Zombie*>(e->obj))
+					//{
+					//	Zombie * zombie = dynamic_cast<Zombie*>(e->obj);
+					//	//LoseHP(zombie->GetAttack());
+					//}
+
+					if (isStandOnStair == false)  // Simon đứng trên cầu thang sẽ không bị bật ngược lại
+					{
+						// đặt trạng thái deflect cho simon
+						if (e->nx != 0)
+						{
+							if (e->nx == CDIR_LEFT && this->nx == 1) this->nx = DIR_LEFT;
+							else if (e->nx == CDIR_RIGHT && this->nx == -1) this->nx = DIR_RIGHT;
+						}
+
+						SetState(DEFLECT);
+					}
+				}
+				else
+				{
+					if (e->nx != 0) x += dx;
+					if (e->ny != 0) y += dy;
+				}
+			}
+
 		}
 	}
 
@@ -207,6 +241,14 @@ void Simon::SetState(int state)
 		case HIT_STAIR_DOWN:
 			vx = 0;
 			vy = 0;
+			animations[state]->Reset();
+			animations[state]->SetAniStartTime(GetTickCount());
+			break;
+
+		case DEFLECT:
+			vy = -SIMON_DEFLECT_SPEED_Y;
+			if (nx > 0) vx = -SIMON_DEFLECT_SPEED_X;
+			else vx = SIMON_DEFLECT_SPEED_X;
 			animations[state]->Reset();
 			animations[state]->SetAniStartTime(GetTickCount());
 			break;
@@ -323,6 +365,53 @@ bool Simon::CheckRightnessCollisionWithStair(vector<LPGAMEOBJECT>* listStair)
 	}
 
 	return false;
+}
+
+void Simon::CheckCollisionWithEnemyActiveArea(vector<LPGAMEOBJECT>* listObjects)
+{
+	float simon_l, simon_t, simon_r, simon_b;
+
+	GetBoundingBox(simon_l, simon_t, simon_r, simon_b);
+
+	for (UINT i = 0; i < listObjects->size(); i++)
+	{
+		Enemy * enemy = dynamic_cast<Enemy*>(listObjects->at(i));
+
+		if (enemy == NULL)
+			continue;
+
+		// Không cần xét vùng active nữa khi nó đang active / destroyed
+		if (enemy->GetState() == ACTIVE || enemy->GetState() == DESTROYED)
+			continue;
+
+		// chỉ cần nằm trong grid là enable => sinh zombie
+		if (dynamic_cast<Zombie*>(enemy))
+		{
+			Zombie * zombie = dynamic_cast<Zombie*>(enemy);
+
+			if (zombie->GetState() == ZOMBIE_INACTIVE && zombie->IsAbleToActivate() == true)
+				zombie->SetState(ZOMBIE_ACTIVE);
+			int x_zombie;
+
+			x_zombie = simon_l + SCREEN_WIDTH;
+
+			zombie->SetPosition(x_zombie, zombie->y);
+			continue;
+		}
+
+		float enemy_l, enemy_t, enemy_r, enemy_b;
+		enemy->GetActiveBoundingBox(enemy_l, enemy_t, enemy_r, enemy_b);
+
+		if (GameObject::AABB(simon_l, simon_t, simon_r, simon_b, enemy_l, enemy_t, enemy_r, enemy_b) == true)
+		{
+			if (dynamic_cast<BlackLeopard*>(enemy))
+			{
+				BlackLeopard * leopard = dynamic_cast<BlackLeopard*>(enemy);
+				if (leopard->GetState() == BLACK_LEOPARD_IDLE)
+					leopard->SetState(BLACK_LEOPARD_ACTIVE);
+			}
+		}
+	}
 }
 
 void Simon::AutoWalk(float distance, int new_state, int new_nx)

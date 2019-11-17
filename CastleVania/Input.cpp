@@ -32,6 +32,8 @@ bool Input::AnimationDelay()
 		return true;
 	if (simon->GetState() == HIT_STAIR_DOWN && simon->animations[HIT_STAIR_DOWN]->IsOver(HIT_ANI_TIME_DELAY) == false)
 		return true;
+	if (simon->GetState() == DEFLECT && simon->animations[DEFLECT]->IsOver(DEFLECT_ANI_TIME_DELAY) == false)
+		return true;
 
 	return false;
 }

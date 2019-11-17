@@ -58,6 +58,9 @@ public:
 	// Kiểm tra tính đúng đắn va chạm với danh sách stair
 	bool CheckRightnessCollisionWithStair(vector<LPGAMEOBJECT> * listStair);
 
+	// Kiểm tra va chạm với vùng hoạt động của enemy
+	void CheckCollisionWithEnemyActiveArea(vector<LPGAMEOBJECT> * listObjects);
+
 	// Giữ cho Simon đứng yên trên bậc thang
 	void StandOnStair() { vx = vy = 0; }
 

@@ -8,3 +8,5 @@
 7 Textures\\Items.png Textures\\Items_sprites.txt Textures\\Items_animations.txt
 8 Textures\\Door.png Textures\\Door_sprites.txt Textures\\Door_animations.txt
 9 Textures\\Stair.png Textures\\Stair_sprites.txt Textures\\Stair_animations.txt
+10 Textures\\Zombie.png Textures\\Zombie_sprites.txt Textures\\Zombie_animations.txt
+11 Textures\\BlackLeopard.png Textures\\BlackLeopard_sprites.txt Textures\\BlackLeopard_animations.txt
