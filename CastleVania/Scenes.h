@@ -34,6 +34,7 @@ class Scenes
 	vector<LPGAMEOBJECT> listDoors;
 	vector<LPUNIT> listUnits;
 	vector<LPGAMEOBJECT> listStairs;
+	vector<LPGAMEOBJECT> listZombie;
 	//vector<LPUNIT> listEnemys;
 
 	Simon * simon;
@@ -50,6 +51,8 @@ class Scenes
 public:
 	Scenes(Game * game);
 	~Scenes();
+
+	Timer * delayChangeScene = new Timer(CHANGE_SCENE_TIME_DELAY);
 	
 	void Init(int idScene);						// init simon position, camera position, grid..
 	void LoadObjectsFromFileToGrid(LPCWSTR FilePath);	// load all objects (position, state, isEnable) from file 
@@ -68,12 +71,18 @@ public:
 	 
 	// Bool
 	bool IsInViewport(LPGAMEOBJECT object);
+	bool SimonWalkThroughDoor();
+	bool isSetSimonAutoWalk = false;
+	bool isMovingCamera1;
+	bool isMovingCamera2 = false;
+	int countDxCamera = 0;
 
 	// Set
 	void SetInactivationByPosition();			// Nếu object ra khỏi vùng viewport thì set unable / inactive
 	void SetDropItems();	// Xét rơi item cho các object bị huỷ	
 	void SetGameState(int state);	// Set vị trí của simon, camera
 	void SetEnemiesSpawnPositon();	// Set position cho khởi tạo enemies
+	int delayChangScene = -1; // màn hình đen chuyển màn => đợi sinh zombie 
 
 	// Get
 	Simon * GetSimon() { return this->simon; }

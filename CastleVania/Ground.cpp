@@ -1,4 +1,4 @@
-#include "Ground.h"
+﻿#include "Ground.h"
 
 Ground::Ground() : GameObject()
 {
@@ -8,7 +8,8 @@ Ground::Ground() : GameObject()
 
 void Ground::Render()
 {
-	animations[state]->Render(-1, x, y);
+	if (idItem != 0)    // trick không vẽ ground chỗ cầu thang xuống hầm
+		animations[state]->Render(-1, x, y);
 }
 
 void Ground::GetBoundingBox(float & l, float & t, float & r, float & b)

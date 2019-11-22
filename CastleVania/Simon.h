@@ -19,6 +19,8 @@ class Simon : public GameObject
 
 public:
 	Simon();
+	Timer * untouchableTimer = new Timer(SIMON_UNTOUCHABLE_TIME);
+	Timer * invisibilityTimer = new Timer(SIMON_INVISIBILITY_TIME);
 
 	// Bool
 	bool isWhip();
@@ -31,6 +33,7 @@ public:
 	bool isCollisionHead = false;
 	bool col_stair_top = false; // va chạm bbox stair trên
 	bool col_stair_bot = false; // va chạm bbox stair dưới
+	bool isWalkThroughDoor = false;	// đi qua cửa
 
 	//Stair
 	bool isStandOnStair = false;	// trạng thái đang đứng trên cầu thang 

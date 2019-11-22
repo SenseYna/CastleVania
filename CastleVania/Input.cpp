@@ -65,6 +65,13 @@ void Input::KeyState(BYTE *state)
 		if (simon->isStandOnStair)// && Check_Simon_Collection_Stair() == true)
 		{
 			Check_Simon_Collection_Stair();
+			if (abs(simon->stairCollided->GetState() == 2)) {
+				if (simon->stairDirection) // cầu thang trái dưới - phải trên
+					Simon_Stair_Down();
+				else Simon_Stair_Up(); // cầu thang trái dưới - phải trên
+
+				return;
+			}
 			if (simon->stairDirection) // cầu thang trái dưới - phải trên
 				Simon_Stair_Up();
 			else // cầu thang trái dưới - phải trên
@@ -78,6 +85,13 @@ void Input::KeyState(BYTE *state)
 		if (simon->isStandOnStair)// && Check_Simon_Collection_Stair() == true)
 		{
 			Check_Simon_Collection_Stair();
+			if (abs(simon->stairCollided->GetState() == 2)) {
+				if (simon->stairDirection) // cầu thang trái dưới - phải trên
+					Simon_Stair_Up();
+				else Simon_Stair_Down(); // cầu thang trái dưới - phải trên
+
+				return;
+			}
 			if (simon->stairDirection) // cầu thang trái dưới - phải trên
 				Simon_Stair_Down();
 			else Simon_Stair_Up(); // cầu thang trái dưới - phải trên
@@ -141,6 +155,9 @@ void Input::OnKeyDown(int KeyCode)
 		break;
 	case DIK_Q:
 		scene->Init(SCENE_2);
+		break;
+	case DIK_W:
+		scene->Init(SCENE_3);
 		break;
 	case DIK_SPACE:
 		Simon_Jump();

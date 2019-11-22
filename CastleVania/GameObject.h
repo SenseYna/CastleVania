@@ -75,7 +75,6 @@ public:
 	void SetIDItem(int id) { this->idItem = id; }
 	void SetEnable(bool enable) { this->isEnable = enable; }
 	void SetIsDroppedItem(bool x) { this->isDroppedItem = x; }
-	
 
 	void GetPosition(float &x, float &y) { x = this->x; y = this->y; }
 	void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }

@@ -48,6 +48,7 @@
 // Scenes
 #define FILEPATH_OBJECTS_SCENE_1		L"Scenes\\Scene1_objects.txt"
 #define FILEPATH_OBJECTS_SCENE_2		L"Scenes\\Scene2_objects.txt"
+#define FILEPATH_OBJECTS_SCENE_3		L"Scenes\\Scene3_objects.txt"
 
 // Texture Resource
 #define FILEPATH_TEXTURE_RESOURCE L"Textures\\Textures_Resource.txt"
@@ -61,6 +62,9 @@
 // Game
 #define GAMESTATE_1		0   // SCENE_1
 #define GAMESTATE_2		1	// SCENE_2
+#define GAMESTATE_2_1	2	// SCENE_2
+#define GAMESTATE_3_1	6	// SCENE_3 - cầu thang lên 1
+#define GAMESTATE_3_2	7	// SCENE_3 - cầu thang lên 2
 
 // Orientation
 #define DIR_LEFT		-1
@@ -79,6 +83,8 @@
 // Scene
 #define SCENE_1			0
 #define SCENE_2 		1
+#define SCENE_3			2
+#define SCENE_2_1 		4
 
 
 // Simon
@@ -106,6 +112,8 @@
 #define SIMON_STAIR_SPEED_Y			0.079f
 #define SIMON_DEFLECT_SPEED_X		0.13f
 #define SIMON_DEFLECT_SPEED_Y		0.3f
+#define SIMON_UNTOUCHABLE_TIME		2000
+#define SIMON_INVISIBILITY_TIME		4000
 
 // Simon BBOX
 #define SIMON_BBOX_WIDTH			30
@@ -163,7 +171,8 @@
 #define DEFLECT_ANI_TIME_DELAY		600
 #define POWER_ANI_TIME_DELAY		450
 #define STAIR_WALK_ANI_TIME_DELAY	200
-
+#define DOOR_2_OPEN_ANI_TIME_DELAY	5000
+#define CHANGE_SCENE_TIME_DELAY		350
 
 // Item 
 #define ITEM_FALLING_SPEED_X			0.0f
@@ -186,6 +195,8 @@
 
 // Door
 #define DOOR_1			0
+#define DOOR_2_IDLE		1
+#define DOOR_2_OPEN		2
 
 // Door BBOX
 #define DOOR_BBOX_WIDTH				32

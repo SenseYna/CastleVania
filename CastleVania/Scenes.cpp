@@ -25,7 +25,7 @@ void Scenes::Init(int idScene)
 {
 	
 	IDScene = idScene;
-
+	if (IDScene == 4) IDScene = 2;
 	switch (idScene)
 	{
 	case SCENE_1:
@@ -35,6 +35,17 @@ void Scenes::Init(int idScene)
 	case SCENE_2:
 		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_2);
 		SetGameState(GAMESTATE_2);
+		delayChangeScene->Start();
+		break;
+	case SCENE_3:
+		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_3);
+		simon->SetState(STAIR_DOWN);
+		SetGameState(GAMESTATE_3_1);
+		break;
+	case SCENE_2_1:
+		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_2);
+		SetGameState(GAMESTATE_2_1);
+		delayChangeScene->Start();
 		break;
 	default:
 		break;
@@ -88,6 +99,7 @@ void Scenes::LoadObjectsFromFileToGrid(LPCWSTR FilePath)
 				ground->SetPosition(pos_x, pos_y);
 				ground->SetState(state);
 				ground->SetEnable(true);
+				ground->SetIDItem(idItem);
 				unit = new Unit(grid, ground, pos_x, pos_y, cell_x, cell_y);
 				break;
 			}
@@ -162,7 +174,7 @@ void Scenes::GetObjectFromGrid()
 	listObjects.clear();
 	listDoors.clear();
 	listStairs.clear();
-	//listEnemys.clear();
+	listZombie.clear();
 
 	grid->Get(game->GetCameraPositon(), listUnits);
 
@@ -176,25 +188,32 @@ void Scenes::GetObjectFromGrid()
 			listDoors.push_back(obj);
 		if (dynamic_cast<Stair*>(obj))
 			listStairs.push_back(obj);
-		/*if (dynamic_cast<Zombie*>(obj))
-			listEnemys.push_back(listUnits[i]);*/
+		if (dynamic_cast<Zombie*>(obj))
+			listZombie.push_back(obj);
+		
 	}
 }
 
 void Scenes::ChangeScene()
 {
-
 	if (IDScene == SCENE_1 && simon->isNextScene == SCENE_2)
 		Init(SCENE_2);
+	else if (IDScene == SCENE_2 && simon->isNextScene == SCENE_3)
+		Init(SCENE_3);
+	else if (IDScene == SCENE_3 && simon->isNextScene == SCENE_2_1)
+		Init(SCENE_2_1);
 }
 
 void Scenes::Update(DWORD dt)
 {
-	// Khi Simon va chạm với ChangScene objects, tiến hành thay đổi, cập nhật trạng thái
-	if (simon->isNextScene)
-	{
-		ChangeScene();
-		simon->isNextScene = false;
+	// Nếu Simon đi qua cửa thì không cần cập nhật hay xét va chạm
+	if (SimonWalkThroughDoor() == true) {
+		for (int i = 0; i < listZombie.size(); i++)
+		{
+			LPGAMEOBJECT obj = listZombie[i];
+			obj->SetEnable(false);
+		}
+		return;
 	}
 
 	// Lấy danh sách object từ grid 
@@ -207,8 +226,16 @@ void Scenes::Update(DWORD dt)
 	SetEnemiesSpawnPositon();
 
 	Simon_Update(dt);
-	Whip_Update(dt);
 
+	// Khi Simon va chạm với ChangScene objects, tiến hành thay đổi, cập nhật trạng thái
+	if (simon->isNextScene != -1)
+	{
+		ChangeScene();
+		simon->isNextScene = -1;
+		return;
+	}
+
+	Whip_Update(dt);
 	Weapon_Update(dt, 0);
 
 	for (UINT i = 0; i < listObjects.size(); i++)
@@ -279,6 +306,9 @@ void Scenes::Weapon_Update(DWORD dt, int index)
 
 void Scenes::Render()
 {
+	if (delayChangeScene->IsTimeUp() == false)
+		return;
+
 	tilemaps->Get(IDScene)->Draw(game->GetCameraPositon());
 
 	for (auto obj : listObjects)
@@ -392,7 +422,9 @@ void Scenes::SetInactivationByPosition()   // Xoá các object đi ra khỏi vù
 
 void Scenes::UpdateCameraPosition()
 {
-
+	//if (isMovingCamera1 || isMovingCamera2) return;
+	if (simon->x + SIMON_BBOX_WIDTH > 2832 &&
+		simon->x + SIMON_BBOX_WIDTH < 3328) return;
 	if (simon->x + SIMON_BBOX_WIDTH > SCREEN_WIDTH / 2 &&
 		simon->x + SIMON_BBOX_WIDTH  + SCREEN_WIDTH / 2 < tilemaps->Get(IDScene)->GetMapWidth())
 	{
@@ -413,7 +445,24 @@ void Scenes::SetGameState(int state)
 		break;
 	case GAMESTATE_2:
 		simon->SetState(STAND);
-		simon->SetPosition(2300, 200);
+		simon->SetPosition(3356, 272);
+		game->SetCameraPosition(0, 0);
+		break;
+	case GAMESTATE_2_1:
+		simon->SetState(STAIR_UP);
+		simon->SetPosition(3172, 338);
+		simon->SetOrientation(-1);
+		simon->isStandOnStair = true;
+		game->SetCameraPosition(3056, 0);
+		break;
+	case GAMESTATE_3_1:
+		//simon->SetState(STAND);
+		//simon->SetPosition(0, 48);
+		//game->SetCameraPosition(0, 0);
+		simon->SetState(STAIR_DOWN);
+		simon->SetPosition(92, 16);
+		simon->SetOrientation(1);
+		simon->isStandOnStair = true;
 		game->SetCameraPosition(0, 0);
 		break;
 	default:
@@ -426,6 +475,7 @@ void Scenes::SetEnemiesSpawnPositon()
 	float distanceZombie = 0.0f;
 	for (auto obj : listObjects)
 	{
+		if (!obj->IsEnable()) continue;
 		if (dynamic_cast<Zombie*>(obj))
 		{
 			Zombie * zombie = dynamic_cast<Zombie*>(obj);
@@ -568,12 +618,9 @@ int Scenes::GetRandomItem()
 	std::map<int, int> randomRange = {
 		{DAGGER,		4},
 		{HOLY_WATER,	8},
-		{SMALL_HEART,	10},
-		{LARGE_HEART,	15},
-		{SMALL_HEART,	60},
-		{LARGE_HEART,	70},
+		{SMALL_HEART,	30},
+		{LARGE_HEART,	60},
 		{CHAIN,			80},
-		{SMALL_HEART,	80},
 	};
 
 	bool canDropItem = (rand() % 100) <= 80 ? true : false; // tỉ lệ rớt item là 80/100
@@ -591,4 +638,71 @@ int Scenes::GetRandomItem()
 			return (*i).first;
 	}
 	return -1;
+}
+
+bool Scenes::SimonWalkThroughDoor()
+{
+	// Cập nhật trạng thái Simon đi qua cửa:
+	// Di chuyển Camera -> Mở cửa -> AutoWalk -> Di chuyển Camera
+
+	if (simon->isWalkThroughDoor == true && simon->isTouchGround == true)
+	{
+		simon->isWalkThroughDoor = false;
+		//simon->isFalling = false;
+		simon->SetOrientation(DIR_RIGHT);
+		simon->SetState(STAND);
+
+		isMovingCamera1 = true;
+		countDxCamera = 0;
+	}
+
+	if (isMovingCamera1 == true)
+	{
+		if (countDxCamera < 224)			// Di chuyển camera một đoạn 224
+		{
+			countDxCamera += 2;
+
+			D3DXVECTOR3 cam = game->GetCameraPositon();
+			game->SetCameraPosition(cam.x + 2, cam.y);
+
+			return true;
+		}
+
+		if (isSetSimonAutoWalk == false)	// AutoWalk
+		{
+			isSetSimonAutoWalk = true;
+
+			simon->SetState(WALK);
+			simon->vy = 0;
+			simon->AutoWalk(120, STAND, DIR_RIGHT);
+		}
+		else
+		{
+			if (simon->isAutoWalk == false)
+			{
+				isMovingCamera2 = true;
+
+				if (countDxCamera < 496)	// Di chuyển camera thêm một đoạn -> 480
+				{
+					countDxCamera += 2;
+
+					D3DXVECTOR3 cam = game->GetCameraPositon();
+					game->SetCameraPosition(cam.x + 2, cam.y);
+
+					return true;
+				}
+				else
+				{
+					isMovingCamera1 = false;
+					isMovingCamera2 = false;
+					isSetSimonAutoWalk = false;
+					countDxCamera = 0;
+
+				//	tilemaps->Get(IDScene)->index += 1;  // tăng giới hạn min_max_col của tilemap
+				}
+			}
+		}
+	}
+
+	return false;
 }
