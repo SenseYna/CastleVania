@@ -16,6 +16,7 @@
 #include "Stair.h"
 #include "Zombie.h"
 #include "BlackLeopard.h"
+#include "Bat.h"
 
 #include <map>
 

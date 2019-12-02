@@ -9,7 +9,7 @@ BlackLeopard::BlackLeopard() : Enemy()
 	AddAnimation("leopard_jump_ani");
 
 	isJumping = false;
-	attack = 2;
+
 	respawnWaitingTime = 10000;
 }
 
@@ -109,7 +109,7 @@ void BlackLeopard::SetState(int state)
 		vx = 0;
 		respawnTime_Start = 0;
 		isRespawnWaiting = false;
-		isDroppedItem = false;
+		//isDroppedItem = false;
 		break;
 	case BLACK_LEOPARD_JUMP:
 		vy = -BLACK_LEOPARD_RUNNING_SPEED_Y;
@@ -134,12 +134,5 @@ void BlackLeopard::GetActiveBoundingBox(float & left, float & top, float & right
 	bottom = entryPosition.y + BLACK_LEOPARD_ACTIVE_BBOX_HEIGHT;
 }
 
-void BlackLeopard::LoseHP(int x)
-{
-	//Enemy::LoseHP(x);
-
-	//if (HP == 0)
-		SetState(BLACK_LEOPARD_DESTROYED);
-}
 
 

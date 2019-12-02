@@ -4,6 +4,7 @@
 #include "Ground.h"
 #include "Zombie.h"
 #include "BlackLeopard.h"
+#include "Bat.h"
 
 
 Weapons::Weapons()
@@ -91,6 +92,14 @@ void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 			{
 				BlackLeopard * zombie = dynamic_cast<BlackLeopard*>(e->obj);
 				zombie->SetState(BLACK_LEOPARD_DESTROYED);
+				SetCoordinateObject(e->obj);
+
+				UpdateCollisionState();
+			}
+			else if (dynamic_cast<Bat*>(e->obj))
+			{
+				Bat * zombie = dynamic_cast<Bat*>(e->obj);
+				zombie->SetState(BAT_DESTROYED);
 				SetCoordinateObject(e->obj);
 
 				UpdateCollisionState();

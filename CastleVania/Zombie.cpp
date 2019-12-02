@@ -7,7 +7,6 @@ Zombie::Zombie() : Enemy()
 	AddAnimation("zombie_walk_ani");
 	AddAnimation("effect1_ani");
 
-	attack = 2;
 	respawnWaitingTime = 10000;
 }
 
@@ -36,7 +35,6 @@ void Zombie::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 	{
 		x += dx;
 		y += dy;
-		vy += ZOMBIE_GRAVITY * dt;
 	}
 	else
 	{

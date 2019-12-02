@@ -34,7 +34,12 @@ bool Input::AnimationDelay()
 		return true;
 	if (simon->GetState() == DEFLECT && simon->animations[DEFLECT]->IsOver(DEFLECT_ANI_TIME_DELAY) == false)
 		return true;
-
+	if (simon->GetState() == SIT && simon->isDelayHightGravitySit == true && simon->animations[SIT]->IsOver(SIT_ANI_TIME_DELAY) == false)
+	{
+		
+		return true;
+	}
+	simon->isDelayHightGravitySit = false;
 	return false;
 }
 
@@ -65,10 +70,11 @@ void Input::KeyState(BYTE *state)
 		if (simon->isStandOnStair)// && Check_Simon_Collection_Stair() == true)
 		{
 			Check_Simon_Collection_Stair();
-			if (abs(simon->stairCollided->GetState() == 2)) {
+			if (abs(simon->stairCollided->GetState()) == 2) {
 				if (simon->stairDirection) // cầu thang trái dưới - phải trên
 					Simon_Stair_Down();
-				else Simon_Stair_Up(); // cầu thang trái dưới - phải trên
+				else 
+					Simon_Stair_Up(); // cầu thang trái dưới - phải trên
 
 				return;
 			}
@@ -85,7 +91,7 @@ void Input::KeyState(BYTE *state)
 		if (simon->isStandOnStair)// && Check_Simon_Collection_Stair() == true)
 		{
 			Check_Simon_Collection_Stair();
-			if (abs(simon->stairCollided->GetState() == 2)) {
+			if (abs(simon->stairCollided->GetState()) == 2) {
 				if (simon->stairDirection) // cầu thang trái dưới - phải trên
 					Simon_Stair_Up();
 				else Simon_Stair_Down(); // cầu thang trái dưới - phải trên
@@ -157,10 +163,16 @@ void Input::OnKeyDown(int KeyCode)
 		scene->Init(SCENE_2);
 		break;
 	case DIK_W:
+		scene->Init(SCENE_2_1);
+		break;
+	case DIK_E:
 		scene->Init(SCENE_3);
 		break;
+	case DIK_R:
+		scene->Init(SCENE_2_2);
+		break;
 	case DIK_SPACE:
-		Simon_Jump();
+		if (simon->isStandOnStair == false) Simon_Jump();
 		break;
 
 	default:
@@ -275,7 +287,7 @@ void Input::Simon_Stair_Up()
 			simon->isStandOnStair = false;
 			simon->col_stair_bot = false;
 			simon->needStateMoveDownStair = false;
-			simon->AutoWalk(abs(14 *nx), STAND, stairDirection);
+			simon->AutoWalk(abs(18 *nx), STAND, stairDirection);
 			return;
 	}
 

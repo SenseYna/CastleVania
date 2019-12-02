@@ -14,7 +14,7 @@ Game * game;
 Input * input;
 Scenes * scene;
 
-TileMaps * tilemaps = TileMaps::GetInstance();
+TileMaps * tilemaps = TileMaps::GetInstance(); 
 Textures * textures = Textures::GetInstance();
 Sprites * sprites = Sprites::GetInstance();
 Animations * animations = Animations::GetInstance();

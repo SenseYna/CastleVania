@@ -2,12 +2,12 @@
 
 #include "Enemy.h"
 
-class BlackLeopard : public Enemy
+class Bat : public Enemy
 {
-	bool isJumping;
+	float velocityVariation;
 
 public:
-	BlackLeopard();
+	Bat();
 
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObject = NULL);
 	virtual void Render();

@@ -89,6 +89,9 @@
     <ClCompile Include="BlackLeopard.cpp">
       <Filter>Moving Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Bat.cpp">
+      <Filter>Moving Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -158,6 +161,9 @@
       <Filter>Moving Objects</Filter>
     </ClInclude>
     <ClInclude Include="BlackLeopard.h">
+      <Filter>Moving Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Bat.h">
       <Filter>Moving Objects</Filter>
     </ClInclude>
   </ItemGroup>

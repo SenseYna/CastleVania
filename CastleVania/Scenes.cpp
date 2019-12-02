@@ -25,7 +25,10 @@ void Scenes::Init(int idScene)
 {
 	
 	IDScene = idScene;
-	if (IDScene == 4) IDScene = 2;
+	if (IDScene == SCENE_2_1) IDScene = SCENE_2;
+	else if (IDScene == SCENE_2_2) IDScene = SCENE_2;
+	else if (IDScene == SCENE_3_1) IDScene = SCENE_3;
+
 	switch (idScene)
 	{
 	case SCENE_1:
@@ -39,13 +42,26 @@ void Scenes::Init(int idScene)
 		break;
 	case SCENE_3:
 		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_3);
-		simon->SetState(STAIR_DOWN);
+		//simon->SetState(STAIR_DOWN);
 		SetGameState(GAMESTATE_3_1);
+		delayChangeScene->Start();
+		break;
+	case SCENE_3_1:
+		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_3);
+		//simon->SetState(STAIR_DOWN);
+		SetGameState(GAMESTATE_3_2);
+		delayChangeScene->Start();
 		break;
 	case SCENE_2_1:
 		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_2);
 		SetGameState(GAMESTATE_2_1);
 		delayChangeScene->Start();
+		break;
+	case SCENE_2_2:
+		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_2);
+		SetGameState(GAMESTATE_2_2);
+		delayChangeScene->Start();
+		//tilemaps->Get(SCENE_2)->index = 1;
 		break;
 	default:
 		break;
@@ -160,6 +176,15 @@ void Scenes::LoadObjectsFromFileToGrid(LPCWSTR FilePath)
 				unit = new Unit(grid, leopard, pos_x, pos_y, cell_x, cell_y);
 				break;
 			}
+			case BAT:
+			{
+				Bat * bat = new Bat();
+				bat->SetEntryPosition(pos_x, pos_y);
+				bat->SetState(INACTIVE);
+				bat->SetEnable(true);
+				unit = new Unit(grid, bat, pos_x, pos_y, cell_x, cell_y);
+				break;
+			}
 			default:
 				break;
 		}
@@ -200,8 +225,12 @@ void Scenes::ChangeScene()
 		Init(SCENE_2);
 	else if (IDScene == SCENE_2 && simon->isNextScene == SCENE_3)
 		Init(SCENE_3);
+	else if (IDScene == SCENE_2 && simon->isNextScene == SCENE_3_1)
+		Init(SCENE_3_1);
 	else if (IDScene == SCENE_3 && simon->isNextScene == SCENE_2_1)
 		Init(SCENE_2_1);
+	else if (IDScene == SCENE_3 && simon->isNextScene == SCENE_2_2)
+		Init(SCENE_2_2);
 }
 
 void Scenes::Update(DWORD dt)
@@ -380,7 +409,7 @@ void Scenes::SetDropItems()
 	}
 }
 
-bool Scenes::IsInViewport(LPGAMEOBJECT object)
+bool Scenes::IsInViewport(LPGAMEOBJECT object) // xét 4 cell
 {
 		D3DXVECTOR2 camPosition = game->GetCameraPositon();
 
@@ -438,41 +467,56 @@ void Scenes::SetGameState(int state)
 {
 	switch (state)
 	{
-	case GAMESTATE_1:
-		simon->SetState(STAND);
-		simon->SetPosition(0, 302);
-		game->SetCameraPosition(0, 0);
-		break;
-	case GAMESTATE_2:
-		simon->SetState(STAND);
-		simon->SetPosition(3356, 272);
-		game->SetCameraPosition(0, 0);
-		break;
-	case GAMESTATE_2_1:
-		simon->SetState(STAIR_UP);
-		simon->SetPosition(3172, 338);
-		simon->SetOrientation(-1);
-		simon->isStandOnStair = true;
-		game->SetCameraPosition(3056, 0);
-		break;
-	case GAMESTATE_3_1:
-		//simon->SetState(STAND);
-		//simon->SetPosition(0, 48);
-		//game->SetCameraPosition(0, 0);
-		simon->SetState(STAIR_DOWN);
-		simon->SetPosition(92, 16);
-		simon->SetOrientation(1);
-		simon->isStandOnStair = true;
-		game->SetCameraPosition(0, 0);
-		break;
-	default:
-		break;
+		case GAMESTATE_1:
+			simon->SetState(STAND);
+			simon->SetPosition(0, 302);
+			game->SetCameraPosition(0, 0);
+			break;
+
+		case GAMESTATE_2:
+			simon->SetState(STAND);
+			simon->SetPosition(1050, 272);
+			game->SetCameraPosition(0, 0);
+			break;
+
+		case GAMESTATE_2_1:
+			simon->SetState(STAIR_UP);
+			simon->SetPosition(3172, 338);
+			simon->SetOrientation(-1);
+			simon->isStandOnStair = true;
+			game->SetCameraPosition(3056, 0);
+			break;
+
+		case GAMESTATE_2_2:
+			simon->SetState(STAIR_UP);
+			simon->SetPosition(3812, 336); //-2 y
+			simon->SetOrientation(-1);
+			simon->isStandOnStair = true;
+			game->SetCameraPosition(3056, 0);
+			break;
+	
+		case GAMESTATE_3_1:
+			simon->SetState(STAIR_DOWN);
+			simon->SetPosition(92, 16);
+			simon->SetOrientation(1);
+			simon->isStandOnStair = true;
+			game->SetCameraPosition(0, 0);
+			break;
+
+		case GAMESTATE_3_2:
+			simon->SetState(STAIR_DOWN);
+			simon->SetPosition(732, 16);
+			simon->SetOrientation(1);
+			game->SetCameraPosition(0, 0);
+			break;
+		default:
+			break;
 	}
 }
 
 void Scenes::SetEnemiesSpawnPositon()
 {
-	float distanceZombie = 0.0f;
+	float distanceZombie = 0.0f; //  khoảng cách giữa các zombie
 	for (auto obj : listObjects)
 	{
 		if (!obj->IsEnable()) continue;
@@ -480,7 +524,7 @@ void Scenes::SetEnemiesSpawnPositon()
 		{
 			Zombie * zombie = dynamic_cast<Zombie*>(obj);
 
-			if (zombie->GetState() != ZOMBIE_INACTIVE && zombie->isSettedPosition == false)
+			if (zombie->GetState() == ZOMBIE_ACTIVE && zombie->isSettedPosition == false)
 			{
 				zombie->isSettedPosition = true;
 
@@ -490,9 +534,6 @@ void Scenes::SetEnemiesSpawnPositon()
 				int nx = zombie->GetEntryPosition().x < simon_x ? 1 : -1;
 				zombie->SetOrientation(nx);
 
-				// Cần một khoảng nhỏ để tránh việc các zombie spawn cùng lúc, tại cùng một vị trí
-				//int randomDistance = rand() % 20;
-
 				float x, y;
 				y = zombie->GetEntryPosition().y;
 				if (nx == -1)
@@ -500,7 +541,7 @@ void Scenes::SetEnemiesSpawnPositon()
 				else
 					x = game->GetCameraPositon().x - distanceZombie;
 
-				distanceZombie += 50.0f;
+				distanceZombie += 50.0f; 
 				zombie->SetPosition(x, y);
 				zombie->SetState(ZOMBIE_ACTIVE);
 			}
@@ -520,6 +561,31 @@ void Scenes::SetEnemiesSpawnPositon()
 
 					leopard->SetState(BLACK_LEOPARD_IDLE);
 				}
+			}
+		}
+		else if (dynamic_cast<Bat*>(obj))
+		{
+			Bat * bat = dynamic_cast<Bat*>(obj);
+
+			if (bat->GetState() != BAT_INACTIVE && bat->isSettedPosition == false)
+			{
+				bat->isSettedPosition = true;
+				bat->SetOrientation(-(simon->GetOrientation()));
+
+				// set vị trí cho dơi
+				// dơi bay ngang tầm simon, từ phía cuối của 2 đầu màn hình)
+				float x, y;
+				//int randomDistance = rand() % 30;
+
+				y = simon->y - (SIMON_BBOX_HEIGHT / 6) + (rand() % (SIMON_BBOX_HEIGHT/3)); // y cao hơn đầu simon và thấp tới giữa ngực simon
+
+				if (bat->GetOrientation() == -1)
+					x = game->GetCameraPositon().x + SCREEN_WIDTH + ENEMY_DEFAULT_BBOX_WIDTH;
+				else
+					x = game->GetCameraPositon().x - ENEMY_DEFAULT_BBOX_WIDTH;
+
+				bat->SetPosition(x, y);
+				bat->SetState(BAT_ACTIVE);
 			}
 		}
 	}
@@ -551,9 +617,8 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 		{
 			if (dynamic_cast<NextSceneObject*>(obj) || dynamic_cast<Ground*>(obj) || dynamic_cast<Door*>(obj))
 				coObjects.push_back(obj);
-			else if (dynamic_cast<Zombie*>(obj) || dynamic_cast<BlackLeopard*>(obj) && obj->GetState() == ACTIVE)
+			else if (dynamic_cast<Zombie*>(obj) || dynamic_cast<BlackLeopard*>(obj) && obj->GetState() == ACTIVE || dynamic_cast<Bat*>(obj))
 				coObjects.push_back(obj);
-			
 		}
 	}
 	else if (dynamic_cast<Whip*>(Obj))
@@ -562,7 +627,7 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 		{
 			if (dynamic_cast<Candle*>(obj))
 				coObjects.push_back(obj);
-			else if ((dynamic_cast<Zombie*>(obj) || dynamic_cast<BlackLeopard*>(obj))
+			else if ((dynamic_cast<Zombie*>(obj) || dynamic_cast<BlackLeopard*>(obj) || dynamic_cast<Bat*>(obj))
 				&& obj->GetState() == ACTIVE)
 				coObjects.push_back(obj);
 		}
@@ -573,7 +638,7 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 		{
 			if (dynamic_cast<Candle*>(obj) || dynamic_cast<Ground*>(obj))
 				coObjects.push_back(obj);
-			else if ((dynamic_cast<Zombie*>(obj) || dynamic_cast<BlackLeopard*>(obj))
+			else if ((dynamic_cast<Zombie*>(obj) || dynamic_cast<BlackLeopard*>(obj) || dynamic_cast<Bat*>(obj))
 				&& obj->GetState() == ACTIVE)
 				coObjects.push_back(obj);
 		}

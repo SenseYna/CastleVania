@@ -8,6 +8,7 @@
 #include <fstream>
 #include <string>
 #include "BlackLeopard.h"
+#include "Bat.h"
 
 Simon::Simon() : GameObject()
 {
@@ -32,6 +33,7 @@ Simon::Simon() : GameObject()
 void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	GameObject::Update(dt);
+	
 	if (!isAutoWalk && !isStandOnStair) {
 
 		//int temp_x = x;
@@ -44,6 +46,15 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		else
 			vy += SIMON_GRAVITY * dt;
 	}
+	if (!isAutoWalk && !isStandOnStair && (state == STAND || state == WALK)) 
+	{
+		vy += SIMON_GRAVITY_FASTER * dt;
+	} 
+
+	// gia tốc rơi lớn
+	if ((vy > 0.9 && !isDelayHightGravitySit && vy < 1) || state == DEFLECT)
+		hightGravity = true;
+	//DebugOut(L"[ERROR] vy %b \n", hightGravity);
 
 	// Auto - walk
 	if (isAutoWalk)
@@ -94,6 +105,11 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					if (e->ny == CDIR_BOTTOM) // -1 là đụng dưới
 					{
+						if (hightGravity && state != JUMP) {
+							isDelayHightGravitySit = true;
+							SetState(SIT);
+							hightGravity = false;
+						}
 						vy = 0;
 						isTouchGround = true;
 						isCollisionHead = false;
@@ -150,6 +166,36 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			else if (dynamic_cast<Zombie*>(e->obj) || dynamic_cast<BlackLeopard*>(e->obj))
 			{
+				if (e->obj->GetState() == DESTROYED)
+					continue;
+				if (state != POWER && untouchableTimer->IsTimeUp() == true)
+				{
+					untouchableTimer->Start();
+
+					if (isStandOnStair == false)  // Simon đứng trên cầu thang sẽ không bị bật ngược lại
+					{
+						// đặt trạng thái deflect cho simon
+						if (e->nx != 0)
+						{
+							if (e->nx == CDIR_LEFT && this->nx == 1) this->nx = DIR_LEFT;
+							else if (e->nx == CDIR_RIGHT && this->nx == -1) this->nx = DIR_RIGHT;
+						}
+						SetState(DEFLECT);
+					}
+				}
+				else
+				{
+					if (e->nx != 0) x += dx;
+					if (e->ny != 0) y += dy;
+				}
+			}
+			else if (dynamic_cast<Bat*>(e->obj))
+			{
+				Bat * bat = dynamic_cast<Bat*>(e->obj);
+				
+				if (bat->GetState() == BAT_INACTIVE) continue;
+				bat->SetState(BAT_DESTROYED);
+
 				if (state != POWER && untouchableTimer->IsTimeUp() == true)
 				{
 					untouchableTimer->Start();
@@ -219,6 +265,8 @@ void Simon::SetState(int state)
 		case SIT:
 			vx = 0;
 			vy = 0;
+			animations[state]->Reset();
+			animations[state]->SetAniStartTime(GetTickCount());
 			break;
 
 		case HIT_STAND:
@@ -261,6 +309,7 @@ void Simon::SetState(int state)
 			break;
 
 		case DEFLECT:
+			isTouchGround = false;
 			vy = -SIMON_DEFLECT_SPEED_Y;
 			if (nx > 0) vx = -SIMON_DEFLECT_SPEED_X;
 			else vx = SIMON_DEFLECT_SPEED_X;
@@ -411,7 +460,7 @@ void Simon::CheckCollisionWithEnemyActiveArea(vector<LPGAMEOBJECT>* listObjects)
 
 			x_zombie = simon_l + SCREEN_WIDTH;
 
-			zombie->SetPosition(x_zombie, zombie->y);
+			zombie->SetPosition(x_zombie, zombie->y); // vị trí chuẩn bị spawn tạm thời
 			continue;
 		}
 
@@ -425,6 +474,13 @@ void Simon::CheckCollisionWithEnemyActiveArea(vector<LPGAMEOBJECT>* listObjects)
 				BlackLeopard * leopard = dynamic_cast<BlackLeopard*>(enemy);
 				if (leopard->GetState() == BLACK_LEOPARD_IDLE)
 					leopard->SetState(BLACK_LEOPARD_ACTIVE);
+			}
+			else if (dynamic_cast<Bat*>(enemy))
+			{
+				Bat * bat = dynamic_cast<Bat*>(enemy);
+
+				if (bat->GetState() == BAT_INACTIVE && bat->IsAbleToActivate() == true)
+					bat->SetState(BAT_ACTIVE);
 			}
 		}
 	}

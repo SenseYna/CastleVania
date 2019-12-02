@@ -5,8 +5,6 @@
 class Enemy : public GameObject
 {
 protected:
-	int attack;
-
 	DWORD respawnTime_Start; 
 	bool isRespawnWaiting; // đang đợi hồi sinh
 	int respawnWaitingTime; // Khoảng thời gian đợi hồi sinh
@@ -33,8 +31,6 @@ public:
 
 	void SetEntryPosition(float x, float y) { entryPosition.x = x; entryPosition.y = y; }
 	D3DXVECTOR2 GetEntryPosition() { return entryPosition; }
-
-	int GetAttack() { return attack; }
 };
 
 #pragma once

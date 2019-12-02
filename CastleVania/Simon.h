@@ -21,6 +21,7 @@ public:
 	Simon();
 	Timer * untouchableTimer = new Timer(SIMON_UNTOUCHABLE_TIME);
 	Timer * invisibilityTimer = new Timer(SIMON_INVISIBILITY_TIME);
+	Timer * hightGravitySitTimer = new Timer(SIMON_INVISIBILITY_TIME);
 
 	// Bool
 	bool isWhip();
@@ -34,6 +35,8 @@ public:
 	bool col_stair_top = false; // va chạm bbox stair trên
 	bool col_stair_bot = false; // va chạm bbox stair dưới
 	bool isWalkThroughDoor = false;	// đi qua cửa
+	bool hightGravity = false; // trọng lực lớn 
+	bool isDelayHightGravitySit = false; // delay input
 
 	//Stair
 	bool isStandOnStair = false;	// trạng thái đang đứng trên cầu thang 

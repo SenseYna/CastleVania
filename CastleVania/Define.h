@@ -41,6 +41,7 @@
 #define STAIR				4
 #define ZOMBIE				5	
 #define BLACK_LEOPARD		6
+#define BAT					7
 
 // Font
 #define FILEPATH_FONT					L"Font\\prstart.ttf"
@@ -63,6 +64,7 @@
 #define GAMESTATE_1		0   // SCENE_1
 #define GAMESTATE_2		1	// SCENE_2
 #define GAMESTATE_2_1	2	// SCENE_2
+#define GAMESTATE_2_2   3
 #define GAMESTATE_3_1	6	// SCENE_3 - cầu thang lên 1
 #define GAMESTATE_3_2	7	// SCENE_3 - cầu thang lên 2
 
@@ -84,7 +86,10 @@
 #define SCENE_1			0
 #define SCENE_2 		1
 #define SCENE_3			2
+#define SCENE_3_1 		3
 #define SCENE_2_1 		4
+#define SCENE_2_2 		5
+
 
 
 // Simon
@@ -102,18 +107,20 @@
 #define DEFLECT			11
 
 // Simon
-#define SIMON_WALKING_SPEED			0.13f
-#define SIMON_WALKING_SPEED_LOWER	0.05f
-#define SIMON_JUMP_SPEED_Y			0.5f
-#define SIMON_SPEED_Y_LOWER_ZONE    0.2f
-#define SIMON_GRAVITY				0.002f
-#define SIMON_GRAVITY_LOWER			0.001f
-#define SIMON_STAIR_SPEED_X			0.079f
-#define SIMON_STAIR_SPEED_Y			0.079f
-#define SIMON_DEFLECT_SPEED_X		0.13f
-#define SIMON_DEFLECT_SPEED_Y		0.3f
-#define SIMON_UNTOUCHABLE_TIME		2000
-#define SIMON_INVISIBILITY_TIME		4000
+#define SIMON_WALKING_SPEED					0.13f
+#define SIMON_WALKING_SPEED_LOWER			0.05f
+#define SIMON_JUMP_SPEED_Y					0.5f
+#define SIMON_SPEED_Y_LOWER_ZONE		    0.2f
+#define SIMON_GRAVITY						0.002f
+#define SIMON_GRAVITY_LOWER					0.001f
+#define SIMON_GRAVITY_FASTER				0.003f
+#define SIMON_STAIR_SPEED_X					0.079f
+#define SIMON_STAIR_SPEED_Y					0.079f
+#define SIMON_DEFLECT_SPEED_X				0.13f
+#define SIMON_DEFLECT_SPEED_Y				0.4f
+#define SIMON_UNTOUCHABLE_TIME				2000
+#define SIMON_INVISIBILITY_TIME				4000
+#define SIMON_HIGHT_GRAVITY_SIT_TIME		700
 
 // Simon BBOX
 #define SIMON_BBOX_WIDTH			30
@@ -168,6 +175,7 @@
 #define EFFECT_ANI_TIME_DELAY		300
 #define SPARK_ANI_TIME_DELAY		100
 #define HIT_ANI_TIME_DELAY			400
+#define SIT_ANI_TIME_DELAY			200
 #define DEFLECT_ANI_TIME_DELAY		600
 #define POWER_ANI_TIME_DELAY		450
 #define STAIR_WALK_ANI_TIME_DELAY	200
@@ -229,7 +237,7 @@
 #define ZOMBIE_WALKING_SPEED		0.1f
 #define ZOMBIE_GRAVITY				0.002f
 
-// Zombie
+// Zombie BBOX
 #define ZOMBIE_BBOX_WIDTH			10
 #define ZOMBIE_BBOX_HEIGHT			60
 #define ZOMBIE_ACTIVE_BBOX_WIDTH	200
@@ -252,3 +260,19 @@
 #define BLACK_LEOPARD_BBOX_HEIGHT			32
 #define BLACK_LEOPARD_ACTIVE_BBOX_WIDTH		100
 #define BLACK_LEOPARD_ACTIVE_BBOX_HEIGHT	200
+
+// Bat object
+#define BAT_ACTIVE		0
+#define BAT_DESTROYED	1
+#define BAT_INACTIVE	2
+
+// Bat
+#define BAT_FLYING_SPEED_X	0.12f
+#define BAT_FLYING_SPEED_Y	0.1f
+#define BAT_SPEED_VARIATION 0.004f
+
+// Bat BBOX
+#define BAT_BBOX_WIDTH			10
+#define BAT_BBOX_HEIGHT			10
+#define BAT_ACTIVE_BBOX_WIDTH	250 
+#define BAT_ACTIVE_BBOX_HEIGHT	200

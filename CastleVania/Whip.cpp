@@ -2,6 +2,7 @@
 #include "Candle.h"
 #include "Zombie.h"
 #include "BlackLeopard.h"
+#include "Bat.h"
 
 Whip::Whip() : GameObject()
 {
@@ -56,6 +57,20 @@ void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (CheckCollision(left, top, right, bottom) == true) // va chạm giữa roi và BlackLeopard
 			{
 				e->SetState(BLACK_LEOPARD_DESTROYED);
+				sparkCoord.push_back({ left, top });
+			}
+		}
+		else if (dynamic_cast<Bat*>(obj))
+		{
+			Bat * e = dynamic_cast<Bat*> (obj);
+
+			float left, top, right, bottom;
+
+			e->GetBoundingBox(left, top, right, bottom);
+
+			if (CheckCollision(left, top, right, bottom) == true) // va chạm giữa roi và Bat
+			{
+				e->SetState(BAT_DESTROYED);
 				sparkCoord.push_back({ left, top });
 			}
 		}

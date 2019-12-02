@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bat.cpp" />
     <ClCompile Include="BlackLeopard.cpp" />
     <ClCompile Include="Candle.cpp" />
     <ClCompile Include="Debug.cpp" />
@@ -172,6 +173,7 @@
     <ClCompile Include="Zombie.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bat.h" />
     <ClInclude Include="BlackLeopard.h" />
     <ClInclude Include="Candle.h" />
     <ClInclude Include="Debug.h" />

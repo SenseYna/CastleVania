@@ -10,3 +10,4 @@
 9 Textures\\Stair.png Textures\\Stair_sprites.txt Textures\\Stair_animations.txt
 10 Textures\\Zombie.png Textures\\Zombie_sprites.txt Textures\\Zombie_animations.txt
 11 Textures\\BlackLeopard.png Textures\\BlackLeopard_sprites.txt Textures\\BlackLeopard_animations.txt
+12 Textures\\Bat.png Textures\\Bat_sprites.txt Textures\\Bat_animations.txt
