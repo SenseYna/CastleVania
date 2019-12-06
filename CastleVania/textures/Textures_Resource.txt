@@ -11,3 +11,8 @@
 10 Textures\\Zombie.png Textures\\Zombie_sprites.txt Textures\\Zombie_animations.txt
 11 Textures\\BlackLeopard.png Textures\\BlackLeopard_sprites.txt Textures\\BlackLeopard_animations.txt
 12 Textures\\Bat.png Textures\\Bat_sprites.txt Textures\\Bat_animations.txt
+13 Textures\\FishMan.png Textures\\FishMan_sprites.txt Textures\\FishMan_animations.txt
+14 Textures\\Bubbles.png Textures\\Bubbles_sprites.txt Textures\\Bubbles_animations.txt 
+15 Textures\\FireBall.png Textures\\FireBall_sprites.txt Textures\\FireBall_animations.txt 
+16 Textures\\BreakWall.png Textures\\BreakWall_sprites.txt Textures\\BreakWall_animations.txt 
+

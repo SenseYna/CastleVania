@@ -17,6 +17,10 @@
 #include "Zombie.h"
 #include "BlackLeopard.h"
 #include "Bat.h"
+#include "FishMan.h"
+#include "FireBall.h"
+#include "Water.h"
+#include "BreakWall.h"
 
 #include <map>
 
@@ -41,6 +45,7 @@ class Scenes
 	Simon * simon;
 	Whip * whip;
 	Weapons * weapons;
+	Water * water;
 
 	TileMaps * tilemaps = TileMaps::GetInstance();
 	Textures * textures = Textures::GetInstance();

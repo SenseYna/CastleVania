@@ -150,10 +150,14 @@
   <ItemGroup>
     <ClCompile Include="Bat.cpp" />
     <ClCompile Include="BlackLeopard.cpp" />
+    <ClCompile Include="BreakWall.cpp" />
+    <ClCompile Include="Bulles.cpp" />
     <ClCompile Include="Candle.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="FireBall.cpp" />
+    <ClCompile Include="FishMan.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Grid.cpp" />
@@ -168,6 +172,8 @@
     <ClCompile Include="Stair.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="WallPieces.cpp" />
+    <ClCompile Include="Water.cpp" />
     <ClCompile Include="Weapons.cpp" />
     <ClCompile Include="Whip.cpp" />
     <ClCompile Include="Zombie.cpp" />
@@ -175,11 +181,15 @@
   <ItemGroup>
     <ClInclude Include="Bat.h" />
     <ClInclude Include="BlackLeopard.h" />
+    <ClInclude Include="BreakWall.h" />
+    <ClInclude Include="Bubbles.h" />
     <ClInclude Include="Candle.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="FireBall.h" />
+    <ClInclude Include="FishMan.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Grid.h" />
@@ -194,6 +204,8 @@
     <ClInclude Include="Textures.h" />
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="WallPieces.h" />
+    <ClInclude Include="Water.h" />
     <ClInclude Include="Weapons.h" />
     <ClInclude Include="Whip.h" />
     <ClInclude Include="Zombie.h" />

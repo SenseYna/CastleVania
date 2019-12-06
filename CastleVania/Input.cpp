@@ -110,8 +110,7 @@ void Input::KeyState(BYTE *state)
 	{
 		if (Check_Simon_Collection_Stair() == true || simon->isStandOnStair)
 		{
-			Simon_Stair_Down();
-			return;
+			if (Simon_Stair_Down()) return;	
 		}
 
 		if (simon->isTouchGround == false)
@@ -323,7 +322,7 @@ void Input::Simon_Stair_Up()
 	return;
 }
 
-void Input::Simon_Stair_Down()
+bool Input::Simon_Stair_Down()
 {
 	int stairDirection = -simon->stairDirection;
 
@@ -336,7 +335,7 @@ void Input::Simon_Stair_Down()
 		simon->needStateMoveUpStair = false;
 		simon->col_stair_bot = false;
 		simon->AutoWalk(abs(30 * nx), STAND, nx);
-		return;
+		return 1;
 	}
 
 	if (simon->needStateMoveDownStair)
@@ -353,13 +352,13 @@ void Input::Simon_Stair_Down()
 
 			if (stair_x < simon_x) simon->SetOrientation(-1);
 			else if (stair_x > simon_x)  simon->SetOrientation(1);
-			else return;
+			else return 1;
 
 			simon->SetState(WALK);
 			simon->vy = 0;
 			simon->AutoWalk(abs(stair_x - simon_x), STAIR_DOWN, stairDirection); // **
 			simon->isStandOnStair = true;
-			return;
+			return 1;
 		}
 		else
 		{
@@ -373,11 +372,12 @@ void Input::Simon_Stair_Down()
 			}*/
 			simon->SetOrientation(stairDirection);
 			simon->SetState(STAIR_DOWN);
+			return 1;
 		}
 
 	}
 
-	return;
+	return 0;
 }
 
 bool Input::Simon_Stair_Stand()

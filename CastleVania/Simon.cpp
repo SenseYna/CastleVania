@@ -9,6 +9,10 @@
 #include <string>
 #include "BlackLeopard.h"
 #include "Bat.h"
+#include "FishMan.h"
+#include "FireBall.h"
+#include "BreakWall.h"
+#include "Water.h"
 
 Simon::Simon() : GameObject()
 {
@@ -99,7 +103,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (dynamic_cast<Ground*>(e->obj))
+			if (dynamic_cast<Ground*>(e->obj) || dynamic_cast<BreakWall*>(e->obj))
 			{
 				if (e->ny != 0)				// Trên dưới đụng, nx là trái phải
 				{
@@ -121,6 +125,30 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					}
 				}	
 			}
+			//else if (dynamic_cast<BreakWall*>(e->obj))
+			//{
+			//	//if (e->obj->GetState() == BREAK) continue;
+			//	//if (e->ny != 0)				// Trên dưới đụng, nx là trái phải
+			//	//{
+			//	//	if (e->ny == CDIR_BOTTOM) // -1 là đụng dưới
+			//	//	{
+			//	//		if (hightGravity && state != JUMP) {
+			//	//			isDelayHightGravitySit = true;
+			//	//			SetState(SIT);
+			//	//			hightGravity = false;
+			//	//		}
+			//	//		vy = 0;
+			//	//		isTouchGround = true;
+			//	//		isCollisionHead = false;
+			//	//	}
+			//	//	else
+			//	//	{
+			//	//		if (vy <= 0) vy = SIMON_GRAVITY;
+			//	//		isCollisionHead = true;
+			//	//	}
+			//	//}
+			//	
+			//}
 			else if (dynamic_cast<Door*>(e->obj))
 			{
 				auto door = dynamic_cast<Door*>(e->obj);
@@ -164,7 +192,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					this->isNextScene = obj->GetIDNextScene();
 				}
 			}
-			else if (dynamic_cast<Zombie*>(e->obj) || dynamic_cast<BlackLeopard*>(e->obj))
+			else if (dynamic_cast<Zombie*>(e->obj) || dynamic_cast<BlackLeopard*>(e->obj) || dynamic_cast<FireBall*>(e->obj) || dynamic_cast<FishMan*>(e->obj))
 			{
 				if (e->obj->GetState() == DESTROYED)
 					continue;
@@ -218,7 +246,18 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					if (e->ny != 0) y += dy;
 				}
 			}
+			else if (dynamic_cast<Water*>(e->obj))
+			{
+				if (e->ny == CDIR_BOTTOM)
+				{
+					Water * water = dynamic_cast<Water*>(e->obj);
+					water->AddBubbles(x, y + SIMON_BBOX_HEIGHT);
 
+				}
+				SetEnable(false);
+				if (e->nx != 0) x += dx;
+				if (e->ny != 0) y += dy;
+			}
 		}
 	}
 
@@ -235,9 +274,10 @@ void Simon::Render()
 
 	if (untouchableTimer->IsTimeUp() == false)
 		alpha = rand() % 255;
-
-	animations[tempState]->Render(nx, x, y, alpha);
-	animations[state]->SetFrame(animations[tempState]->GetCurrentFrame());
+	if (IsEnable()) {
+		animations[tempState]->Render(nx, x, y, alpha);
+		animations[state]->SetFrame(animations[tempState]->GetCurrentFrame());
+	}
 	
 }
 
@@ -481,6 +521,13 @@ void Simon::CheckCollisionWithEnemyActiveArea(vector<LPGAMEOBJECT>* listObjects)
 
 				if (bat->GetState() == BAT_INACTIVE && bat->IsAbleToActivate() == true)
 					bat->SetState(BAT_ACTIVE);
+			}
+			else if (dynamic_cast<FishMan*>(enemy))
+			{
+				FishMan * fishman = dynamic_cast<FishMan*>(enemy);
+
+				if (fishman->GetState() == FISHMAN_INACTIVE && fishman->IsAbleToActivate() == true)
+					fishman->SetState(FISHMAN_ACTIVE);
 			}
 		}
 	}

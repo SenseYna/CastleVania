@@ -5,7 +5,8 @@
 #include "Zombie.h"
 #include "BlackLeopard.h"
 #include "Bat.h"
-
+#include "FishMan.h"
+#include "FireBall.h"
 
 Weapons::Weapons()
 {
@@ -103,6 +104,23 @@ void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 				SetCoordinateObject(e->obj);
 
 				UpdateCollisionState();
+			}
+			else if (dynamic_cast<FishMan*>(e->obj))
+			{
+				FishMan * fishman = dynamic_cast<FishMan*> (e->obj);
+				fishman->SetState(FISHMAN_DESTROYED);
+				SetCoordinateObject(e->obj);
+
+				UpdateCollisionState();
+			}
+			else if (dynamic_cast<FireBall*>(e->obj))
+			{
+				FireBall * fireball = dynamic_cast<FireBall*> (e->obj);
+				fireball->SetState(FIREBALL_DESTROYED);
+				SetCoordinateObject(e->obj);
+
+				UpdateCollisionState();
+				
 			}
 
 		}

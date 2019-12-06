@@ -32,6 +32,11 @@
 #define ID_TEX_STAIR				9
 #define ID_TEX_ZOMBIE				10
 #define ID_TEX_BLACK_LEOPARD		11
+#define ID_TEX_BAT					12
+#define ID_TEX_FISHMAN				13
+#define ID_TEX_BUBBLES				14
+#define ID_TEX_FIREBALL				15
+#define ID_TEX_BREAKWALL			16
 
 // ID Object
 #define	CANDLE				0
@@ -42,6 +47,9 @@
 #define ZOMBIE				5	
 #define BLACK_LEOPARD		6
 #define BAT					7
+#define FISHMAN				8
+#define WATER				9
+#define BREAKWALL			10
 
 // Font
 #define FILEPATH_FONT					L"Font\\prstart.ttf"
@@ -90,7 +98,9 @@
 #define SCENE_2_1 		4
 #define SCENE_2_2 		5
 
-
+// Scene x,y
+#define SCENE_2_1_x		2832
+#define SCENE_2_1_WIDTH	3328
 
 // Simon
 #define STAND			0
@@ -167,7 +177,6 @@
 // Candle BBOX
 #define CANDLE_BBOX_WIDTH			32
 #define CANDLE_BBOX_HEIGHT			64
-
 #define SMALL_CANDLE_BBOX_WIDTH		16
 #define SMALL_CANDLE_BBOX_HEIGHT	32
 
@@ -181,6 +190,7 @@
 #define STAIR_WALK_ANI_TIME_DELAY	200
 #define DOOR_2_OPEN_ANI_TIME_DELAY	5000
 #define CHANGE_SCENE_TIME_DELAY		350
+#define FISHMAN_HIT_ANI_TIME_DELAY	1000
 
 // Item 
 #define ITEM_FALLING_SPEED_X			0.0f
@@ -198,8 +208,6 @@
 #define SMALL_HEART		2
 #define LARGE_HEART		3
 #define CHAIN			4
-
-
 
 // Door
 #define DOOR_1			0
@@ -276,3 +284,49 @@
 #define BAT_BBOX_HEIGHT			10
 #define BAT_ACTIVE_BBOX_WIDTH	250 
 #define BAT_ACTIVE_BBOX_HEIGHT	200
+
+// Fish man object
+#define FISHMAN_ACTIVE		0
+#define FISHMAN_DESTROYED	1
+#define FISHMAN_INACTIVE	2
+#define FISHMAN_JUMP		3
+#define FISHMAN_HIT			4
+
+// Fish man
+#define FISHMAN_JUMP_SPEED_Y		0.9f
+#define FISHMAN_GRAVITY				0.0015f
+#define FISHMAN_WALKING_SPEED_X		0.1f
+#define FISHMAN_GRAVITY_LOWER		0.001f
+
+// Fish man BBOX
+#define FISHMAN_BBOX_WIDTH			10
+#define FISHMAN_BBOX_HEIGHT			60
+#define FISHMAN_ACTIVE_BBOX_WIDTH	200
+#define FISHMAN_ACTIVE_BBOX_HEIGHT	200
+
+// Fire ball object
+#define FIREBALL					0
+#define FIREBALL_DESTROYED			1
+
+// Fire ball
+#define FIREBALL_SPEED				0.13f
+
+// Fire ball BBOX
+#define FIREBALL_BBOX_WIDTH			14
+#define FIREBALL_BBOX_HEIGHT		12
+
+// Water
+#define	WATER_BBOX_WIDTH			512
+#define WATER_BBOX_HEIGHT			32
+
+// Bubbles
+#define BUBBLES_GRAVITY				0.0005f
+#define BUBBLES_TIME				1000
+
+// Wall pieces
+#define	WALLPIECES_GRAVITY			0.0005f
+#define WALLPIECES_TIME				2000
+
+// Break wall
+#define NORMAL				0
+#define BREAK				1

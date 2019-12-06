@@ -92,6 +92,24 @@
     <ClCompile Include="Bat.cpp">
       <Filter>Moving Objects</Filter>
     </ClCompile>
+    <ClCompile Include="FishMan.cpp">
+      <Filter>Moving Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Water.cpp">
+      <Filter>Static Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Bulles.cpp">
+      <Filter>Static Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="FireBall.cpp">
+      <Filter>Moving Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="BreakWall.cpp">
+      <Filter>Static Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="WallPieces.cpp">
+      <Filter>Moving Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -164,6 +182,24 @@
       <Filter>Moving Objects</Filter>
     </ClInclude>
     <ClInclude Include="Bat.h">
+      <Filter>Moving Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="FishMan.h">
+      <Filter>Moving Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Water.h">
+      <Filter>Static Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Bubbles.h">
+      <Filter>Static Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="FireBall.h">
+      <Filter>Moving Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="BreakWall.h">
+      <Filter>Static Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="WallPieces.h">
       <Filter>Moving Objects</Filter>
     </ClInclude>
   </ItemGroup>

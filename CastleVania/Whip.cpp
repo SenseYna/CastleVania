@@ -3,6 +3,9 @@
 #include "Zombie.h"
 #include "BlackLeopard.h"
 #include "Bat.h"
+#include "FishMan.h"
+#include "FireBall.h"
+#include "BreakWall.h"
 
 Whip::Whip() : GameObject()
 {
@@ -17,8 +20,21 @@ void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPGAMEOBJECT obj = coObjects->at(i);
+		if (dynamic_cast<BreakWall*>(obj))
+		{
+			BreakWall * e = dynamic_cast<BreakWall*>(obj);
 
-		if (dynamic_cast<Candle*>(obj)) // va chạm giữa roi và nến
+			float left, top, right, bottom;
+			e->GetBoundingBox(left, top, right, bottom);
+
+			if (CheckCollision(left, top, right, bottom) == true)
+			{
+				e->SetState(BREAK);
+				//targetTypeHit = BREAKWALL;
+			}
+		}
+
+		else if (dynamic_cast<Candle*>(obj)) // va chạm giữa roi và nến
 		{
 			Candle * e = dynamic_cast<Candle*> (obj);
 
@@ -71,6 +87,34 @@ void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (CheckCollision(left, top, right, bottom) == true) // va chạm giữa roi và Bat
 			{
 				e->SetState(BAT_DESTROYED);
+				sparkCoord.push_back({ left, top });
+			}
+		}
+		else if (dynamic_cast<FishMan*>(obj))
+		{
+			FishMan * e = dynamic_cast<FishMan*> (obj);
+
+			float left, top, right, bottom;
+
+			e->GetBoundingBox(left, top, right, bottom);
+
+			if (CheckCollision(left, top, right, bottom) == true) // va chạm giữa roi và FishMan
+			{
+				e->SetState(FISHMAN_DESTROYED);
+				sparkCoord.push_back({ left, top });
+			}
+		}
+		else if (dynamic_cast<FireBall*>(obj))
+		{
+			FireBall * e = dynamic_cast<FireBall*> (obj);
+
+			float left, top, right, bottom;
+
+			e->GetBoundingBox(left, top, right, bottom);
+
+			if (CheckCollision(left, top, right, bottom) == true) // va chạm giữa roi và FireBall
+			{
+				e->SetState(FIREBALL_DESTROYED);
 				sparkCoord.push_back({ left, top });
 			}
 		}
