@@ -22,6 +22,7 @@ public:
 	Timer * untouchableTimer = new Timer(SIMON_UNTOUCHABLE_TIME);
 	Timer * invisibilityTimer = new Timer(SIMON_INVISIBILITY_TIME);
 	Timer * hightGravitySitTimer = new Timer(SIMON_INVISIBILITY_TIME);
+	Timer * autoWalkScene2_1Timer = new Timer(GOTO_SCENE_2_1_TIME_DELAY);
 
 	// Bool
 	bool isWhip();

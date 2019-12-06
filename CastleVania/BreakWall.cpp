@@ -18,6 +18,17 @@ void BreakWall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 	if (pieces != NULL)
 		pieces->Update(dt);
 
+	if (isBreakToPieces == true && pieces != NULL)
+	{
+		if (pieces->GetStartTimeRender() == 0)
+			pieces->SetStartTimeRender(GetTickCount());
+		else if (GetTickCount() - pieces->GetStartTimeRender() > WALLPIECES_TIME)
+		{
+			delete pieces;
+			pieces = NULL;
+			return;
+		}
+	}
 	
 }
 
@@ -30,17 +41,8 @@ void BreakWall::Render()
 
 	if (isBreakToPieces == true && pieces != NULL)
 	{
-		if (pieces->GetStartTimeRender() == 0)
-			pieces->SetStartTimeRender(GetTickCount());
-		else if (GetTickCount() - pieces->GetStartTimeRender() > WALLPIECES_TIME)
-		{
-			delete pieces;
-			pieces = NULL;
-			return;
-		}
-
 		pieces->Render();
-	}
+	} 
 }
 
 void BreakWall::SetState(int state)

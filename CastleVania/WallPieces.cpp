@@ -16,7 +16,7 @@ void WallPiece::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 }
 
 void WallPiece::Render()
-{
+{ 
 	animations[state]->Render(nx, x, y);
 }
 
@@ -39,10 +39,7 @@ WallPieces::WallPieces(float x, float y)
 
 WallPieces::~WallPieces()
 {
-	for (int i = 0; i < 4; i++)
-		delete(pieces[i]);
-
-	pieces.clear();
+	
 }
 
 void WallPieces::Update(DWORD dt)

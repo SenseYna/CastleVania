@@ -81,7 +81,7 @@ void Bat::GetBoundingBox(float & left, float & top, float & right, float & botto
 
 void Bat::GetActiveBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-	left = entryPosition.x - BAT_ACTIVE_BBOX_WIDTH;
+	left = entryPosition.x - BAT_ACTIVE_BBOX_WIDTH/2;
 	top = entryPosition.y - BAT_ACTIVE_BBOX_HEIGHT;
 	right = entryPosition.x + BAT_ACTIVE_BBOX_WIDTH;
 	bottom = entryPosition.y + BAT_ACTIVE_BBOX_HEIGHT;

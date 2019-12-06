@@ -45,6 +45,8 @@ bool Input::AnimationDelay()
 
 bool Input::CanProcessKeyboard()
 {
+	if (!(simon->autoWalkScene2_1Timer->IsTimeUp()))
+		return false;
 	if (AnimationDelay() == true)
 		return false;
 	if (simon->isAutoWalk == true)
@@ -146,6 +148,9 @@ void Input::KeyState(BYTE *state)
 
 void Input::OnKeyDown(int KeyCode)
 {
+	if (!(simon->autoWalkScene2_1Timer->IsTimeUp()))
+		return;
+
 	switch (KeyCode)
 	{
 	case DIK_A:
@@ -242,7 +247,8 @@ void Input::Simon_Whip_Weapons()
 	else return;
 
 	if (simon->GetState() == STAND || simon->GetState() == JUMP ||
-		simon->GetState() == SIT)
+		simon->GetState() == SIT || simon->GetState() == STAIR_UP || 
+		simon->GetState() == STAIR_DOWN)
 	{
 		float sx, sy;
 

@@ -15,7 +15,7 @@ FishMan::FishMan() : Enemy()
 	deltaTimeToShoot = 0;
 	nxAfterShoot = 0;
 
-	respawnWaitingTime = 3000;
+	respawnWaitingTime = 5000;
 }
 
 void FishMan::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)

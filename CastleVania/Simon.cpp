@@ -125,30 +125,6 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					}
 				}	
 			}
-			//else if (dynamic_cast<BreakWall*>(e->obj))
-			//{
-			//	//if (e->obj->GetState() == BREAK) continue;
-			//	//if (e->ny != 0)				// Trên dưới đụng, nx là trái phải
-			//	//{
-			//	//	if (e->ny == CDIR_BOTTOM) // -1 là đụng dưới
-			//	//	{
-			//	//		if (hightGravity && state != JUMP) {
-			//	//			isDelayHightGravitySit = true;
-			//	//			SetState(SIT);
-			//	//			hightGravity = false;
-			//	//		}
-			//	//		vy = 0;
-			//	//		isTouchGround = true;
-			//	//		isCollisionHead = false;
-			//	//	}
-			//	//	else
-			//	//	{
-			//	//		if (vy <= 0) vy = SIMON_GRAVITY;
-			//	//		isCollisionHead = true;
-			//	//	}
-			//	//}
-			//	
-			//}
 			else if (dynamic_cast<Door*>(e->obj))
 			{
 				auto door = dynamic_cast<Door*>(e->obj);
@@ -170,7 +146,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					{
 						door->SetState(DOOR_2_OPEN);
 						door->animations[DOOR_2_OPEN]->SetAniStartTime(GetTickCount());
-
+						autoWalkScene2_1Timer->Start();
 						isWalkThroughDoor = true;
 					}
 				}
@@ -521,6 +497,11 @@ void Simon::CheckCollisionWithEnemyActiveArea(vector<LPGAMEOBJECT>* listObjects)
 
 				if (bat->GetState() == BAT_INACTIVE && bat->IsAbleToActivate() == true)
 					bat->SetState(BAT_ACTIVE);
+				int x_bat;
+
+				x_bat = simon_l + SCREEN_WIDTH;
+
+				bat->SetPosition(x_bat, bat->y); // vị trí chuẩn bị spawn tạm thời
 			}
 			else if (dynamic_cast<FishMan*>(enemy))
 			{

@@ -46,15 +46,20 @@ class Scenes
 	Whip * whip;
 	Weapons * weapons;
 	Water * water;
+	vector<Weapons*> weaponlist;
 
+public:
 	TileMaps * tilemaps = TileMaps::GetInstance();
 	Textures * textures = Textures::GetInstance();
 	Sprites * sprites = Sprites::GetInstance();
 	Animations * animations = Animations::GetInstance();
 
-	vector<Weapons*> weaponlist;
+	void LoadSprites(int id, LPCWSTR tex, LPCWSTR sprite_data, LPCWSTR animation_data);
+	wchar_t* ConvertToWideChar(char* p);
+	void LoadSpritesFromFile(LPCWSTR FilePath);
+	void LoadTileMapFromFile(LPCWSTR FilePath);
+	void LoadResources();
 
-public:
 	Scenes(Game * game);
 	~Scenes();
 

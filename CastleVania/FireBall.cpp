@@ -7,7 +7,7 @@ FireBall::FireBall()
 	AddAnimation("fireball_ani");
 	AddAnimation("effect1_ani");
 
-	SetState(FIREBALL);
+	SetState(FIREBALL_ACTIVE);
 }
 
 void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
@@ -34,7 +34,7 @@ void FireBall::SetState(int state)
 
 	switch (state)
 	{
-	case FIREBALL:
+	case FIREBALL_ACTIVE:
 		if (nx == 1) vx = FIREBALL_SPEED;
 		else vx = -FIREBALL_SPEED;
 		vy = 0;

@@ -1,20 +1,152 @@
 ﻿#include "Scenes.h"
 
+// Read data of sprites and animations from file.
+void Scenes::LoadSprites(int id, LPCWSTR tex, LPCWSTR sprite_data, LPCWSTR animation_data)
+{
+	textures->Add(id, tex);
+	LPDIRECT3DTEXTURE9 texture = textures->Get(id);
+
+	ifstream spriteReader, animationReader;
+
+	spriteReader.open(sprite_data);
+	animationReader.open(animation_data);
+
+	if (spriteReader.fail())
+	{
+		DebugOut(L"[ERROR] LoadSprites failed!: ID=%d", id);
+		spriteReader.close();
+		return;
+	}
+
+	if (animationReader.fail())
+	{
+		DebugOut(L"[ERROR] LoadAnimation failed!: ID=%d", id);
+		animationReader.close();
+		return;
+	}
+
+	// Load sprite data
+
+	string spriteid;
+	int left, top, right, bottom;
+
+	while (spriteReader >> spriteid >> left >> top >> right >> bottom)
+		sprites->Add(spriteid, left, top, right, bottom, texture);
+
+	spriteReader.close();
+
+	// Load animation data
+
+	string animationId;
+	string line;
+	string spriteId;
+	int frameTime;
+
+	while (getline(animationReader, line))
+	{
+		LPANIMATION ani = new Animation();
+
+		istringstream iss(line, istringstream::in);
+		iss >> animationId;
+
+		while (iss >> spriteId >> frameTime)
+			ani->Add(spriteId, frameTime);
+
+		animations->Add(animationId, ani);
+	}
+
+	animationReader.close();
+}
+
+wchar_t* Scenes::ConvertToWideChar(char* p) // Covert string sang wchar_t*
+{
+	wchar_t *r;
+	r = new wchar_t[strlen(p) + 1];
+
+	char *tempsour = p;
+	wchar_t *tempdest = r;
+	while (*tempdest++ = *tempsour++);
+
+	return r;
+}
+
+void Scenes::LoadSpritesFromFile(LPCWSTR FilePath)
+{
+	fstream fss;
+	fss.open(FilePath, ios::in);
+	if (fss.fail())
+	{
+		DebugOut(L"[ERROR] Scene %d load resource failed: file path = %s\n", FilePath);
+		fss.close();
+		return;
+	}
+
+	int ID_Tex;
+	string path_texture;
+	string path_sprites;
+	string path_animations;
+
+	while (!fss.eof())
+	{
+		fss >> ID_Tex >> path_texture >> path_sprites >> path_animations;
+		LoadSprites(ID_Tex, ConvertToWideChar((char*)path_texture.c_str()), ConvertToWideChar((char*)path_sprites.c_str()), ConvertToWideChar((char*)path_animations.c_str()));
+	}
+
+	fss.close();
+}
+
+void Scenes::LoadTileMapFromFile(LPCWSTR FilePath)
+{
+	fstream fss;
+	fss.open(FilePath, ios::in);
+	if (fss.fail())
+	{
+		DebugOut(L"[ERROR] Scene %d load resource failed: file path = %s\n", FilePath);
+		fss.close();
+		return;
+	}
+
+	int ID_Tex;
+	string path_texture;
+	string path_map;
+	int map_width;
+	int map_height;
+
+	while (!fss.eof())
+	{
+		fss >> ID_Tex >> path_texture >> path_map >> map_width >> map_height;
+		tilemaps->Add(ID_Tex, ConvertToWideChar((char*)path_texture.c_str()), ConvertToWideChar((char*)path_map.c_str()), map_width, map_height);
+	}
+
+	fss.close();
+}
+
+// Load all sprite, animations, texture, tilemap data from file
+void Scenes::LoadResources()
+{
+	// for render bounding box
+	textures->Add(ID_TEX_BBOX, FILEPATH_BBOX_RESOURCE);
+
+	//id tex, texture, sprite, animation
+	LoadSpritesFromFile(FILEPATH_TEXTURE_RESOURCE);
+
+	//tile map
+	LoadTileMapFromFile(FILEPATH_TILE_MAP_RESOURCE);
+}
 
 Scenes::Scenes(Game * game)
 {
 	this->game = game;
 
+	LoadResources();
+
 	// INIT
 	simon = new Simon();
 	whip = new Whip();
 
-	for (int i = 1; i <= 3; i++)
-	{
-		weapons = new Weapons();
-		weapons->SetEnable(false);
-		weaponlist.push_back(weapons);
-	}
+	weapons = new Weapons();
+	weapons->SetEnable(false);
+	weaponlist.push_back(weapons);
 }
 
 Scenes::~Scenes()
@@ -387,7 +519,7 @@ void Scenes::Render()
 	for (auto obj : listObjects)
 	{
 		obj->Render();
-		obj->RenderBoundingBox();
+		//obj->RenderBoundingBox();
 	}
 
 	simon->Render();
@@ -431,8 +563,8 @@ void Scenes::SetDropItems()
 
 		if ((dynamic_cast<Candle*>(object) && object->GetState() == CANDLE_DESTROYED) || (dynamic_cast<Zombie*>(object) && object->GetState() == ZOMBIE_DESTROYED) 
 			|| (dynamic_cast<Bat*>(object) && object->GetState() == BAT_DESTROYED) || (dynamic_cast<BlackLeopard*>(object) && object->GetState() == BLACK_LEOPARD_DESTROYED)
-			|| (dynamic_cast<FishMan*>(object) && object->GetState() == FISHMAN_DESTROYED) || (dynamic_cast<BreakWall*>(object) && object->GetState() == BREAK)
-			)
+			|| (dynamic_cast<FishMan*>(object) && object->GetState() == FISHMAN_DESTROYED))
+			
 		{
 			idItem = GetRandomItem(); //object->idItem;
 			object->GetPosition(x, y);
@@ -533,7 +665,7 @@ void Scenes::SetGameState(int state)
 
 		case GAMESTATE_2:
 			simon->SetState(STAND);
-			simon->SetPosition(1050, 272);
+			simon->SetPosition(0, 272);
 			game->SetCameraPosition(0, 0);
 			break;
 
@@ -660,9 +792,8 @@ void Scenes::SetEnemiesSpawnPositon()
 				simon->GetPosition(simon_x, simon_y);
 
 				int nx = simon_x > fishman->GetEntryPosition().x ? 1 : -1;
-				float distance = 50 + rand() % 150;
 
-				float x = simon_x - nx * distance;
+				float x = fishman->GetEntryPosition().x;
 				float y = fishman->GetEntryPosition().y;
 
 				fishman->SetOrientation(nx);
@@ -695,7 +826,7 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 	{
 		for (auto obj : listObjects)
 		{
-			if (dynamic_cast<Ground*>(obj))
+			if (dynamic_cast<Ground*>(obj) || dynamic_cast<Water*>(obj) || dynamic_cast<BreakWall*>(obj))
 				coObjects.push_back(obj);
 		}	
 	}
@@ -833,7 +964,6 @@ bool Scenes::SimonWalkThroughDoor()
 		if (isSetSimonAutoWalk == false)	// AutoWalk
 		{
 			isSetSimonAutoWalk = true;
-
 			simon->SetState(WALK);
 			simon->vy = 0;
 			simon->AutoWalk(120, STAND, DIR_RIGHT);
@@ -842,9 +972,7 @@ bool Scenes::SimonWalkThroughDoor()
 		{
 			if (simon->isAutoWalk == false)
 			{
-				isMovingCamera2 = true;
-
-				if (countDxCamera < 496)	// Di chuyển camera thêm một đoạn -> 480
+				if (countDxCamera < 496)	// Di chuyển camera thêm một đoạn -> 496-224
 				{
 					countDxCamera += 2;
 
@@ -856,11 +984,8 @@ bool Scenes::SimonWalkThroughDoor()
 				else
 				{
 					isMovingCamera1 = false;
-					isMovingCamera2 = false;
 					isSetSimonAutoWalk = false;
 					countDxCamera = 0;
-
-				//	tilemaps->Get(IDScene)->index += 1;  // tăng giới hạn min_max_col của tilemap
 				}
 			}
 		}

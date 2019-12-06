@@ -1,5 +1,5 @@
 ﻿#include "Items.h"
-
+#include "Water.h"
 
 Items::Items() : GameObject()
 {
@@ -72,7 +72,7 @@ void Items::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (dynamic_cast<Ground*>(e->obj))
+			if (dynamic_cast<Ground*>(e->obj) || dynamic_cast<BreakWall*>(e->obj))
 			{
 				if (e->ny == CDIR_BOTTOM)				// Hướng va chạm là bên dưới
 				{
@@ -80,6 +80,12 @@ void Items::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 					vy = 0;
 		
 				}
+			}
+			else if (dynamic_cast<Water*>(e->obj))
+			{
+				this->isEnable = false;
+				Water * water = dynamic_cast<Water*>(e->obj);
+				water->AddBubbles(x, y);
 			}
 		}
 		

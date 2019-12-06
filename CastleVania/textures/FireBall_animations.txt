@@ -1,1 +1,1 @@
-fireball_ani	fireball	100
+fireball_ani	fireball	100 

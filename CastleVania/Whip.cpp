@@ -30,7 +30,6 @@ void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (CheckCollision(left, top, right, bottom) == true)
 			{
 				e->SetState(BREAK);
-				//targetTypeHit = BREAKWALL;
 			}
 		}
 
