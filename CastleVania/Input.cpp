@@ -175,6 +175,9 @@ void Input::OnKeyDown(int KeyCode)
 	case DIK_R:
 		scene->Init(SCENE_2_2);
 		break;
+	case DIK_T:
+		scene->Init(SCENE_2_3);
+		break;
 	case DIK_SPACE:
 		if (simon->isStandOnStair == false) Simon_Jump();
 		break;

@@ -6,6 +6,7 @@
 #include "FishMan.h"
 #include "FireBall.h"
 #include "BreakWall.h"
+#include "Boss.h"
 
 Whip::Whip() : GameObject()
 {
@@ -115,6 +116,21 @@ void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				e->SetState(FIREBALL_DESTROYED);
 				sparkCoord.push_back({ left, top });
+			}
+		}
+		else if (dynamic_cast<Boss*>(obj))
+		{
+			Boss * e = dynamic_cast<Boss*> (obj);
+
+			float left, top, right, bottom;
+
+			e->GetBoundingBox(left, top, right, bottom);
+
+			if (CheckCollision(left, top, right, bottom) == true) // va chạm giữa roi và boss
+			{
+				e->LoseHP(1);
+				sparkCoord.push_back({ left, top });
+
 			}
 		}
 	}

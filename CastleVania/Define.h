@@ -37,6 +37,7 @@
 #define ID_TEX_BUBBLES				14
 #define ID_TEX_FIREBALL				15
 #define ID_TEX_BREAKWALL			16
+#define ID_TEX_BOSS					17
 
 // ID Object
 #define	CANDLE				0
@@ -50,6 +51,7 @@
 #define FISHMAN				8
 #define WATER				9
 #define BREAKWALL			10
+#define BOSS				11
 
 // Font
 #define FILEPATH_FONT					L"Font\\prstart.ttf"
@@ -72,7 +74,8 @@
 #define GAMESTATE_1		0   // SCENE_1
 #define GAMESTATE_2		1	// SCENE_2
 #define GAMESTATE_2_1	2	// SCENE_2
-#define GAMESTATE_2_2   3
+#define GAMESTATE_2_2   3   // SCENE_2 - cầu thang lên
+#define GAMESTATE_2_3   4   // SCENE_2 - màn boss
 #define GAMESTATE_3_1	6	// SCENE_3 - cầu thang lên 1
 #define GAMESTATE_3_2	7	// SCENE_3 - cầu thang lên 2
 
@@ -97,6 +100,7 @@
 #define SCENE_3_1 		3
 #define SCENE_2_1 		4
 #define SCENE_2_2 		5
+#define SCENE_2_3		6
 
 // Scene x,y
 #define SCENE_2_1_x		2832
@@ -165,9 +169,18 @@
 #define WEAPONS_HOLY_WATER_GRAVITY	0.001f
 #define WEAPONS_HOLY_WATER_TIME_EFFECT	500
 
+//Ground 
+#define GROUND_HIDE				0
+#define GROUND_HIDE_STATE		10
+#define GROUND_WALL				20
+
 // Ground BBOX
 #define GROUND_BBOX_WIDTH			32
 #define GROUND_BBOX_HEIGHT			32
+#define GROUND_BBOX_HEIGHT_HALF_TOP	16
+#define GROUND_BBOX_WIDTH_HALF_TOP	16
+#define GROUND_BBOX_HALF_X			3904
+#define GROUND_BBOX_HALF_Y			176
 
 // Candle
 #define BIG_CANDLE		0
@@ -192,6 +205,7 @@
 #define CHANGE_SCENE_TIME_DELAY		350
 #define FISHMAN_HIT_ANI_TIME_DELAY	1000
 #define GOTO_SCENE_2_1_TIME_DELAY	5200
+#define EFFECT_2_ANI_TIME_DELAY		1000
 
 // Item 
 #define ITEM_FALLING_SPEED_X			0.0f
@@ -331,3 +345,24 @@
 // Break wall
 #define NORMAL				0
 #define BREAK				1
+
+// Boss
+#define BOSS_BBOX_WIDTH						70
+#define BOSS_BBOX_HEIGHT					46
+#define BOSS_ACTIVE_BBOX_WIDTH				50
+#define BOSS_ACTIVE_BBOX_HEIGHT				400
+#define BOSS_RECT_RANDOMSPOT_BBOX_WIDTH		200
+#define BOSS_RECT_RANDOMSPOT_BBOX_HEIGHT	200
+
+// Boss
+#define BOSS_HP						16
+#define BOSS_DEFAULT_TIME_TO_FLY	1000
+#define BOSS_FAST_TIME_TO_FLY		1000
+#define BOSS_STOP_TIME_WAITING		1500
+
+
+// Boss (Phantom Bat)
+#define BOSS_ACTIVE			0
+#define BOSS_DESTROYED		1
+#define BOSS_INACTIVE		2
+#define BOSS_IDLE			3

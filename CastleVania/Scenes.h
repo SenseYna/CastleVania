@@ -21,6 +21,7 @@
 #include "FireBall.h"
 #include "Water.h"
 #include "BreakWall.h"
+#include "Boss.h"
 
 #include <map>
 
@@ -47,12 +48,15 @@ class Scenes
 	Weapons * weapons;
 	Water * water;
 	vector<Weapons*> weaponlist;
+	Boss * boss;
 
 public:
 	TileMaps * tilemaps = TileMaps::GetInstance();
 	Textures * textures = Textures::GetInstance();
 	Sprites * sprites = Sprites::GetInstance();
 	Animations * animations = Animations::GetInstance();
+
+	bool isBossFighting = false;
 
 	void LoadSprites(int id, LPCWSTR tex, LPCWSTR sprite_data, LPCWSTR animation_data);
 	wchar_t* ConvertToWideChar(char* p);
@@ -94,6 +98,7 @@ public:
 	void SetGameState(int state);	// Set vị trí của simon, camera
 	void SetEnemiesSpawnPositon();	// Set position cho khởi tạo enemies
 	int delayChangScene = -1; // màn hình đen chuyển màn => đợi sinh zombie 
+	void ShowGround();
 
 	// Get
 	Simon * GetSimon() { return this->simon; }

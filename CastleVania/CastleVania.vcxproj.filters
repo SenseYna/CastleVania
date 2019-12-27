@@ -110,6 +110,9 @@
     <ClCompile Include="WallPieces.cpp">
       <Filter>Moving Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Moving Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -200,6 +203,9 @@
       <Filter>Static Objects</Filter>
     </ClInclude>
     <ClInclude Include="WallPieces.h">
+      <Filter>Moving Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h">
       <Filter>Moving Objects</Filter>
     </ClInclude>
   </ItemGroup>

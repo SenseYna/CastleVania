@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "GameObject.h"
 #include "Sprites.h"
@@ -7,6 +7,7 @@
 class Ground : public GameObject
 {
 public:
+	int kind = -1; // loại gạch 
 	Ground();
 
 	virtual void Render();

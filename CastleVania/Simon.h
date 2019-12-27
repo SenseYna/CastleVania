@@ -62,6 +62,8 @@ public:
 	// Kiểm tra va chạm với danh sách item
 	bool CheckCollisionWithItem(vector<LPGAMEOBJECT> * listItem);
 
+	void CheckCollisionWithBoss(LPGAMEOBJECT boss);
+
 	// Kiểm tra tính đúng đắn va chạm với danh sách stair
 	bool CheckRightnessCollisionWithStair(vector<LPGAMEOBJECT> * listStair);
 

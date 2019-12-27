@@ -7,6 +7,7 @@
 #include "Bat.h"
 #include "FishMan.h"
 #include "FireBall.h"
+#include "Boss.h"
 
 Weapons::Weapons()
 {
@@ -121,6 +122,14 @@ void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 
 				UpdateCollisionState();
 				
+			}
+			else if (dynamic_cast<Boss*>(e->obj))
+			{
+				Boss * boss = dynamic_cast<Boss*>(e->obj);
+				boss->LoseHP(2);
+				SetCoordinateObject(e->obj);
+
+				UpdateCollisionState();
 			}
 
 		}

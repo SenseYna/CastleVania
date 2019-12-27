@@ -143,6 +143,7 @@ Scenes::Scenes(Game * game)
 	// INIT
 	simon = new Simon();
 	whip = new Whip();
+	boss = new Boss();
 
 	weapons = new Weapons();
 	weapons->SetEnable(false);
@@ -160,6 +161,7 @@ void Scenes::Init(int idScene)
 	if (IDScene == SCENE_2_1) IDScene = SCENE_2;
 	else if (IDScene == SCENE_2_2) IDScene = SCENE_2;
 	else if (IDScene == SCENE_3_1) IDScene = SCENE_3;
+	else if (IDScene == SCENE_2_3) IDScene = SCENE_2;
 
 	switch (idScene)
 	{
@@ -180,7 +182,6 @@ void Scenes::Init(int idScene)
 		break;
 	case SCENE_3_1:
 		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_3);
-		//simon->SetState(STAIR_DOWN);
 		SetGameState(GAMESTATE_3_2);
 		delayChangeScene->Start();
 		break;
@@ -193,7 +194,11 @@ void Scenes::Init(int idScene)
 		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_2);
 		SetGameState(GAMESTATE_2_2);
 		delayChangeScene->Start();
-		//tilemaps->Get(SCENE_2)->index = 1;
+		break;
+	case SCENE_2_3:
+		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_2);
+		SetGameState(GAMESTATE_2_3);
+		delayChangeScene->Start();
 		break;
 	default:
 		break;
@@ -246,6 +251,7 @@ void Scenes::LoadObjectsFromFileToGrid(LPCWSTR FilePath)
 				Ground * ground = new Ground();
 				ground->SetPosition(pos_x, pos_y);
 				ground->SetState(state);
+				ground->kind = idItem;
 				ground->SetEnable(true);
 				ground->SetIDItem(idItem);
 				unit = new Unit(grid, ground, pos_x, pos_y, cell_x, cell_y);
@@ -341,9 +347,19 @@ void Scenes::LoadObjectsFromFileToGrid(LPCWSTR FilePath)
 				breakwall->SetEnable(true);
 				breakwall->SetState(NORMAL);
 				breakwall->SetIDItem(idItem);
-				unit = new Unit(grid, breakwall, pos_x, pos_y);
+				unit = new Unit(grid, breakwall, pos_x, pos_y, cell_x, cell_y);
 				break;
 			}
+			case BOSS:
+			{
+				//boss = new Boss();
+				boss->SetEntryPosition(pos_x, pos_y);
+				boss->SetState(BOSS_IDLE);
+				boss->SetEnable(true);
+				unit = new Unit(grid, boss, pos_x, pos_y, cell_x, cell_y);
+				break;
+			}
+
 			default:
 				break;
 		}
@@ -390,6 +406,7 @@ void Scenes::ChangeScene()
 		Init(SCENE_2_1);
 	else if (IDScene == SCENE_3 && simon->isNextScene == SCENE_2_2)
 		Init(SCENE_2_2);
+
 }
 
 void Scenes::Update(DWORD dt)
@@ -412,6 +429,9 @@ void Scenes::Update(DWORD dt)
 
 	// Set position for enemies's spawning
 	SetEnemiesSpawnPositon();
+
+	if (boss->GetState() == BOSS_ACTIVE)
+		ShowGround();
 
 	Simon_Update(dt);
 
@@ -449,6 +469,13 @@ void Scenes::Update(DWORD dt)
 
 				fishman->Hit(grid, new_nx);
 			}
+		}
+		else if (dynamic_cast<Boss*>(object))
+		{
+			float sx, sy;
+			simon->GetPosition(sx, sy);
+			boss->SetSimonPosition(sx, sy);
+			simon->CheckCollisionWithBoss(boss);
 		}
 	}
 
@@ -519,11 +546,11 @@ void Scenes::Render()
 	for (auto obj : listObjects)
 	{
 		obj->Render();
-		//obj->RenderBoundingBox();
+		obj->RenderBoundingBox();
 	}
 
 	simon->Render();
-	//simon->RenderBoundingBox();
+	simon->RenderBoundingBox();
 
 	weaponlist[0]->Render();
 
@@ -546,7 +573,7 @@ void Scenes::Render()
 	for (auto obj : listStairs)
 	{
 		//obj->Render();
-		//obj->RenderBoundingBox();
+		obj->RenderBoundingBox();
 	}
 }
 
@@ -641,7 +668,15 @@ void Scenes::SetInactivationByPosition()   // Xoá các object đi ra khỏi vù
 
 void Scenes::UpdateCameraPosition()
 {
-	//if (isMovingCamera1 || isMovingCamera2) return;
+	if (isBossFighting == true)				// Boss fight -> not moving camera
+		return;
+
+	if (boss->GetState() == BOSS_ACTIVE)
+	{
+		isBossFighting = true;
+		return;
+	}
+
 	if (simon->x + SIMON_BBOX_WIDTH > SCENE_2_1_x &&
 		simon->x + SIMON_BBOX_WIDTH < SCENE_2_1_WIDTH) return;
 	if (simon->x + SIMON_BBOX_WIDTH > SCREEN_WIDTH / 2 &&
@@ -671,7 +706,7 @@ void Scenes::SetGameState(int state)
 
 		case GAMESTATE_2_1:
 			simon->SetState(STAIR_UP);
-			simon->SetPosition(3172, 338);
+			simon->SetPosition(3140, 338);
 			simon->SetOrientation(-1);
 			simon->isStandOnStair = true;
 			game->SetCameraPosition(3056, 0);
@@ -679,15 +714,22 @@ void Scenes::SetGameState(int state)
 
 		case GAMESTATE_2_2:
 			simon->SetState(STAIR_UP);
-			simon->SetPosition(3812, 336); //-2 y
+			simon->SetPosition(3780, 336); //-2 y
 			simon->SetOrientation(-1);
 			simon->isStandOnStair = true;
 			game->SetCameraPosition(3056, 0);
 			break;
 	
+		case GAMESTATE_2_3:
+			simon->SetState(STAND);
+			simon->SetPosition(5100, 48); //-2 y
+			simon->SetOrientation(1);
+			game->SetCameraPosition(4684, 0);
+			break;
+
 		case GAMESTATE_3_1:
 			simon->SetState(STAIR_DOWN);
-			simon->SetPosition(92, 16);
+			simon->SetPosition(100, 16);
 			simon->needStateMoveDownStair = true;
 			simon->SetOrientation(1);
 			simon->isStandOnStair = true;
@@ -700,6 +742,8 @@ void Scenes::SetGameState(int state)
 			simon->SetOrientation(1);
 			game->SetCameraPosition(0, 0);
 			break;
+
+
 		default:
 			break;
 	}
@@ -837,7 +881,8 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 			if (dynamic_cast<NextSceneObject*>(obj) || dynamic_cast<Ground*>(obj) || dynamic_cast<Door*>(obj) || (dynamic_cast<BreakWall*>(obj) && obj->GetState() == NORMAL))
 				coObjects.push_back(obj);
 			else if (dynamic_cast<Zombie*>(obj) || dynamic_cast<BlackLeopard*>(obj) && obj->GetState() == ACTIVE 
-				|| dynamic_cast<Bat*>(obj) || dynamic_cast<FireBall*>(obj) || dynamic_cast<FishMan*>(obj) || dynamic_cast<Water*>(obj))
+				|| dynamic_cast<Bat*>(obj) || dynamic_cast<FireBall*>(obj) || dynamic_cast<FishMan*>(obj) || dynamic_cast<Water*>(obj) 
+				|| (dynamic_cast<Boss*>(obj) && obj->GetState() == ACTIVE))
 				coObjects.push_back(obj);
 		}
 	}
@@ -848,7 +893,8 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 			if (dynamic_cast<Candle*>(obj))
 				coObjects.push_back(obj);
 			else if (dynamic_cast<Zombie*>(obj) || (dynamic_cast<BlackLeopard*>(obj) && obj->GetState() == ACTIVE) || dynamic_cast<Bat*>(obj)
-				|| dynamic_cast<FireBall*>(obj) || dynamic_cast<FishMan*>(obj) || dynamic_cast<BreakWall*>(obj))
+				|| dynamic_cast<FireBall*>(obj) || dynamic_cast<FishMan*>(obj) || dynamic_cast<BreakWall*>(obj) ||
+				(dynamic_cast<Boss*>(obj) && obj->GetState() == ACTIVE))
 				coObjects.push_back(obj);
 		}
 	}
@@ -859,7 +905,8 @@ void Scenes::GetColliableObjects(LPGAMEOBJECT Obj, vector<LPGAMEOBJECT>& coObjec
 			if (dynamic_cast<Candle*>(obj) || dynamic_cast<Ground*>(obj))
 				coObjects.push_back(obj);
 			else if (dynamic_cast<Zombie*>(obj) || (dynamic_cast<BlackLeopard*>(obj) && obj->GetState() == ACTIVE) || dynamic_cast<Bat*>(obj)
-				|| dynamic_cast<FireBall*>(obj) || dynamic_cast<FishMan*>(obj))
+				|| dynamic_cast<FireBall*>(obj) || dynamic_cast<FishMan*>(obj)
+				|| (dynamic_cast<Boss*>(obj) && obj->GetState() == ACTIVE))
 				coObjects.push_back(obj);
 		}
 	}
@@ -992,4 +1039,13 @@ bool Scenes::SimonWalkThroughDoor()
 	}
 
 	return false;
+}
+
+void Scenes::ShowGround() {
+	for (UINT i = 0; i < listObjects.size(); i++)
+	{
+		LPGAMEOBJECT object = listObjects[i];
+		if (dynamic_cast<Ground*>(object) && object->state == INACTIVE)
+			object->SetState(ACTIVE);
+	}
 }

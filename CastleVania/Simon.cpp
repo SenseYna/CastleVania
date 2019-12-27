@@ -13,6 +13,7 @@
 #include "FireBall.h"
 #include "BreakWall.h"
 #include "Water.h"
+#include "Boss.h"
 
 Simon::Simon() : GameObject()
 {
@@ -103,8 +104,17 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (dynamic_cast<Ground*>(e->obj) || dynamic_cast<BreakWall*>(e->obj))
+			if (dynamic_cast<Ground*>(e->obj))
 			{
+				auto ground = dynamic_cast<Ground*>(e->obj);
+				if (ground->state == INACTIVE) {
+					x += dx;
+					y += dy;
+					continue;
+				}
+				if (ground->kind == ACTIVE) {
+					continue;
+				}
 				if (e->ny != 0)				// Trên dưới đụng, nx là trái phải
 				{
 					if (e->ny == CDIR_BOTTOM) // -1 là đụng dưới
@@ -124,6 +134,31 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						isCollisionHead = true;
 					}
 				}	
+				//DebugOut(L"[ERROR] LoadSprites failed!: ID=%d\n", vx);
+			}
+			else if (dynamic_cast<BreakWall*>(e->obj))
+			{
+				auto ground = dynamic_cast<BreakWall*>(e->obj);
+				if (e->ny != 0)				// Trên dưới đụng, nx là trái phải
+				{
+					if (e->ny == CDIR_BOTTOM) // -1 là đụng dưới
+					{
+						if (hightGravity && state != JUMP) {
+							isDelayHightGravitySit = true;
+							SetState(SIT);
+							hightGravity = false;
+						}
+						vy = 0;
+						isTouchGround = true;
+						isCollisionHead = false;
+					}
+					else
+					{
+						if (vy <= 0) vy = SIMON_GRAVITY;
+						isCollisionHead = true;
+					}
+				}
+				//DebugOut(L"[ERROR] LoadSprites failed!: ID=%d\n", vx);
 			}
 			else if (dynamic_cast<Door*>(e->obj))
 			{
@@ -184,6 +219,32 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							if (e->nx == CDIR_LEFT && this->nx == 1) this->nx = DIR_LEFT;
 							else if (e->nx == CDIR_RIGHT && this->nx == -1) this->nx = DIR_RIGHT;
 						}
+						SetState(DEFLECT);
+					}
+				}
+				else
+				{
+					if (e->nx != 0) x += dx;
+					if (e->ny != 0) y += dy;
+				}
+			}
+			else if (dynamic_cast<Boss*>(e->obj))
+			{
+				Boss * boss = dynamic_cast<Boss*>(e->obj);
+				
+				if (state != POWER && untouchableTimer->IsTimeUp() == true)
+				{
+					untouchableTimer->Start();
+
+					if (isStandOnStair == false)  // Simon đứng trên cầu thang sẽ không bị bật ngược lại
+					{
+						// đặt trạng thái deflect cho simon
+						if (e->nx != 0)
+						{
+							if (e->nx == CDIR_LEFT && this->nx == 1) this->nx = DIR_LEFT;
+							else if (e->nx == CDIR_RIGHT && this->nx == -1) this->nx = DIR_RIGHT;
+						}
+
 						SetState(DEFLECT);
 					}
 				}
@@ -510,6 +571,12 @@ void Simon::CheckCollisionWithEnemyActiveArea(vector<LPGAMEOBJECT>* listObjects)
 				if (fishman->GetState() == FISHMAN_INACTIVE && fishman->IsAbleToActivate() == true)
 					fishman->SetState(FISHMAN_ACTIVE);
 			}
+			else if (dynamic_cast<Boss*>(enemy))
+			{
+				Boss * boss = dynamic_cast<Boss*>(enemy);
+				if (boss->GetState() == BOSS_IDLE)
+					boss->SetState(BOSS_ACTIVE);
+			}
 		}
 	}
 }
@@ -552,7 +619,41 @@ void Simon::DoAutoWalk()
 
 }
 
+void Simon::CheckCollisionWithBoss(LPGAMEOBJECT boss)
+{
+	float simon_l, simon_t, simon_r, simon_b;
+	float boss_l, boss_t, boss_r, boss_b;
 
+	GetBoundingBox(simon_l, simon_t, simon_r, simon_b);
+
+	boss->GetBoundingBox(boss_l, boss_t, boss_r, boss_b);
+
+	if (GameObject::AABB(simon_l, simon_t, simon_r, simon_b, boss_l, boss_t, boss_r, boss_b))
+	{
+		if (state != POWER && untouchableTimer->IsTimeUp() == true)
+		{
+			untouchableTimer->Start();
+
+			if (isStandOnStair == false)  // Simon đứng trên cầu thang sẽ không bị bật ngược lại
+			{
+				// đặt trạng thái deflect cho simon
+				if (boss->nx != 0)
+				{
+					if (boss->nx == CDIR_LEFT && this->nx == 1) this->nx = DIR_RIGHT;
+					else if (boss->nx == CDIR_RIGHT && this->nx == -1) this->nx = DIR_LEFT;
+				}
+
+				SetState(DEFLECT);
+			}
+		}
+		else
+		{
+			if (boss->nx != 0) x += dx;
+			//if (boss->ny != 0) y += dy;
+		}
+	
+	}
+}
 
 
 
