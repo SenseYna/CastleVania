@@ -10,13 +10,16 @@ FireBall::FireBall()
 	SetState(FIREBALL_ACTIVE);
 }
 
-void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
+void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement)
 {
 	if (state == FIREBALL_DESTROYED && animations[state]->IsOver(EFFECT_ANI_TIME_DELAY) == true)
 	{
 		this->isEnable = false;
 		return;
 	}
+
+	if (stopMovement == true)
+		return;
 
 
 	GameObject::Update(dt);

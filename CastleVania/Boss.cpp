@@ -7,7 +7,6 @@ Boss::Boss() : Enemy()
 	AddAnimation("");
 	AddAnimation("boss_idle_ani");
 	
-
 	isFlyToTarget = false;
 	isFlyToSimon = false;
 
@@ -18,11 +17,12 @@ Boss::Boss() : Enemy()
 
 	dropItem = false;
 
-	HP = 3;
+	HP = 20;
 }
 
-void Boss::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
+void Boss::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement)
 {
+	this->stopMovement = stopMovement;
 	if (state == BOSS_DESTROYED)
 	{
 		if (animations[state]->IsOver(EFFECT_2_ANI_TIME_DELAY) == true) {
@@ -33,6 +33,9 @@ void Boss::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 	}
 
 	if (state == BOSS_IDLE || state == BOSS_INACTIVE)
+		return;
+
+	if (stopMovement == true)
 		return;
 
 	if (isStopWaiting == true)
@@ -73,6 +76,10 @@ void Boss::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 
 void Boss::Render()
 {
+	if (stopMovement == true && state != BOSS_INACTIVE) {
+		animations[BOSS_ACTIVE]->Reset();
+		animations[BOSS_ACTIVE]->Render(nx, x, y);
+	}
 	if (state != BOSS_INACTIVE) 
 		animations[state]->Render(nx, x, y);
 }

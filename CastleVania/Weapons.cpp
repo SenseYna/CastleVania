@@ -14,6 +14,9 @@ Weapons::Weapons()
 	AddAnimation("weapon_dagger_ani");
 	AddAnimation("weapon_holywater_ani");
 	AddAnimation("weapon_holywatershattered_ani");
+	AddAnimation("weapon_stopwatch_ani");
+	AddAnimation("weapon_stopwatch_ani");
+	AddAnimation("weapon_stopwatch_ani");
 
 	state = -1; // no Weapons
 }
@@ -23,7 +26,7 @@ void Weapons::UpdateCollisionState()
 	this->isEnable = false;
 }
 
-void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
+void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement)
 {
 	if (isHolyWaterShattered == true &&
 		GetTickCount() - holyWaterShatteredCounter > WEAPONS_HOLY_WATER_TIME_EFFECT)
@@ -143,7 +146,7 @@ void Weapons::Render()
 {
 	RenderSpark();
 
-	if (this->isEnable == true) {
+	if (this->isEnable == true && state != WEAPONS_STOP_WATCH) {
 		animations[state]->Render(nx, x, y);
 	//	simon->SetState(STAND);
 	}

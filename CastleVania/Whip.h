@@ -12,7 +12,7 @@ public:
 	Whip();
 
 	// Update
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL, bool stopMovement = false);
 
 	// Render
 	virtual void Render() {}

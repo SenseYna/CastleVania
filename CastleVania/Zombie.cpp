@@ -10,7 +10,7 @@ Zombie::Zombie() : Enemy()
 	respawnWaitingTime = 10000;
 }
 
-void Zombie::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
+void Zombie::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement)
 {
 	if (state == ZOMBIE_INACTIVE)
 		return;
@@ -20,6 +20,10 @@ void Zombie::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 		SetState(ZOMBIE_INACTIVE);
 		return;
 	}
+
+	if (stopMovement == true)
+		return;
+
 
 	Enemy::Update(dt);
 

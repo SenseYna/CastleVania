@@ -31,6 +31,7 @@ public:
 	int IDWeapon = 1;
 	bool isGotChainItem = false;	// xác định xem có nhặt được Chain item hay không, dùng để update whip
 	int isNextScene = -1;
+	int isGameState= -1;
 	bool isAutoWalk = false;
 	bool isCollisionHead = false;
 	bool col_stair_top = false; // va chạm bbox stair trên
@@ -47,7 +48,7 @@ public:
 	LPGAMEOBJECT stairCollided = nullptr; // lưu bậc thang va chạm với simon -> để xét vị trí đi tới cầu thang để lên - xuống
 
 	//Update
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL, bool stopMovement = false);
 	
 	// Get
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);

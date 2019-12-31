@@ -159,24 +159,26 @@ void Input::OnKeyDown(int KeyCode)
 		else
 			Simon_Whip();
 		break;
-
 	case DIK_S:
 		Simon_Whip_Weapons();
 		break;
 	case DIK_Q:
-		scene->Init(SCENE_2);
+		scene->Init(SCENE_2, GAMESTATE_1);
 		break;
 	case DIK_W:
-		scene->Init(SCENE_2_1);
+		scene->Init(SCENE_2, GAMESTATE_2);
 		break;
 	case DIK_E:
-		scene->Init(SCENE_3);
+		scene->Init(SCENE_2, GAMESTATE_3);
 		break;
 	case DIK_R:
-		scene->Init(SCENE_2_2);
+		scene->Init(SCENE_2, GAMESTATE_4);
 		break;
 	case DIK_T:
-		scene->Init(SCENE_2_3);
+		scene->Init(SCENE_3, GAMESTATE_1);
+		break;
+	case DIK_Y:
+		scene->Init(SCENE_3, GAMESTATE_2);
 		break;
 	case DIK_SPACE:
 		if (simon->isStandOnStair == false) Simon_Jump();
@@ -245,9 +247,19 @@ void Input::Simon_Whip_Weapons()
 	if (simon->GetCurrentWeapons() == -1 || simon->GetEnergy() == 0) // không có vũ khí hoặc enery = 0
 		return;
 
+	if (simon->GetCurrentWeapons() == STOPWATCH)
+	{
+		if (scene->stopWatchTimer->IsTimeUp() == false) // đang sử dụng stop watch
+			return;
+
+		weaponlist->at(0)->SetEnable(false);
+	}
+
 	if (weaponlist->at(0)->IsEnable() == false) // weapon đã bắn chưa , rồi thì đợi
 		weapon = weaponlist->at(0);
 	else return;
+
+	
 
 	if (simon->GetState() == STAND || simon->GetState() == JUMP ||
 		simon->GetState() == SIT || simon->GetState() == STAIR_UP || 
@@ -270,7 +282,10 @@ void Input::Simon_Whip_Weapons()
 		// state enable
 		weapon->SetEnable(true);
 		weapon->SetState(simon->GetCurrentWeapons());
-
+		if (weapon->GetState() == STOPWATCH)
+		{
+			scene->stopWatchTimer->Start();
+		}
 		simon->LoseEnergy(1);
 		simon->isHitWeapons = true;
 		Simon_Whip();

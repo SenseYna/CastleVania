@@ -59,12 +59,12 @@ public:
 	DWORD dt;
 
 	bool isEnable;
+	bool stopMovement = false;
 
 	int idItem;		// id của item mà object đó chứa (-1: no item)
 	bool isDroppedItem = false;
 	
 	vector<LPANIMATION> animations;
-
 
 	GameObject();
 
@@ -110,9 +110,8 @@ public:
 
 	void AddAnimation(string aniID);
 
-	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
-
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObject = NULL);
+	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;	
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObject = NULL, bool stopMovement = false);
 	virtual void Render() = 0;
 };
 

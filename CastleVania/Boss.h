@@ -21,7 +21,7 @@ class Boss : public Enemy
 public:
 	Boss();
 
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObject = NULL);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObject = NULL, bool stopMovement = false);
 	virtual void Render();
 	virtual void SetState(int state);
 

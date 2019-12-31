@@ -13,7 +13,7 @@ BlackLeopard::BlackLeopard() : Enemy()
 	respawnWaitingTime = 10000;
 }
 
-void BlackLeopard::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
+void BlackLeopard::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement)
 {
 	DWORD now = GetTickCount();
 
@@ -25,6 +25,10 @@ void BlackLeopard::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 
 	if (state == BLACK_LEOPARD_INACTIVE)
 		return;
+
+	if (stopMovement == true)
+		return;
+
 
 	vy += BLACK_LEOPARD_GRAVITY * dt;
 	Enemy::Update(dt);

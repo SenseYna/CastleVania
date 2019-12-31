@@ -8,8 +8,9 @@ Items::Items() : GameObject()
 	AddAnimation("item_smallheart_ani");
 	AddAnimation("item_largeheart_ani");
 	AddAnimation("item_chain_ani");
+	AddAnimation("item_stopwatch_ani");
+	AddAnimation("item_porkchop_ani");
 	
-
 	timeAppear = -1;
 }
 
@@ -23,7 +24,7 @@ void Items::Render()
 	animations[state]->Render(-1, x, y, alpha);
 }
 
-void Items::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
+void Items::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement)
 {
 	if (timeAppear == -1)
 		timeAppear = GetTickCount();
@@ -119,6 +120,10 @@ void Items::GetBoundingBox(float & left, float & top, float & right, float & bot
 		bottom = top + 32;
 		break;
 	case HOLY_WATER:
+		right = left + 32;
+		bottom = top + 28;
+		break;
+	case STOPWATCH:
 		right = left + 32;
 		bottom = top + 28;
 		break;

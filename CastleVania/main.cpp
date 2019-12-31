@@ -155,7 +155,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//LoadResources();
 
 	scene = new Scenes(game);
-	scene->Init(0);
+	scene->Init(SCENE_1, GAMESTATE_1);
 
 	input = new Input(game, scene);
 	game->InitKeyboard(input);

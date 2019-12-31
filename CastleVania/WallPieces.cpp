@@ -6,7 +6,7 @@ WallPiece::WallPiece()
 	SetState(0);
 }
 
-void WallPiece::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
+void WallPiece::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement)
 {
 	GameObject::Update(dt);
 	vy += WALLPIECES_GRAVITY * dt;

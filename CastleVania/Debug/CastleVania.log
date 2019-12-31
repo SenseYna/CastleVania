@@ -1,8 +1,8 @@
-﻿  Simon.cpp
+﻿  Scenes.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+c:\users\thien\desktop\castlevania\castlevania\define.h(17): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
 c:\users\thien\desktop\castlevania\castlevania\timer.h(15): warning C4018: '>': signed/unsigned mismatch
-c:\users\thien\desktop\castlevania\castlevania\simon.cpp(538): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\thien\desktop\castlevania\castlevania\simon.cpp(540): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\thien\desktop\castlevania\castlevania\simon.cpp(563): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\thien\desktop\castlevania\castlevania\simon.cpp(565): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\thien\desktop\castlevania\castlevania\simon.cpp(460): warning C4715: 'Simon::CheckCollisionWithItem': not all control paths return a value
+c:\users\thien\desktop\castlevania\castlevania\scenes.cpp(454): warning C4018: '<': signed/unsigned mismatch
+c:\users\thien\desktop\castlevania\castlevania\scenes.cpp(985): warning C4018: '<': signed/unsigned mismatch
   Castlevania.vcxproj -> C:\Users\thien\Desktop\CastleVania\Debug\Castlevania.exe

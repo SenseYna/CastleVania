@@ -18,8 +18,9 @@ FishMan::FishMan() : Enemy()
 	respawnWaitingTime = 5000;
 }
 
-void FishMan::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
+void FishMan::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement)
 {
+	this->stopMovement = stopMovement;
 	// Update fishman
 	if (state == FISHMAN_DESTROYED && animations[state]->IsOver(EFFECT_ANI_TIME_DELAY) == true)
 	{
@@ -36,6 +37,10 @@ void FishMan::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 
 	if (state == FISHMAN_INACTIVE)
 		return;
+
+	if (stopMovement == true)
+		return;
+
 
 	Enemy::Update(dt);
 
@@ -104,7 +109,11 @@ void FishMan::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 void FishMan::Render()
 {
 	// render fishman
-	if (state != FISHMAN_INACTIVE)
+	if (stopMovement == true && state != FISHMAN_INACTIVE) {
+		animations[FISHMAN_ACTIVE]->Reset();
+		animations[FISHMAN_ACTIVE]->Render(nx, x, y);
+	}
+	else if (state != FISHMAN_INACTIVE)
 		animations[state]->Render(nx, x, y);
 }
 

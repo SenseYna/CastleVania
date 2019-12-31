@@ -7,7 +7,7 @@ class WallPiece : public GameObject
 public:
 	WallPiece();
 
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObject = NULL);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObject = NULL, bool stopMovement = false);
 	void Render();
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) {}

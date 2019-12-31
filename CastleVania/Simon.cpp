@@ -35,7 +35,7 @@ Simon::Simon() : GameObject()
 	AddAnimation("simon_deflect_ani");
 }
 
-void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 {
 	GameObject::Update(dt);
 	
@@ -196,12 +196,10 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (obj->GetIDNextScene() == SCENE_2)
 				{
 					isAutoWalk = false;
-					this->isNextScene = obj->GetIDNextScene();
 				} 
-				else
-				{
-					this->isNextScene = obj->GetIDNextScene();
-				}
+
+				this->isNextScene = obj->GetIDNextScene();
+				this->isGameState = obj->GetIDGameState();
 			}
 			else if (dynamic_cast<Zombie*>(e->obj) || dynamic_cast<BlackLeopard*>(e->obj) || dynamic_cast<FireBall*>(e->obj) || dynamic_cast<FishMan*>(e->obj))
 			{
@@ -437,6 +435,7 @@ bool Simon::CheckCollisionWithItem(vector<LPGAMEOBJECT>* listItem)
 			{
 			case DAGGER:
 			case HOLY_WATER: 
+			case STOPWATCH:
 				SetCurrentWeapons(idItem);
 				break;
 			case SMALL_HEART:

@@ -51,6 +51,7 @@ void Grid::Add(LPUNIT unit, int cell_x, int cell_y)
 		cell_y = (int)(unit->x / cell_width);
 	}
 
+
 	// thêm vào đầu cell - add head
 	unit->prev = NULL;
 	unit->next = cells[cell_x][cell_y];

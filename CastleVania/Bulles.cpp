@@ -8,7 +8,7 @@ Bubble::Bubble()
 	SetState(0);
 }
 
-void Bubble::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
+void Bubble::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement)
 {
 	GameObject::Update(dt);
 	vy += BUBBLES_GRAVITY * dt;

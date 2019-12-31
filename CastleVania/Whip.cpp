@@ -16,7 +16,7 @@ Whip::Whip() : GameObject()
 	SetState(NORMAL_WHIP);
 }
 
-void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
@@ -33,7 +33,6 @@ void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				e->SetState(BREAK);
 			}
 		}
-
 		else if (dynamic_cast<Candle*>(obj)) // va chạm giữa roi và nến
 		{
 			Candle * e = dynamic_cast<Candle*> (obj);
@@ -186,7 +185,7 @@ bool Whip::CheckCollision(float obj_left, float obj_top, float obj_right, float 
 void Whip::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	top = y + 15;
-	bottom = top + WHIP_BBOX_HEIGHT;
+	bottom = top + 18;
 	if (nx < 0)
 	{
 		if (state != LONG_CHAIN)

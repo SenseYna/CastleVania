@@ -3,3 +3,5 @@ item_largeheart_ani	item_largeheart	100
 item_chain_ani	item_chain	100
 item_dagger_ani	item_dagger	100
 item_holywater_ani	item_holywater	100
+item_stopwatch_ani	item_stopwatch	100
+item_porkchop_ani	item_porkchop	100

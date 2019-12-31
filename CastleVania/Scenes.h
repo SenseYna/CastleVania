@@ -30,6 +30,7 @@ using namespace std;
 class Scenes
 {
 	int IDScene;
+	int IDGameState;
 
 	Game * game;
 	Grid * grid;
@@ -67,9 +68,10 @@ public:
 	Scenes(Game * game);
 	~Scenes();
 
+	Timer * stopWatchTimer = new Timer(WEAPONS_STOP_WATCH_TIME);
 	Timer * delayChangeScene = new Timer(CHANGE_SCENE_TIME_DELAY);
 	
-	void Init(int idScene);						// init simon position, camera position, grid..
+	void Init(int idScene, int idGameState);						// init simon position, camera position, grid..
 	void LoadObjectsFromFileToGrid(LPCWSTR FilePath);	// load all objects (position, state, isEnable) from file 
 	
 	// Update

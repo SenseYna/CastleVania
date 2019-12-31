@@ -154,51 +154,96 @@ Scenes::~Scenes()
 {
 }
 
-void Scenes::Init(int idScene)
+void Scenes::Init(int idScene, int idGameState)
 {
 	
 	IDScene = idScene;
-	if (IDScene == SCENE_2_1) IDScene = SCENE_2;
-	else if (IDScene == SCENE_2_2) IDScene = SCENE_2;
-	else if (IDScene == SCENE_3_1) IDScene = SCENE_3;
-	else if (IDScene == SCENE_2_3) IDScene = SCENE_2;
-
+	IDGameState = idGameState;
+	
 	switch (idScene)
 	{
 	case SCENE_1:
 		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_1);
-		SetGameState(GAMESTATE_1);
+		switch (idGameState)
+		{
+		case GAMESTATE_1:
+			simon->SetState(STAND);
+			simon->SetPosition(0, 302);
+			game->SetCameraPosition(0, 0);
+			isBossFighting = false;
+			break;
+		default:
+			break;
+		}
 		break;
 	case SCENE_2:
 		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_2);
-		SetGameState(GAMESTATE_2);
-		delayChangeScene->Start();
+		switch (idGameState)
+		{
+		case GAMESTATE_1:
+			simon->SetState(STAND);
+			simon->SetPosition(0, 272);
+			game->SetCameraPosition(0, 0);
+			isBossFighting = false;
+			break;
+
+		case GAMESTATE_2:
+			simon->SetState(STAIR_UP);
+			simon->SetPosition(3140, 338);
+			simon->SetOrientation(-1);
+			simon->isStandOnStair = true;
+			game->SetCameraPosition(3056, 0);
+			isBossFighting = false;
+			break;
+
+		case GAMESTATE_3:
+			simon->SetState(STAIR_UP);
+			simon->SetPosition(3780, 336); //-2 y
+			simon->SetOrientation(-1);
+			simon->isStandOnStair = true;
+			game->SetCameraPosition(3056, 0);
+			isBossFighting = false;
+			break;
+
+		case GAMESTATE_4:
+			simon->SetState(STAND);
+			simon->isStandOnStair = false;
+			simon->SetPosition(5100, 48); //-2 y
+			simon->SetOrientation(1);
+			game->SetCameraPosition(4684, 0);
+			isBossFighting = false;
+			break;
+
+		default:
+			break;
+		}
 		break;
+
 	case SCENE_3:
 		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_3);
-		//simon->SetState(STAIR_DOWN);
-		SetGameState(GAMESTATE_3_1);
-		delayChangeScene->Start();
-		break;
-	case SCENE_3_1:
-		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_3);
-		SetGameState(GAMESTATE_3_2);
-		delayChangeScene->Start();
-		break;
-	case SCENE_2_1:
-		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_2);
-		SetGameState(GAMESTATE_2_1);
-		delayChangeScene->Start();
-		break;
-	case SCENE_2_2:
-		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_2);
-		SetGameState(GAMESTATE_2_2);
-		delayChangeScene->Start();
-		break;
-	case SCENE_2_3:
-		LoadObjectsFromFileToGrid(FILEPATH_OBJECTS_SCENE_2);
-		SetGameState(GAMESTATE_2_3);
-		delayChangeScene->Start();
+		switch (idGameState)
+		{
+		case GAMESTATE_1:
+			simon->SetState(STAIR_DOWN);
+			simon->SetPosition(100, 16);
+			simon->needStateMoveDownStair = true;
+			simon->SetOrientation(1);
+			simon->isStandOnStair = true;
+			game->SetCameraPosition(0, 0);
+			isBossFighting = false;
+			break;
+
+		case GAMESTATE_2:
+			simon->SetState(STAIR_DOWN);
+			simon->SetPosition(732, 16);
+			simon->SetOrientation(1);
+			game->SetCameraPosition(0, 0);
+			isBossFighting = false;
+			break;
+
+		default:
+			break;
+		}
 		break;
 	default:
 		break;
@@ -264,6 +309,8 @@ void Scenes::LoadObjectsFromFileToGrid(LPCWSTR FilePath)
 				candle->SetState(state);
 				candle->SetEnable(isEnable);
 				candle->SetIDItem(idItem);
+				if (idItem == 5)
+					idItem = 5;
 				unit = new Unit(grid, candle, pos_x, pos_y, cell_x, cell_y);
 				break;
 			}
@@ -272,6 +319,7 @@ void Scenes::LoadObjectsFromFileToGrid(LPCWSTR FilePath)
 				NextSceneObject * nextScene = new NextSceneObject();
 				nextScene->SetPosition(pos_x, pos_y);
 				nextScene->SetIDNextScene(state);
+				nextScene->SetIDGameState(idItem);
 				nextScene->SetEnable(true);
 				unit = new Unit(grid, nextScene, pos_x, pos_y, cell_x, cell_y);
 				break;
@@ -396,17 +444,7 @@ void Scenes::GetObjectFromGrid()
 
 void Scenes::ChangeScene()
 {
-	if (IDScene == SCENE_1 && simon->isNextScene == SCENE_2)
-		Init(SCENE_2);
-	else if (IDScene == SCENE_2 && simon->isNextScene == SCENE_3)
-		Init(SCENE_3);
-	else if (IDScene == SCENE_2 && simon->isNextScene == SCENE_3_1)
-		Init(SCENE_3_1);
-	else if (IDScene == SCENE_3 && simon->isNextScene == SCENE_2_1)
-		Init(SCENE_2_1);
-	else if (IDScene == SCENE_3 && simon->isNextScene == SCENE_2_2)
-		Init(SCENE_2_2);
-
+	Init(simon->isNextScene, simon->isGameState);
 }
 
 void Scenes::Update(DWORD dt)
@@ -452,7 +490,7 @@ void Scenes::Update(DWORD dt)
 		vector<LPGAMEOBJECT> coObjects;
 
 		GetColliableObjects(object, coObjects);
-		object->Update(dt, &coObjects);
+		object->Update(dt, &coObjects, !stopWatchTimer->IsTimeUp());
 
 		if (dynamic_cast<FishMan*>(object))
 		{
@@ -588,17 +626,21 @@ void Scenes::SetDropItems()
 		if (object->IsDroppedItem() == true)
 			continue;
 
-		if ((dynamic_cast<Candle*>(object) && object->GetState() == CANDLE_DESTROYED) || (dynamic_cast<Zombie*>(object) && object->GetState() == ZOMBIE_DESTROYED) 
+		if (((dynamic_cast<Candle*>(object) && object->GetState() == CANDLE_DESTROYED) || (dynamic_cast<Zombie*>(object) && object->GetState() == ZOMBIE_DESTROYED) 
 			|| (dynamic_cast<Bat*>(object) && object->GetState() == BAT_DESTROYED) || (dynamic_cast<BlackLeopard*>(object) && object->GetState() == BLACK_LEOPARD_DESTROYED)
-			|| (dynamic_cast<FishMan*>(object) && object->GetState() == FISHMAN_DESTROYED))
+			|| (dynamic_cast<FishMan*>(object) && object->GetState() == FISHMAN_DESTROYED) || (dynamic_cast<BreakWall*>(object) && object->GetState() == BREAK)) && object->idItem == -1)
 			
 		{
 			idItem = GetRandomItem(); //object->idItem;
 			object->GetPosition(x, y);
 			object->SetIsDroppedItem(true);
 		}
-		if (idItem > 10)
-			continue;
+		else if ((dynamic_cast<Candle*>(object) && object->GetState() == CANDLE_DESTROYED)||((dynamic_cast<BreakWall*>(object) && object->GetState() == BREAK))){
+			idItem = object->idItem;
+			object->GetPosition(x, y);
+			object->SetIsDroppedItem(true);
+		}
+		
 
 		if (idItem != -1)
 		{
@@ -679,6 +721,8 @@ void Scenes::UpdateCameraPosition()
 
 	if (simon->x + SIMON_BBOX_WIDTH > SCENE_2_1_x &&
 		simon->x + SIMON_BBOX_WIDTH < SCENE_2_1_WIDTH) return;
+	if (simon->x + SIMON_BBOX_WIDTH > SCENE_2_2_x &&
+		simon->x + SIMON_BBOX_WIDTH < SCENE_2_2_WIDTH) return;
 	if (simon->x + SIMON_BBOX_WIDTH > SCREEN_WIDTH / 2 &&
 		simon->x + SIMON_BBOX_WIDTH  + SCREEN_WIDTH / 2 < tilemaps->Get(IDScene)->GetMapWidth())
 	{
@@ -690,63 +734,63 @@ void Scenes::UpdateCameraPosition()
 
 void Scenes::SetGameState(int state)
 {
-	switch (state)
-	{
-		case GAMESTATE_1:
-			simon->SetState(STAND);
-			simon->SetPosition(0, 302);
-			game->SetCameraPosition(0, 0);
-			break;
+	//switch (state)
+	//{
+	//	case GAMESTATE_1:
+	//		simon->SetState(STAND);
+	//		simon->SetPosition(0, 302);
+	//		game->SetCameraPosition(0, 0);
+	//		break;
 
-		case GAMESTATE_2:
-			simon->SetState(STAND);
-			simon->SetPosition(0, 272);
-			game->SetCameraPosition(0, 0);
-			break;
+	//	case GAMESTATE_2:
+	//		simon->SetState(STAND);
+	//		simon->SetPosition(0, 272);
+	//		game->SetCameraPosition(0, 0);
+	//		break;
 
-		case GAMESTATE_2_1:
-			simon->SetState(STAIR_UP);
-			simon->SetPosition(3140, 338);
-			simon->SetOrientation(-1);
-			simon->isStandOnStair = true;
-			game->SetCameraPosition(3056, 0);
-			break;
+	//	case GAMESTATE_2_1:
+	//		simon->SetState(STAIR_UP);
+	//		simon->SetPosition(3140, 338);
+	//		simon->SetOrientation(-1);
+	//		simon->isStandOnStair = true;
+	//		game->SetCameraPosition(3056, 0);
+	//		break;
 
-		case GAMESTATE_2_2:
-			simon->SetState(STAIR_UP);
-			simon->SetPosition(3780, 336); //-2 y
-			simon->SetOrientation(-1);
-			simon->isStandOnStair = true;
-			game->SetCameraPosition(3056, 0);
-			break;
-	
-		case GAMESTATE_2_3:
-			simon->SetState(STAND);
-			simon->SetPosition(5100, 48); //-2 y
-			simon->SetOrientation(1);
-			game->SetCameraPosition(4684, 0);
-			break;
+	//	case GAMESTATE_2_2:
+	//		simon->SetState(STAIR_UP);
+	//		simon->SetPosition(3780, 336); //-2 y
+	//		simon->SetOrientation(-1);
+	//		simon->isStandOnStair = true;
+	//		game->SetCameraPosition(3056, 0);
+	//		break;
+	//
+	//	case GAMESTATE_2_3:
+	//		simon->SetState(STAND);
+	//		simon->SetPosition(5100, 48); //-2 y
+	//		simon->SetOrientation(1);
+	//		game->SetCameraPosition(4684, 0);
+	//		break;
 
-		case GAMESTATE_3_1:
-			simon->SetState(STAIR_DOWN);
-			simon->SetPosition(100, 16);
-			simon->needStateMoveDownStair = true;
-			simon->SetOrientation(1);
-			simon->isStandOnStair = true;
-			game->SetCameraPosition(0, 0);
-			break;
+	//	case GAMESTATE_3_1:
+	//		simon->SetState(STAIR_DOWN);
+	//		simon->SetPosition(100, 16);
+	//		simon->needStateMoveDownStair = true;
+	//		simon->SetOrientation(1);
+	//		simon->isStandOnStair = true;
+	//		game->SetCameraPosition(0, 0);
+	//		break;
 
-		case GAMESTATE_3_2:
-			simon->SetState(STAIR_DOWN);
-			simon->SetPosition(732, 16);
-			simon->SetOrientation(1);
-			game->SetCameraPosition(0, 0);
-			break;
+	//	case GAMESTATE_3_2:
+	//		simon->SetState(STAIR_DOWN);
+	//		simon->SetPosition(732, 16);
+	//		simon->SetOrientation(1);
+	//		game->SetCameraPosition(0, 0);
+	//		break;
 
 
-		default:
-			break;
-	}
+	//	default:
+	//		break;
+	//}
 }
 
 void Scenes::SetEnemiesSpawnPositon()

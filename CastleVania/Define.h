@@ -73,11 +73,9 @@
 // Game
 #define GAMESTATE_1		0   // SCENE_1
 #define GAMESTATE_2		1	// SCENE_2
-#define GAMESTATE_2_1	2	// SCENE_2
-#define GAMESTATE_2_2   3   // SCENE_2 - cầu thang lên
-#define GAMESTATE_2_3   4   // SCENE_2 - màn boss
-#define GAMESTATE_3_1	6	// SCENE_3 - cầu thang lên 1
-#define GAMESTATE_3_2	7	// SCENE_3 - cầu thang lên 2
+#define GAMESTATE_3		2   // SCENE_3
+#define GAMESTATE_4		3	// SCENE_4
+
 
 // Orientation
 #define DIR_LEFT		-1
@@ -97,14 +95,11 @@
 #define SCENE_1			0
 #define SCENE_2 		1
 #define SCENE_3			2
-#define SCENE_3_1 		3
-#define SCENE_2_1 		4
-#define SCENE_2_2 		5
-#define SCENE_2_3		6
-
 // Scene x,y
-#define SCENE_2_1_x		2832
-#define SCENE_2_1_WIDTH	3328
+#define SCENE_2_1_x			2832
+#define SCENE_2_1_WIDTH		3328
+#define SCENE_2_2_x			3864
+#define SCENE_2_2_WIDTH		4352
 
 // Simon
 #define STAND			0
@@ -151,9 +146,10 @@
 #define WHIP_BBOX_HEIGHT			15
 
 // Weapons
-#define WEAPONS_DAGGER		0
-#define WEAPONS_HOLY_WATER  1
-#define WEAPONS_HOLY_WATER_SHATTERED 2
+#define WEAPONS_DAGGER					0
+#define WEAPONS_HOLY_WATER				1
+#define WEAPONS_HOLY_WATER_SHATTERED	 2
+#define WEAPONS_STOP_WATCH				5
 
 // Weapons BOXX
 #define WEAPONS_DAGGER_BBOX_WIDTH		34
@@ -163,7 +159,6 @@
 
 // Weapons Speed
 #define WEAPONS_DAGGER_SPEED		0.4f
-
 #define WEAPONS_HOLY_WATER_SPEED_X	0.4f
 #define WEAPONS_HOLY_WATER_SPEED_Y	0.2f
 #define WEAPONS_HOLY_WATER_GRAVITY	0.001f
@@ -183,9 +178,9 @@
 #define GROUND_BBOX_HALF_Y			176
 
 // Candle
-#define BIG_CANDLE		0
-#define SMALL_CANDLE	1
-#define CANDLE_DESTROYED	2
+#define BIG_CANDLE					0
+#define SMALL_CANDLE				1
+#define CANDLE_DESTROYED			2
 
 // Candle BBOX
 #define CANDLE_BBOX_WIDTH			32
@@ -203,6 +198,7 @@
 #define STAIR_WALK_ANI_TIME_DELAY	200
 #define DOOR_2_OPEN_ANI_TIME_DELAY	5000
 #define CHANGE_SCENE_TIME_DELAY		350
+#define WEAPONS_STOP_WATCH_TIME		2000
 #define FISHMAN_HIT_ANI_TIME_DELAY	1000
 #define GOTO_SCENE_2_1_TIME_DELAY	5200
 #define EFFECT_2_ANI_TIME_DELAY		1000
@@ -223,6 +219,8 @@
 #define SMALL_HEART		2
 #define LARGE_HEART		3
 #define CHAIN			4
+#define STOPWATCH		5
+#define PORKCHOP		6
 
 // Door
 #define DOOR_1			0

@@ -1,6 +1,6 @@
 #include "Water.h"
 
-void Water::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
+void Water::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement)
 {
 	DWORD now = GetTickCount();
 

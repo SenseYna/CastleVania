@@ -11,7 +11,7 @@ Bat::Bat() : Enemy()
 	respawnWaitingTime = 5000;
 }
 
-void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
+void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement)
 {
 	if (state == BAT_DESTROYED && animations[state]->IsOver(EFFECT_ANI_TIME_DELAY) == true)
 	{
@@ -21,6 +21,10 @@ void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject)
 
 	if (state == BAT_INACTIVE)
 		return;
+
+	if (stopMovement == true)
+		return;
+
 
 	Enemy::Update(dt);
 

@@ -1,3 +1,4 @@
 weapon_dagger_ani	weapon_dagger	100
 weapon_holywater_ani	weapon_holywater	100
 weapon_holywatershattered_ani	weapon_holywatershattered_1	100	weapon_holywatershattered_2	100
+weapon_stopwatch_ani	weapon_stopwatch	100

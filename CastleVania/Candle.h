@@ -8,7 +8,7 @@ class Candle : public GameObject
 public:
 	Candle();
 
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObject = NULL);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObject = NULL, bool stopMovement = false);
 	void Render();
 	void SetState(int state);
 
