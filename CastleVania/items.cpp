@@ -10,7 +10,12 @@ Items::Items() : GameObject()
 	AddAnimation("item_chain_ani");
 	AddAnimation("item_stopwatch_ani");
 	AddAnimation("item_porkchop_ani");
-	
+	AddAnimation("item_cross_ani");
+	AddAnimation("item_invisibilitypotion_ani");
+	AddAnimation("item_bluemoneybag_ani");
+	AddAnimation("item_axe_ani");
+	AddAnimation("item_bluemoneybag_ani_secrect");
+
 	timeAppear = -1;
 }
 
@@ -37,6 +42,10 @@ void Items::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement)
 			isEnable = false;
 			return;
 		}
+	}
+
+	if (state == MONEY_BAG_BLUE_SECRECT) {
+		vy += 0.0013;
 	}
 
 	if (state == SMALL_HEART && vy != 0)
@@ -127,6 +136,30 @@ void Items::GetBoundingBox(float & left, float & top, float & right, float & bot
 		right = left + 32;
 		bottom = top + 28;
 		break;
+	case PORK_CHOP:
+		right = left + 32;
+		bottom = top + 26;
+		break;
+	case CROSS:
+		right = left + 32;
+		bottom = top + 32;
+		break;
+	case INVISIBILITY_POTION:
+		right = left + 29;
+		bottom = top + 36;
+		break;
+	case MONEY_BAG_BLUE:
+		right = left + 30;
+		bottom = top + 30;
+		break;
+	case AXE:
+		right = left + 30;
+		bottom = top + 28;
+		break;
+	case MONEY_BAG_BLUE_SECRECT:
+		right = left + 30;
+		bottom = top + 30;
+		break;
 	default:
 		right = left;
 		bottom = top;
@@ -144,6 +177,10 @@ void Items::SetState(int state)
 		velocityVariation_x = ITEM_FALLING_SPEED_X_VARIATION;
 		vx = ITEM_FALLING_SPEED_X;
 		vy = ITEM_SMALLHEART_FALLING_SPEED_Y;
+		break;
+	case MONEY_BAG_BLUE_SECRECT:
+		vx = ITEM_FALLING_SPEED_X;
+		vy = -ITEM_SECRECT_SPEED_Y;
 		break;
 	default:
 		vx = ITEM_FALLING_SPEED_X;

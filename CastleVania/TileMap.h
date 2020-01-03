@@ -33,12 +33,13 @@ class TileMap
 	int ID;							// ID của tile map, dùng để tạo class quản lí TileMaps sau này.
 
 public:
+	int alpha = 100;
 	TileMap() {}
 	TileMap(int ID, LPCWSTR filePath_tex, LPCWSTR filePath_data, int map_width, int map_height, int tile_width = 32, int tile_height = 32);
 	
 	void LoadResources();			// load tất cả các ô tile lưu vào sprites
 	void LoadMap();					// load ma trận map 
-	void Draw(D3DXVECTOR3 camPosition);	// vẽ tất cả các tile nằm trong camera
+	void Draw(D3DXVECTOR3 camPosition, bool isCrossEffect);	// vẽ tất cả các tile nằm trong camera
 
 	int GetMapWidth() { return map_Width; }
 };

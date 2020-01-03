@@ -17,6 +17,11 @@ Weapons::Weapons()
 	AddAnimation("weapon_stopwatch_ani");
 	AddAnimation("weapon_stopwatch_ani");
 	AddAnimation("weapon_stopwatch_ani");
+	AddAnimation("weapon_axe_ani");
+	AddAnimation("weapon_axe_ani");
+	AddAnimation("weapon_axe_ani");
+	AddAnimation("weapon_axe_ani");
+	AddAnimation("weapon_axe_ani");
 
 	state = -1; // no Weapons
 }
@@ -43,6 +48,9 @@ void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObject, bool stopMovement
 	{
 	case WEAPONS_HOLY_WATER:
 		vy += WEAPONS_HOLY_WATER_GRAVITY * dt;
+		break;
+	case WEAPONS_AXE:
+		vy += WEAPONS_AXE_GRAVITY * dt;
 		break;
 	default:
 		break;
@@ -188,6 +196,11 @@ void Weapons::SetState(int state)
 		vy = 0;
 		RenderHolyWaterEffect();
 		break;
+	case WEAPONS_AXE:
+		if (nx > 0) vx = 0.30f;//WEAPONS_AXE_SPEED_X;
+		else vx = -0.30f;
+		vy = -0.35f;// WEAPONS_AXE_SPEED_Y;
+		break;
 	default:
 		break;
 	}
@@ -207,6 +220,11 @@ void Weapons::GetBoundingBox(float & left, float & top, float & right, float & b
 	case WEAPONS_HOLY_WATER:
 		right = left + WEAPONS_HOLY_WATER_BBOX_WIDTH;
 		bottom = top + WEAPONS_HOLY_WATER_BBOX_HEIGHT;
+		break;
+
+	case WEAPONS_AXE:
+		right = left + WEAPONS_AXE_BBOX_WIDTH;
+		bottom = top + WEAPONS_AXE_BBOX_HEIGHT;
 		break;
 	default:
 		right = left;

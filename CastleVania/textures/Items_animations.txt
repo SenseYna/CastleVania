@@ -5,3 +5,8 @@ item_dagger_ani	item_dagger	100
 item_holywater_ani	item_holywater	100
 item_stopwatch_ani	item_stopwatch	100
 item_porkchop_ani	item_porkchop	100
+item_cross_ani	item_cross	100
+item_invisibilitypotion_ani	item_invisibilitypotion	100
+item_bluemoneybag_ani	item_bluemoneybag	100
+item_axe_ani	item_axe	100
+item_bluemoneybag_ani_secrect	item_bluemoneybag_secrect	100

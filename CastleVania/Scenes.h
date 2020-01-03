@@ -70,6 +70,7 @@ public:
 
 	Timer * stopWatchTimer = new Timer(WEAPONS_STOP_WATCH_TIME);
 	Timer * delayChangeScene = new Timer(CHANGE_SCENE_TIME_DELAY);
+	Timer * crossEffectTimer = new Timer(ITEM_CROSS_EFFECT_TIME);
 	
 	void Init(int idScene, int idGameState);						// init simon position, camera position, grid..
 	void LoadObjectsFromFileToGrid(LPCWSTR FilePath);	// load all objects (position, state, isEnable) from file 
@@ -93,6 +94,7 @@ public:
 	bool isMovingCamera1;
 	bool isMovingCamera2 = false;
 	int countDxCamera = 0;
+	bool hadItemSecrect = false;
 
 	// Set
 	void SetInactivationByPosition();			// Nếu object ra khỏi vùng viewport thì set unable / inactive
@@ -101,6 +103,7 @@ public:
 	void SetEnemiesSpawnPositon();	// Set position cho khởi tạo enemies
 	int delayChangScene = -1; // màn hình đen chuyển màn => đợi sinh zombie 
 	void ShowGround();
+	void CrossEffect();
 
 	// Get
 	Simon * GetSimon() { return this->simon; }

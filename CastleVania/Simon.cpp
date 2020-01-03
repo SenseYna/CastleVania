@@ -56,8 +56,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 		vy += SIMON_GRAVITY_FASTER * dt;
 	} 
 
-	// gia tốc rơi lớn
-	if ((vy > 0.9 && !isDelayHightGravitySit && vy < 1) || state == DEFLECT)
+	// gia tốc rơi lớn /9
+	if ((vy > 0.95 && !isDelayHightGravitySit && vy < 1) || state == DEFLECT)
 		hightGravity = true;
 	//DebugOut(L"[ERROR] vy %b \n", hightGravity);
 
@@ -107,6 +107,11 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 			if (dynamic_cast<Ground*>(e->obj))
 			{
 				auto ground = dynamic_cast<Ground*>(e->obj);
+
+				if (ground->state == GROUND_SECRECT && !hadSecrect) {
+					hadSecrect = true;
+				}
+
 				if (ground->state == INACTIVE) {
 					x += dx;
 					y += dy;
@@ -117,7 +122,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 				}
 				if (e->ny != 0)				// Trên dưới đụng, nx là trái phải
 				{
-					if (e->ny == CDIR_BOTTOM) // -1 là đụng dưới
+					if (e->ny == CDIR_BOTTOM && (state != DEFLECT || (state == DEFLECT && vy > 0))) // -1 là đụng dưới
 					{
 						if (hightGravity && state != JUMP) {
 							isDelayHightGravitySit = true;
@@ -205,7 +210,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 			{
 				if (e->obj->GetState() == DESTROYED)
 					continue;
-				if (state != POWER && untouchableTimer->IsTimeUp() == true)
+				if (state != POWER && untouchableTimer->IsTimeUp() == true && invisibilityTimer->IsTimeUp() == true)
 				{
 					untouchableTimer->Start();
 
@@ -230,7 +235,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 			{
 				Boss * boss = dynamic_cast<Boss*>(e->obj);
 				
-				if (state != POWER && untouchableTimer->IsTimeUp() == true)
+				if (state != POWER && untouchableTimer->IsTimeUp() == true && invisibilityTimer->IsTimeUp() == true)
 				{
 					untouchableTimer->Start();
 
@@ -259,7 +264,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, bool stopMovement)
 				if (bat->GetState() == BAT_INACTIVE) continue;
 				bat->SetState(BAT_DESTROYED);
 
-				if (state != POWER && untouchableTimer->IsTimeUp() == true)
+				if (state != POWER && untouchableTimer->IsTimeUp() == true && invisibilityTimer->IsTimeUp() == true)
 				{
 					untouchableTimer->Start();
 
@@ -307,7 +312,7 @@ void Simon::Render()
 	int alpha = 255;
 	float ratio = 0;
 
-	if (untouchableTimer->IsTimeUp() == false)
+	if (untouchableTimer->IsTimeUp() == false || invisibilityTimer->IsTimeUp() == false)
 		alpha = rand() % 255;
 	if (IsEnable()) {
 		animations[tempState]->Render(nx, x, y, alpha);
@@ -411,7 +416,7 @@ bool Simon::isWhip()
 	return state == HIT_SIT || state == HIT_STAND || state == HIT_STAIR_DOWN || state == HIT_STAIR_UP;
 }
 
-bool Simon::CheckCollisionWithItem(vector<LPGAMEOBJECT>* listItem)
+bool Simon::CheckCollisionWithItem(vector<LPGAMEOBJECT>* listItem) //5632 960 2 23
 {
 	float simon_l, simon_t, simon_r, simon_b;
 	float item_l, item_t, item_r, item_b;
@@ -448,6 +453,15 @@ bool Simon::CheckCollisionWithItem(vector<LPGAMEOBJECT>* listItem)
 				SetState(POWER); // đổi trạng thái power - biến hình nhấp nháy các kiểu đà điểu
 				vx = 0;
 				isGotChainItem = true;
+				break;
+			case CROSS:
+				isGotCrossItem = true;
+				break;
+			case INVISIBILITY_POTION:
+				invisibilityTimer->Start();
+				break;
+			case AXE:
+				SetCurrentWeapons(idItem);
 				break;
 			default:
 				break;

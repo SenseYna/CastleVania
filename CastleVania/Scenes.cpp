@@ -462,6 +462,9 @@ void Scenes::Update(DWORD dt)
 	// Lấy danh sách object từ grid 
 	GetObjectFromGrid();
 
+	// Cross effect
+	CrossEffect();
+
 	// Drop item
 	SetDropItems();
 
@@ -478,6 +481,8 @@ void Scenes::Update(DWORD dt)
 	{
 		ChangeScene();
 		simon->isNextScene = -1;
+		simon->hadSecrect = false;
+		hadItemSecrect = false;
 		return;
 	}
 
@@ -491,6 +496,12 @@ void Scenes::Update(DWORD dt)
 
 		GetColliableObjects(object, coObjects);
 		object->Update(dt, &coObjects, !stopWatchTimer->IsTimeUp());
+		if (dynamic_cast<Ground*>(object) ){
+			Ground * ground = dynamic_cast<Ground*>(object);
+			if (ground->state == 30) {
+				ground->state = 30;
+			}
+		}
 
 		if (dynamic_cast<FishMan*>(object))
 		{
@@ -579,12 +590,12 @@ void Scenes::Render()
 	if (delayChangeScene->IsTimeUp() == false)
 		return;
 
-	tilemaps->Get(IDScene)->Draw(game->GetCameraPositon());
+	tilemaps->Get(IDScene)->Draw(game->GetCameraPositon(), !crossEffectTimer->IsTimeUp());
 
 	for (auto obj : listObjects)
 	{
 		obj->Render();
-		obj->RenderBoundingBox();
+		obj->RenderBoundingBox(); 
 	}
 
 	simon->Render();
@@ -898,6 +909,17 @@ void Scenes::SetEnemiesSpawnPositon()
 
 void Scenes::Simon_Update(DWORD dt)
 {
+	if (simon->hadSecrect && !hadItemSecrect) {
+		hadItemSecrect = true;
+		auto item = new Items();
+		item->SetEnable(true);
+		item->SetPosition(ITEM_SECRECT_X, ITEM_SECRECT_Y);
+
+		item->SetState(MONEY_BAG_BLUE_SECRECT);
+
+		listItems.push_back(item);
+		unit = new Unit(grid, item, ITEM_SECRECT_X, ITEM_SECRECT_Y);
+	}
 	vector<LPGAMEOBJECT> coObjects;
 	GetColliableObjects(simon, coObjects);
 
@@ -1091,5 +1113,41 @@ void Scenes::ShowGround() {
 		LPGAMEOBJECT object = listObjects[i];
 		if (dynamic_cast<Ground*>(object) && object->state == INACTIVE)
 			object->SetState(ACTIVE);
+	}
+}
+
+void Scenes::CrossEffect() {
+	if (simon->isGotCrossItem == true)
+	{
+		simon->isGotCrossItem = false;
+		crossEffectTimer->Start();
+
+		for (UINT i = 0; i < listObjects.size(); i++)
+		{
+			// Cross chỉ tác dụng với các object nằm trong viewport
+			if (IsInViewport(listObjects[i]) == false)
+				continue;
+
+			if (dynamic_cast<Zombie*>(listObjects[i]) && listObjects[i]->GetState() == ACTIVE)
+			{
+				auto zombie = dynamic_cast<Zombie*>(listObjects[i]);
+				zombie->SetState(ZOMBIE_DESTROYED);
+			}
+			else if (dynamic_cast<BlackLeopard*>(listObjects[i]) && listObjects[i]->GetState() == ACTIVE)
+			{
+				auto leopard = dynamic_cast<BlackLeopard*>(listObjects[i]);
+				leopard->SetState(BLACK_LEOPARD_DESTROYED);
+			}
+			else if (dynamic_cast<Bat*>(listObjects[i]) && listObjects[i]->GetState() == ACTIVE)
+			{
+				auto bat = dynamic_cast<Bat*>(listObjects[i]);
+				bat->SetState(BAT_DESTROYED);
+			}
+			else if (dynamic_cast<FishMan*>(listObjects[i]) && listObjects[i]->GetState() == ACTIVE)
+			{
+				auto fishman = dynamic_cast<FishMan*>(listObjects[i]);
+				fishman->SetState(FISHMAN_DESTROYED);
+			}
+		}
 	}
 }

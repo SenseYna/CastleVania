@@ -27,9 +27,11 @@ public:
 	// Bool
 	bool isWhip();
 	bool isTouchGround = false;	
+	bool hadSecrect = false;
 	bool isHitWeapons = false;
 	int IDWeapon = 1;
 	bool isGotChainItem = false;	// xác định xem có nhặt được Chain item hay không, dùng để update whip
+	bool isGotCrossItem = false;
 	int isNextScene = -1;
 	int isGameState= -1;
 	bool isAutoWalk = false;
